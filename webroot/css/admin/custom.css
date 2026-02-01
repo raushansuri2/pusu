@@ -1,0 +1,89 @@
+/***********  For Admin Start**********/
+.footer-heading {font-size: 12px; border-top: 1px solid #e7e7e7;float: right;margin-top: 20px;padding: 20px 10px;width: 81%; }
+.footer-heading p {float: left; text-align : left; color: #5c94ae; width:68%;}
+.footer-heading .fl{width:32%}
+.footer-heading p a, .footer-heading p a:hover {margin-top:5px; color: #7f9d46;cursor: pointer; font-weight: bold;}
+.mainpanel { min-height: 800px !important;}
+.last-login{padding-top: 20px;}
+.last-login label{font-weight:bold; padding-right: 5px;}
+.paging-container {padding: 5px 0px; margin-bottom:40px}
+.paging-container .records-showing {color: #666666; float: left; font-family: "robotolight"; font-size: 14px; padding-top: 7px;}
+.paging-container ul {float: right; list-style: outside none none;}
+.paging-container ul li {float: left; line-height: 1.42857; position: relative; text-decoration: none;}
+.paging-container ul li a {background-color: #fff; color: #000; border: 1px solid #ddd; float: left; line-height: 1.42857; padding: 6px 12px; position: relative;	text-decoration: none; cursor : pointer;	border-right:0px;}
+.paging-container ul li.disabled a:hover{background-color: #fff; border-color: #ddd; color: #636E7B;}
+.paging-container ul li.active a {background-color: #636E7B; border-color: #636E7B;	color :#FFF;}
+.paging-container ul li.prev a, .paging-container ul li:first-child a {border-bottom-left-radius: 3px; border-top-left-radius: 3px; border-right:0px;}
+.paging-container ul li.next a, .paging-container ul li:last-child a {border-bottom-right-radius: 3px; border-top-right-radius: 3px ; border-right:1px solid #ddd;}
+.paging-container ul li.active{background-color: #636E7B;	border-color: #636E7B;	color :#FFF;}
+.width200 { Width: 200px;}
+table-heading{background-color: #ffffff; border: 1px solid #ddd;}
+#basicTable tbody{border: 1px solid #ddd;}
+.sort-link {display: inline-block; line-height: 6px; width: 9px; float: right;}
+.sort-link a {display: block; margin: 0 5px 2px 5px;}
+.box{background: none repeat scroll 0 0 #ffffff; border-radius: 3px; border-top: 2px solid #c1c1c1; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); margin-bottom: 20px; position: relative; width: 100%; padding:5px;}
+.media-body {width: 40%; float:left;}
+.search-body {float:right;}
+.table-action{width:50px; text-align:center;}
+.listing-link{float: left; margin-right: 10px;}
+.panel-heading-dashboard{min-height : 100px;}
+.col-sm-3.control-label{padding-top : 10px !important;}
+.col-sm-4.control-label{padding-top : 10px !important;}
+
+.table-heading > tr {
+    border: 1px solid #ddd;
+}
+
+.error, .error-message, .flash-error, .jsFormError {color : #FF0000; padding-bottom: 5px; }
+.success { color : #006621 !important; padding-bottom: 5px; }
+
+.selectbox{padding: 10px 5px; border-radius: 4px; border: 1px solid #ccc; background-color: #fff; color:#4a535e;}
+
+.radio label {margin-right: 25px;}
+.error.selectbox {color: #000 !important;}
+span.asterisk{color: #FF0000;}
+div.height-container {float: left; width: 30%;}
+
+
+.readmore, .readmore:hover {
+    color: red;
+    cursor: pointer;
+    margin-left: 10px;
+    text-decoration: none;
+}
+#review_container {
+    margin: 10px 0;
+    text-align: right;
+}
+.popup-review {
+}
+.popup-review span {
+    font-size: 14px;
+    line-height: 20px;
+    text-align: justify;
+    width: 100%;
+}
+.heading h4 {
+    background-color: #636E7B;
+    color: #fff;
+    font-weight: bold;
+    padding: 15px;
+    text-align: center;
+}
+.popup-review .center-content {
+    min-height: 275px;
+    padding: 10px;
+}
+
+a.download-csv{float: right; background: #636E7B; padding: 9px; border-radius: 3px; color: #FFF;}
+a.download-csv:hover{background: #e4e7ea; color: #000;}
+.align-center{text-align: center;}
+
+.legend-container table{width: 100%;}
+.legend-container table tr{float: left; width: auto;}
+.legend-container table tr td {padding: 0 3px 0 3px;}
+div.legend-container {margin-top: 15px;}
+td.reported, td.reported a{background: #FD4F4F !important; color: #000;}
+td.approve, td.approve a{background: #40FF00 !important; color: #000;}
+td.pending, td.pending a{background: #FFFF00 !important; color: #000;}
+/***********  For Admin End**********/
