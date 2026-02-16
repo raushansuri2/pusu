@@ -6,12 +6,12 @@ use App\Controller\Admin\Component\ImgComponent;
 use App\Controller\Admin\AppController;
 use Cake\View\Helper\HtmlHelper;
 use Cake\View\Helper\FormHelper;
-use Cake\Event\EventInterface; 
+use Cake\Event\EventInterface;
 use Cake\ORM\TableRegistry;
 use Cake\Core\Configure;
 
 /*******************************************************************************/
-class AdminsController extends AppController 
+class AdminsController extends AppController
 {
 	public function beforeFilter(EventInterface $event): void
     {
@@ -22,34 +22,32 @@ class AdminsController extends AppController
     {
         $this->viewBuilder()->setLayout('Admin/adminlogin');
         $this->set('layoutTitle', 'Admin::Login');
-        
+
         $session = $this->request->getSession();
-        
+
         // Check if the user is already logged in
         if ($session->read('AnnuityAdmin.role') === 'Admin') {
             return $this->redirect(['controller' => 'Admins', 'action' => 'dashboard', 'prefix' => 'Admin']);
         }
-        
+
         // Handle login form submission
         if ($this->request->is('post')) {
             $data = $this->request->getData();
             $usersTable = $this->fetchTable('Users');
-            
+
             $user = $usersTable->find()
                 ->where(['username' => $data['username']])
                 ->first();
-                
             if ($user && password_verify($data['password'], $user->password) && $user->role === 'Admin') {
                 // Store user data in session
-                
                 // Additional detail (assuming this is for user ID 1)
                 $detail['AnnuityAdmin'] = $usersTable->get(1)->toArray();
                 $session->write($detail);
-                
+
                 // Update last login time for the logged-in user
                 $user->lastLogin = date('Y-m-d H:i:s');
                 $usersTable->save($user);
-                
+
                 return $this->redirect(['controller' => 'Admins', 'action' => 'dashboard']);
             } else {
                 $this->Flash->error(__('Invalid username or password, try again'));
@@ -57,61 +55,57 @@ class AdminsController extends AppController
             }
         }
     }
-    
+
     public function logout()
     {
         $session = $this->request->getSession();
-        
+
         // Check if user is logged in
         if (!$session->check('AnnuityAdmin') || $session->read('AnnuityAdmin.role') !== 'Admin') {
             // If no session exists or user isn’t an Admin, redirect to login without further action
             return $this->redirect(['controller' => 'Admins', 'action' => 'login']);
         }
-        
+
         // Update last login time for user with ID 1
         $usersTable = $this->fetchTable('Users');
         $user = $usersTable->get(1); // Fetch user with ID 1
         $user->lastLogin = date('Y-m-d H:i:s');
         $usersTable->save($user);
-        
+
         // Clear session data
         $session->delete('AnnuityAdmin');
         $session->destroy();
-        
+
         // Redirect to login page
         return $this->redirect(['controller' => 'Admins', 'action' => 'login']);
     }
-    
+
 	public function dashboard()
     {
         // Set the layout
         $this->viewBuilder()->setLayout('Admin/admin');
         $layoutTitle = 'Admin::Dashboard';
         $this->set(compact('layoutTitle'));
-        
+
         // Check session for admin role
         $session = $this->request->getSession();
         if ($session->read('AnnuityAdmin.role') !== 'Admin') {
             $session->destroy(); // Logout by destroying session
             return $this->redirect(['controller' => 'Admins', 'action' => 'login', 'prefix' => 'Admin']);
         }
-        
+
         // Fetch tables instead of loading models
         $usersTable = $this->fetchTable('Users');
-        $postsTable = $this->fetchTable('Posts');
-        $likesTable = $this->fetchTable('Likes');
-        $commentsTable = $this->fetchTable('Comments');
-        
 
         // Fetch counts
         $memberCount = $usersTable->find('all')->where(['Users.role' => 'Member'])->count();
-       
-        
-        $postCount = $postsTable->find('all')->count();
-        
-        $likeCount = $likesTable->find('all')->count();
-        $commentCount = $commentsTable->find('all')->where(['Comments.status' => 0])->count();
-        
+
+
+        $postCount = 0; 
+
+        $likeCount = 0;
+        $commentCount = 0;
+
 
         // Set variables for the view
         $this->set(compact(
@@ -127,14 +121,14 @@ class AdminsController extends AppController
 
         // Hardcode the admin ID
         $id = 1;
-        
+
         // Fetch the Users table
         $usersTable = $this->fetchTable('Users');
-        
+
         // Find the user by ID
         $user = $usersTable->get($id);
-        
-        if ($this->request->is(['patch', 'post', 'put'])) 
+
+        if ($this->request->is(['patch', 'post', 'put']))
         {
             $userImage = $this->request->getData('profile_picture');
             $oldFilename = $user->getOriginal('profile_picture'); // Get the old filename
@@ -160,7 +154,7 @@ class AdminsController extends AppController
 
             // Patch the entity with the request data
             $user = $usersTable->patchEntity($user, $this->request->getData(), ['validate' => false]);
-            
+
             if ($usersTable->save($user)) {
                 // Handle file uploads if a new image is uploaded
                 if (isset($filename)) {
@@ -170,32 +164,32 @@ class AdminsController extends AppController
                     if (!is_dir($path)) {
                         mkdir($path, 0755, true);
                     }
-                    
+
                     // Remove the old image if it exists
                     if ($oldFilename) {
                         @unlink($path . $oldFilename);
                     }
-                    
+
                     // Move the uploaded file to the admin directory
                     $userImage->moveTo($path . $filename);
-                    
+
                     // Resize and save the image in the admin directory
                     $MyImageCom = new ImgComponent();
                     $MyImageCom->prepare($path . $filename);
                     $MyImageCom->resize(150, 100);
                     $MyImageCom->save($path . $filename); // Save resized image in the same admin directory
-                    
+
                     // Update session data
                     $this->request->getSession()->write('AnnuityAdmin.profile_picture', $filename);
                 } else {
                     // If no new image is uploaded, keep the old filename in the session
                     $this->request->getSession()->write('AnnuityAdmin.profile_picture', $oldFilename);
                 }
-                
+
                 // Update session with new user data
                 $this->request->getSession()->write('AnnuityAdmin.username', $this->request->getData('username'));
                 $this->request->getSession()->write('AnnuityAdmin.email', $this->request->getData('email'));
-                
+
                 $this->Flash->success(__('The admin details have been updated.'));
                 return $this->redirect(['action' => 'edit']); // Redirect to the edit page for the same user
             } else {
@@ -203,19 +197,19 @@ class AdminsController extends AppController
                 return $this->redirect(['action' => 'edit']);
             }
         }
-        
+
         // Set the user data to the view
         $this->set(compact('layoutTitle', 'user'));
     }
 
-	public function changepassword() 
+	public function changepassword()
     {
         // Fetch the Users table
         $usersTable = $this->fetchTable('Users');
-        
+
         // Get the user ID from the session
         $userId = $this->request->getSession()->read('AnnuityAdmin.id');
-        
+
         // Fetch the user by ID
         $user = $usersTable->get($userId);
 
@@ -254,17 +248,17 @@ class AdminsController extends AppController
         $this->set(compact('layoutTitle', 'user'));
     }
 
-	public function forgotpassword() 
+	public function forgotpassword()
     {
         $this->viewBuilder()->setLayout('Admin/adminlogin');
-        
+
         // Fetch the Users table
         $usersTable = $this->fetchTable('Users');
 
-        if ($this->request->is(['post'])) {            
+        if ($this->request->is(['post'])) {
             $user = $usersTable->find()
                 ->where(['Users.email' => $this->request->getData('email'), 'Users.role' => 'Admin'])
-                ->first();            
+                ->first();
 
             if (empty($user)) {
                 $this->Flash->error(__('Email address does not exist.'));
@@ -312,13 +306,13 @@ class AdminsController extends AppController
 	public function reset($token = null)
     {
         $this->viewBuilder()->setLayout('Admin/adminlogin');
-        
+
         // Fetch the Users table
         $usersTable = $this->fetchTable('Users');
 
         if (!empty($token)) {
             $this->set('token', $token);
-            
+
             if ($this->request->is(['post'])) {
                 // Validate the passwords
                 if ($this->request->getData('password1') !== $this->request->getData('password2')) {
