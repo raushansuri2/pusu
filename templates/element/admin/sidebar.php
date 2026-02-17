@@ -46,7 +46,27 @@ $action_name = $this->request->getParam('action');
         </ul>
     </li>
 
-   
+    <!-- Settings -->
+    <li class="<?= ($module_name == 'Settings') ? 'active' : '' ?>">
+        <a href="<?= $this->Url->build(['controller' => 'Settings', 'action' => 'index', 'prefix' => 'Admin']) ?>">
+            <i class="fa fa-cog"></i> <span>Settings</span>
+        </a>
+    </li>
+
+    <!-- Programs -->
+    <li class="<?= ($module_name == 'Programs') ? 'active' : '' ?>">
+        <a href="<?= $this->Url->build(['controller' => 'Programs', 'action' => 'index', 'prefix' => 'Admin']) ?>">
+            <i class="fa fa-list-alt"></i> <span>Programs</span>
+        </a>
+    </li>
+
+    <!-- Fees -->
+    <li class="<?= ($module_name == 'Fees') ? 'active' : '' ?>">
+        <a href="<?= $this->Url->build(['controller' => 'Fees', 'action' => 'index', 'prefix' => 'Admin']) ?>">
+            <i class="fa fa-dollar"></i> <span>Fees</span>
+        </a>
+    </li>
+
     <!-- Members -->
     <li class="parent <?= ($module_name == 'Users') ? 'active' : '' ?>">
         <a href="#"><i class="fa fa-users"></i> <span>Member</span></a>
@@ -59,79 +79,27 @@ $action_name = $this->request->getParam('action');
         </ul>
     </li>
 
-     <!-- Post -->
-    <li class="parent <?= ($module_name == 'Posts' || $module_name == 'Likes' || $module_name == 'Comments') ? 'active' : '' ?>">
-        <a href="#"><i class="fa fa-share-square-o"></i> <span>Post</span></a>
-        <ul class="children">
-            <li class="<?= ($module_name == 'Posts' && $action_name == 'index') ? 'active' : '' ?>">
-                <a href="<?= $this->Url->build(['controller' => 'Posts', 'action' => 'index', 'prefix' => 'Admin']) ?>">
-                    <i class="fa fa-share-square-o"></i> Manage Post(s)
-                </a>
-            </li>
-            <li class="<?= ($module_name == 'Comments' && $action_name == 'index') ? 'active' : '' ?>">
-                <a href="<?= $this->Url->build(['controller' => 'Comments', 'action' => 'index', 'prefix' => 'Admin']) ?>">
-                    <i class="fa fa-comment-o"></i> Manage Comment(s)
-                </a>
-            </li>
-            <li class="<?= ($module_name == 'Likes' && $action_name == 'index') ? 'active' : '' ?>">
-                <a href="<?= $this->Url->build(['controller' => 'Likes', 'action' => 'index', 'prefix' => 'Admin']) ?>">
-                    <i class="fa fa-star-half-o"></i> Manage Like(s)
-                </a>
-            </li>
-            <li class="<?= ($module_name == 'Posts' && $action_name == 'album') ? 'active' : '' ?>">
-                <a href="<?= $this->Url->build(['controller' => 'Posts', 'action' => 'album', 'prefix' => 'Admin']) ?>">
-                    <i class="fa fa-bell"></i> <span>Alubm(s)</span>
-                </a>
-            </li>
-        </ul>
-    </li>
-
-    <li class="<?= ($module_name == 'Friends' && in_array( $action_name, ['index'])) ? 'active' : '' ?>">
-        <a href="<?= $this->Url->build(['controller' => 'Friends', 'action' => 'index', 'prefix' => 'Admin']) ?>">
-            <i class="fa fa-bell"></i> <span>Friends(s)</span>
+    <!-- Quoting Partner Permissions -->
+    <li class="<?= ($module_name == 'QuotingPartnerPermissions') ? 'active' : '' ?>">
+        <a href="<?= $this->Url->build(['controller' => 'QuotingPartnerPermissions', 'action' => 'index', 'prefix' => 'Admin']) ?>">
+            <i class="fa fa-shield"></i> <span>Partner Permissions</span>
         </a>
     </li>
 
-    <li class="<?= ($module_name == 'Friends' && in_array( $action_name, ['block'])) ? 'active' : '' ?>">
-        <a href="<?= $this->Url->build(['controller' => 'Friends', 'action' => 'block', 'prefix' => 'Admin']) ?>">
-            <i class="fa fa-bell"></i> <span>Block User(s)</span>
-        </a>
-    </li>
-
-    
-
-    <li>
-        <a href="<?= $this->Url->build(['controller' => 'Notifications', 'action' => 'index', 'prefix' => 'Admin']) ?>">
-            <i class="fa fa-bell"></i> <span>Notification(s)</span>
-        </a>
-    </li>
-    
-
-    
-    <!-- <li class="parent <?= ($module_name == 'Ipos') ? 'active' : '' ?>">
-        <a href="#"><i class="fa fa-shopping-cart"></i> <span>IPOS</span></a>
-        <ul class="children">
-            <li class="<?= ($module_name == 'Ipos' && in_array($action_name, ['index', 'edit'])) ? 'active' : '' ?>">
-                <a href="<?= $this->Url->build(['controller' => 'Ipos', 'action' => 'index', 'prefix' => 'Admin']) ?>">
-                    <i class="fa fa-tags"></i> IPO(s)
-                </a>
-            </li>
-            <li class="<?= ($module_name == 'Ipos' && in_array($action_name, ['upload'])) ? 'active' : '' ?>">
-                <a href="<?= $this->Url->build(['controller' => 'Ipos', 'action' => 'upload', 'prefix' => 'Admin']) ?>">
-                    <i class="fa fa-shopping-cart"></i> Upload(s)
-                </a>
-            </li>
-        </ul>
-    </li> -->
     <!-- Pages -->
-    <li>
-        <a href="<?= $this->Url->build(['controller' => 'Pages', 'action' => 'index', 'prefix' => 'Admin']) ?>">
-            <i class="fa fa-file-text"></i> <span>Pages</span>
-        </a>
+    <li class="parent <?= ($module_name == 'Pages') ? 'active' : '' ?>">
+        <a href="#"><i class="fa fa-file-text"></i> <span>Pages</span></a>
+        <ul class="children">
+            <li class="<?= ($module_name == 'Pages' && $action_name == 'index') ? 'active' : '' ?>">
+                <a href="<?= $this->Url->build(['controller' => 'Pages', 'action' => 'index', 'prefix' => 'Admin']) ?>">
+                    <i class="fa fa-file-text"></i> Manage Pages
+                </a>
+            </li>
+        </ul>
     </li>
-    
 
-    
+
+
 
     <!-- Sign Out -->
     <li>
@@ -143,7 +111,7 @@ $action_name = $this->request->getParam('action');
 
 <style>
 .sidebar-scrollable {
-    max-height: 600px; /* Adjust height as needed */
+    max-height: 800px; /* Adjust height as needed */
     overflow-y: auto; /* Enable vertical scrolling */
 }
 </style>

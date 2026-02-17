@@ -100,17 +100,8 @@ class AdminsController extends AppController
         // Fetch counts
         $memberCount = $usersTable->find('all')->where(['Users.role' => 'Member'])->count();
 
-
-        $postCount = 0; 
-
-        $likeCount = 0;
-        $commentCount = 0;
-
-
         // Set variables for the view
-        $this->set(compact(
-            'memberCount', 'postCount', 'likeCount', 'commentCount',
-        ));
+        $this->set(compact('memberCount'));
     }
 
     public function edit()
