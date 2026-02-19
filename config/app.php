@@ -76,8 +76,8 @@ return [
         26=>'Epidemiology', 27=>'Radiation oncology',28=>'Equine diagnostic imaging ',29=>'Canine',30=>'Equine',
         31=>'Small animal surgery', 32=>'Large animal surgery',33=>'Equine dental'
     ],
-    'keyFeatures' => [
-
+    'keyFeatures' => [  
+        
 		'WELCOME' => [
             "1" => "Pet Parent Registration Here",
             "2" => "Veterinarian Register Here",
@@ -335,7 +335,7 @@ return [
             'timezone' => 'UTC',
             'username' => 'root',
             'password' => '',
-            'database' => 'quotingtool',
+            'database' => 'datingappgggggg',
 
             /*
              * For MariaDB/MySQL the internal default changed from utf8 to utf8mb4, aka full utf-8 support
