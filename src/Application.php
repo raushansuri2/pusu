@@ -48,7 +48,7 @@ class Application extends BaseApplication
     {
         // Call parent to load bootstrap from files.
         parent::bootstrap();
-        
+
 
         if (PHP_SAPI !== 'cli') {
             FactoryLocator::add(
@@ -74,7 +74,12 @@ class Application extends BaseApplication
 
             ->add(function ($request, $handler) use ($csrf) {
                 $path = $request->getPath();
-                if (strpos($path, '/services/') !== 0) {
+                // Debug: Log the path to see what we're getting
+                error_log("Request path: " . $path);
+
+                // Exclude CSRF protection for API endpoints and all admin routes
+                if (strpos($path, '/services/') !== 0 &&
+                    strpos($path, '/admin/') === false) {
                     return $csrf->process($request, $handler);
                 }
                 return $handler->handle($request);

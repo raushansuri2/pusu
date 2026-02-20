@@ -52,7 +52,7 @@ return [
         'defaultLocale' => env('APP_DEFAULT_LOCALE', 'en_US'),
         'defaultTimezone' => env('APP_DEFAULT_TIMEZONE', 'UTC'),
         'base' => false,
-        'siteurl'=>'https://demo5.evirtualservices.net/datingapp/',
+        'siteurl'=>'http://localhost/quotingtool/',
         'dir' => 'src',
         'webroot' => 'webroot',
         'wwwRoot' => WWW_ROOT,
@@ -76,8 +76,8 @@ return [
         26=>'Epidemiology', 27=>'Radiation oncology',28=>'Equine diagnostic imaging ',29=>'Canine',30=>'Equine',
         31=>'Small animal surgery', 32=>'Large animal surgery',33=>'Equine dental'
     ],
-    'keyFeatures' => [  
-        
+    'keyFeatures' => [
+
 		'WELCOME' => [
             "1" => "Pet Parent Registration Here",
             "2" => "Veterinarian Register Here",
@@ -191,11 +191,14 @@ return [
      *   your application that still emit deprecations.
      */
     'Error' => [
-        'errorLevel' => E_ALL,
+        'errorLevel' => E_ALL & ~E_USER_DEPRECATED,
         'skipLog' => [],
         'log' => true,
         'trace' => true,
-        'ignoredDeprecationPaths' => [],
+        'ignoredDeprecationPaths' => [
+            'vendor/cakephp/cakephp/src/ORM/Table.php',
+            'vendor/cakephp/cakephp/src/Core/functions.php'
+        ],
     ],
 
     /*
