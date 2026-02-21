@@ -15,64 +15,58 @@ if ($request->getParam('controller') === 'Pages' && $request->getParam('action')
     $learn = 'active';
 }
 ?>
-<nav class="navbar navbar-default navbar-fixed navbar-transparent white bootsnav">
-    <div class="nav-utility">
-        <div class="module left" style="display:none">
-            <i class="ti-mobile">&nbsp;</i>
-            <span class="sub">Call us Today: <a href="tel:<?php echo $globalparameters->phoneNo; ?>" style="color: #fff;"><?php echo $globalparameters->phoneNo; ?></a></span>
-        </div>
-        <div class="module left">
-            <i class="ti-email">&nbsp;</i>
-            <span class="sub"><a href="mailto:ritevet@ritevet.com" target="_blank" style="color: #fff;">Contact us at ritevet@ritevet.com</a></span>
-        </div>
-        <div class="module right">
-            <ul>
-                <li><a href="<?php echo $this->Url->build(['controller' => 'Pages', 'action' => 'faqs']); ?>">FAQ</a></li>
-                <li><a href="<?php echo $this->Url->build(['controller' => 'Pages', 'action' => 'howitwork']); ?>">How it works</a></li>
-                <?php if ($request->getSession()->read('RitevetUsers.id') === null) { ?>
-                    <li><a href="<?php echo $this->Url->build(['controller' => 'Users', 'action' => 'login']); ?>">Sign In</a></li>
-                <?php } else { ?>
-                    <li><a href="<?php echo $this->Url->build(['controller' => 'Products', 'action' => 'cart']); ?>"><i class="fa fa-shopping-cart"></i><span class="badge bg-a" id="HeaderC"><?php echo (@$CART) ? @$CART : '0'; ?></span></a></li>
-                    <li><a href="<?php echo $this->Url->build(['controller' => 'Users', 'action' => 'logout']); ?>">Logout</a></li>
-                <?php } ?>
-            </ul>
-        </div>
-    </div>
-    <div class="container-fluid"> 
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
-            <i class="ti-align-left"></i>
-        </button>
-        <!-- Start Header Navigation -->
-        <div class="navbar-header">
-            <a class="navbar-brand" href="<?php echo $this->Url->build('/'); ?>">
-                <img src="<?php echo $this->Url->build('/'); ?>assets/img/logo-white.png" class="logo logo-display" alt="">
-                <img src="<?php echo $this->Url->build('/'); ?>assets/img/logo.png" class="logo logo-scrolled" alt="">
-            </a>
-        </div>
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="navbar-menu">
-            <ul class="nav navbar-nav navbar-center" data-in="fadeInDown" data-out="fadeOutUp">
-                <li class="<?php echo $home; ?>">
-                	<a href="<?php echo $this->Url->build('/'); ?>">Home</a>
-                </li>
-                <li class="<?php echo $about; ?>">
-                	<a href="<?php echo $this->Url->build(['controller' => 'Pages', 'action' => 'aboutus']); ?>">About Us</a>
-                </li>
-                <li class="<?php echo $contact; ?>">
-                	<a href="<?php echo $this->Url->build(['controller' => 'Pages', 'action' => 'contactus']); ?>">Contact Us</a>
-                </li>
-                <li class="<?php echo $learn; ?>">
-                	<a href="<?php echo $this->Url->build(['controller' => 'Pages', 'action' => 'elearn']); ?>">E-Learning</a>
-                </li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right" data-in="fadeInDown" data-out="fadeOutUp">
-                <?php if ($request->getSession()->read('RitevetUsers.id') === null) { ?>
-                    <!--<li class="no-pd"><a href="<?php echo $this->Url->build(['controller' => 'Users', 'action' => 'login']); ?>" class="addlist"><i class="ti-user" aria-hidden="true"></i>Sign In</a></li>-->
-                <?php } else { ?>
-                    <li class="no-pd"><a href="<?php echo $this->Url->build(['controller' => 'Users', 'action' => 'dashboard']); ?>" class="addlist"><i class="ti-user" aria-hidden="true"></i><?php echo @$user->firstName; ?> <?php echo @$user->lastName; ?></a></li>
-                <?php } ?>
-            </ul>
-        </div>
-        <!-- /.navbar-collapse -->
-    </div>   
-</nav>
+
+
+<!-- partial:partials/_navbar.html -->
+			<nav class="navbar">
+				<a href="#" class="sidebar-toggler">
+					<i data-feather="menu"></i>
+				</a>
+				<div class="navbar-content">
+
+					<ul class="navbar-nav">
+
+
+						<li class="nav-item dropdown">
+							<a class="nav-link" href="#">
+								<i data-feather="help-circle"></i>
+								<div class="indicator">
+									<div class="circle"></div>
+								</div>
+							</a>
+						</li>
+						<li class="nav-item dropdown">
+							<a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								<img class="wd-30 ht-30 rounded-circle" src="<?php echo $this->Url->build('/');?>img/user.png" alt="profile"> John Youngs
+							</a>
+							<div class="dropdown-menu p-0" aria-labelledby="profileDropdown">
+								<div class="d-flex flex-column align-items-center border-bottom px-5 py-3">
+									<div class="mb-3">
+										<img class="wd-80 ht-80 rounded-circle" src="<?php echo $this->Url->build('/');?>img/user.png" alt="">
+									</div>
+									<div class="text-center">
+										<p class="tx-16 fw-bolder">John Youngs </p>
+										<p class="tx-12 text-muted">john_youngs@gmail.com</p>
+									</div>
+								</div>
+                <ul class="list-unstyled p-1">
+                  <li class="dropdown-item py-2">
+                    <a href="<?php echo $this->Url->build(['controller' => 'Users', 'action' => 'profile']); ?>" class="text-body ms-0">
+                      <i class="me-2 icon-md" data-feather="user"></i>
+                      <span>Profile</span>
+                    </a>
+                  </li>
+
+                  <li class="dropdown-item py-2">
+                    <a href="<?php echo $this->Url->build(['controller' => 'Users', 'action' => 'logout']); ?>" class="text-body ms-0">
+                      <i class="me-2 icon-md" data-feather="log-out"></i>
+                      <span>Log Out</span>
+                    </a>
+                  </li>
+                </ul>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</nav>
+			<!-- partial -->

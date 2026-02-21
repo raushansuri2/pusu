@@ -14,9 +14,9 @@ use Cake\Log\Log;
 
 
 //echo "<pre>"; print_r($_SERVER); die;
-require("/home/demo5ev/public_html/Exception.php");
-require("/home/demo5ev/public_html/PHPMailer.php");
-require("/home/demo5ev/public_html/SMTP.php");
+// require("/home/demo5ev/public_html/Exception.php");
+// require("/home/demo5ev/public_html/PHPMailer.php");
+// require("/home/demo5ev/public_html/SMTP.php");
 
 /**
  * Application Controller
@@ -52,14 +52,14 @@ class AppController extends Controller
 
     public function random_password($length = '10')
     {
-        //$this->autoRender = false;    
+        //$this->autoRender = false;
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $charactersLength = strlen($characters);
         $randomString = '';
         for ($i = 0; $i < $length; $i++) {
             $randomString .= $characters[rand(0, $charactersLength - 1)];
         }
-        return $randomString;       
+        return $randomString;
     }
     /**
      * beforeRender callback.
@@ -80,60 +80,16 @@ class AppController extends Controller
         // Retrieve user ID from session once
         $userId = $this->request->getSession()->read('RitevetUsers.id');
 
-        // Accessing models using fetchTable (preferred in CakePHP 5)
-        $usersTable = $this->fetchTable('Users');
-        $globalParametersTable = $this->fetchTable('GlobalParameters');
-        $testimonialsTable = $this->fetchTable('Testimonials');
-        $productsTable = $this->fetchTable('Products');
-        $cartsTable = $this->fetchTable('Carts');
-
-        // Fetching data with error handling
-        $user = $userId ? $usersTable->find()
-            ->where(['Users.id' => $userId])
-            ->first() : null;
-
-        try {
-            $globalparameters = $globalParametersTable->get(1);
-        } catch (RecordNotFoundException $e) {
-            $globalparameters = null; // Fallback if record ID 1 doesn't exist
-        }
-
-        $TESTIMONIALS = $testimonialsTable->find()
-            ->where(['Testimonials.status' => 1])
-            ->limit(5)
-            ->order('RAND()') // Use string for SQL function; avoids deprecation warning
-            ->all()
-            ->toArray();
-
-        $FREESTAFFS = $productsTable->find()
-            ->where(['Products.status' => 1, 'Products.unitPrice' => 0])
-            ->contain(['Users'])
-            ->limit(3)
-            ->order('RAND()')
-            ->all()
-            ->toArray();
-
-        $CART = 0; // Default value
-        if ($userId !== null) {
-            $CART = $cartsTable->find()
-                ->where([
-                    'Carts.userId' => $userId,
-                    'Carts.orderId IS' => null // Modern IS NULL syntax
-                ])
-                ->count();
-        }
-
-        // Setting variables
-        $this->set(compact('globalparameters', 'TESTIMONIALS', 'CART', 'user', 'FREESTAFFS'));
+        //$this->set(compact('globalparameters'));
     }
-    
-    public function sendmail($Email_variables, $mail_template = '', $mailto = '', $subject = '', $mailcc = '', $from = '') 
+
+    public function sendmail($Email_variables, $mail_template = '', $mailto = '', $subject = '', $mailcc = '', $from = '')
     {
         $this->autoRender = false;
-    
+
         $email = new Email('default');
         $email->helpers([]);
-        
+
         try {
             $email->template($mail_template, 'email_layout')
                 ->emailFormat('html')
@@ -141,7 +97,7 @@ class AppController extends Controller
                 ->subject($subject)
                 ->to($mailto)
                 ->from(['support@ritevet.com' => 'Ritevet']);
-            
+
             if ($email->send()) {
                 Log::write('info', 'Email sent successfully to: ' . $mailto);
                 return true; // Email sent successfully
@@ -179,7 +135,7 @@ class AppController extends Controller
             $mailer->Port = 587; // SMTP2GO typically uses 8025, not 2525 8025
 
             // SSL Options (only if needed)
-           
+
 
             // Email Headers and Content
             $header = '<!DOCTYPE html>
@@ -263,12 +219,12 @@ class AppController extends Controller
         $result = curl_exec($ch);
         //echo "<pre>"; print_r($result); die('G1GG');
         curl_close($ch);
-        return $result; 
+        return $result;
     }
 
     public function sednIosPushNotification($deviceToken=NULL,$body=NULL)
     {
-       
+
         $url = Configure::read('App.siteurl').'datingapp/push.php';
         $fields =[
             'deviceToken' => $deviceToken,
@@ -284,7 +240,7 @@ class AppController extends Controller
         $result = curl_exec($ch);
         //echo "<pre>"; print_r($result); die('G1GG');
         curl_close($ch);
-        return $result; 
+        return $result;
     }
 
 }

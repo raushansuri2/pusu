@@ -1,87 +1,191 @@
+<div class="page-content">
 
-<?php echo $this->Flash->render(); //pr($user);exit;?>
-<!-- General Information -->
-<div class="add-listing-box edit-info mrg-bot-25 padd-bot-30 padd-top-25">
-	<div class="row">
-		<div class="col-md-3">
-		    <div style="margin:0;" class="listing-box-header">
-    			<div class="avater-box">
-    				<?php 
-                    $UIMGS = ($user->profile_picture != '') ? 
-                    $this->Url->build('/').'img/uploads/users/'. $user->profile_picture : 
-                    $this->Url->build('/').'img/dummy.jpg'; ?>
+        <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
+          <div>
+            <h4 class="mb-3 mb-md-0">Welcome to ERISAQuote Pro Dashboard</h4>
+          </div>
+        </div>
+		<div class="row">
+					<div class="col-md-12">
+            <div class="container1">
+              <div class="row">
+                <div class="col-md-3 stretch-card grid-margin grid-margin-md-0">
+                  <div class="card" style="background: #0066bf;border-radius: 10px;border: none;color: #FFF;">
+                    <div class="card-body">
+                      <i data-feather="file-text" class="text-white icon-xxl d-block mx-auto my-3"></i>
+                      <h1 class="text-center">29</h1>
+                      <p class="text-white text-center mb-0 fw-light">Instant Quotes Available</p>
+                      <p class="home-text text-center" style="font-size: 13px;margin-top: 9px;">Quote requests with instant quotes available.</p>
 
-    				<img src="<?php echo $UIMGS;?>" class="img-responsive img-circle edit-avater" alt="">
-    			</div>
-			    <h3><?php echo $user->firstName;?> <?php echo $user->lastName;?></h3>
-			</div>
-		</div>
-		<div class="col-md-9">
-		    <div class="row mrg-r-10 mrg-l-10 preview-info" style="margin-TOP: 56px;">
-    			<div class="col-sm-6">
-    				<label><i class="ti-mobile preview-icon call mrg-r-10"></i><?php echo $user->contactNumber;?></label>
-    			</div>
-    			<div class="col-sm-6">
-    				<label><i class="ti-email preview-icon email mrg-r-10"></i><?php echo $user->email;?></label>
-    			</div>
-    			<div class="col-sm-6">
-    				<label><i class="ti-location-pin preview-icon birth mrg-r-10"></i><?php echo $user->address;?></label>
-    			</div>
-    			<div class="col-sm-6">
-    				<label><i class="ti-world preview-icon web mrg-r-10"></i><?php echo $countryName;?> - <?php echo $user->zipCode;?></label>
-    			</div>
-		    </div>
-	    </div>
-	</div>
-</div>
-					
+                    </div>
+                  </div>
+                </div>
+				<div class="col-md-3 stretch-card grid-margin grid-margin-md-0">
+                  <div class="card" style="background: #fbbc06;border-radius: 10px;border: none;color: #FFF;">
+                    <div class="card-body">
+                      <i data-feather="check-circle" class="text-white icon-xxl d-block mx-auto my-3"></i>
+                      <h1 class="text-center">5</h1>
+                      <p class="text-white text-center mb-0 fw-light">Pending Decision</p>
+                      <p class="home-text text-center" style="font-size: 13px;margin-top: 9px;">Waiting for the group to make a decision.</p>
+                    </div>
+                  </div>
+                </div>
+				<div class="col-md-3 stretch-card grid-margin grid-margin-md-0">
+                  <div class="card" style="background: #41b42b;border-radius: 10px;border: none;color: #FFF;">
+                    <div class="card-body">
+                      <i data-feather="award" class="text-white icon-xxl d-block mx-auto my-3"></i>
+                      <h1 class="text-center">0</h1>
+                      <p class="text-white text-center mb-0 fw-light">Sold</p>
+                      <p class="home-text text-center" style="font-size: 13px;margin-top: 9px;">Quote requests marked sold.</p>
+                    </div>
+                  </div>
+                </div>
+				<div class="col-md-3 stretch-card grid-margin grid-margin-md-0">
+                  <div class="card" style="background: #000;border-radius: 10px;border: none;color: #FFF;">
+                    <div class="card-body">
+                      <i data-feather="x" class="text-white icon-xxl d-block mx-auto my-3"></i>
+                      <h1 class="text-center">0</h1>
+                      <p class="text-white text-center mb-0 fw-light">Lost</p>
+                      <p class="home-text text-center" style="font-size: 13px;margin-top: 9px;">Quote requests marked lost.</p>
+                    </div>
+                  </div>
+                </div>
+
+
+
+              </div>
+            </div>
+					</div>
+				</div>
+
+
+
+        <div class="d-flex justify-content-between align-items-center flex-wrap mt-4">
+          <div>
+            <h4 class="mb-3 mb-md-0"> Groups with Recent Activity</h4>
+			<p class="small-text">Groups and quote requests with recent activity are listed below.</p>
+          </div>
+        </div>
 <div class="row">
-	<div class="col-md-10 col-md-offset-1">
-		<div class="heading">
-			<h2>Join <span>Ritevet</span></h2>
-			<!--<p>First, you should register now to can access services.</p>-->
-			<p>Connecting immediately with a licensed veterinarian, find free stuff, pet store and other pet services on request.</p>
-		</div>
-	</div>
-</div>
-<div class="sec-bt">
-	<div class="row">
-		<?php if (empty($this->request->getSession()->read('RitevetUsers.usersinformation.UTYPE'))) { ?>
-            <div class="col-lg-4 col-md-4 col-sm-6">
-                <a href="<?php echo $this->Url->build(['controller' => 'users', 'action' => 'veterinarian-register']); ?>">
-                    <img src="/assets/img/vet.png" width="250">
-                </a>
+					<div class="col-md-4 mt-3 grid-margin stretch-card">
+            <div class="card" style="border-radius: 10px;">
+              <div class="card-body">
+
+               <h4 class="card-title  mb-2"><i class="icon-md" data-feather="users"></i> AP Professional Security, LLC</h4>
+			   <p class="text-muted mb-3">Myrtle Beach, South Carolina</p>
+                <table id="dataTableExample" class="table table-bordered align-middle">
+  <thead class="table-light">
+    <tr>
+      <th>Quote Request #</th>
+      <th>Effective Date & Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a href="quote-details.html" class="btn btn-xs btn-primary btn-rounded"><i class="icon-md" data-feather="file"></i> #7695</a></td>
+      <td>Date: 01/11/2026<br><span class="badge bg-warning">Illustrative Quote Ready</span></td>
+    </tr>
+    <tr>
+      <td><a href="quote-details.html" class="btn btn-xs btn-primary btn-rounded"><i class="icon-md" data-feather="file"></i> #7696</a></td>
+      <td> Date: 02/09/2026<br><span class="badge bg-danger">Draft </span></td>
+    </tr>
+    <tr>
+      <td><a href="quote-details.html" class="btn btn-xs btn-primary btn-rounded"><i class="icon-md" data-feather="file"></i> #7696</a></td>
+      <td>Date: 01/18/2026<br><span class="badge bg-danger">Draft </span></td>
+    </tr>
+    <tr>
+      <td><a href="quote-details.html" class="btn btn-xs btn-primary btn-rounded"><i class="icon-md" data-feather="file"></i> #7697</a></td>
+      <td>Date: 01/13/2026<br><span class="badge bg-danger">Draft </span></td>
+    </tr>
+
+  </tbody>
+</table>
+
+
+              </div>
             </div>
-            <div class="col-lg-4 col-md-4 col-sm-6">
-                <a href="<?php echo $this->Url->build(['controller' => 'users', 'action' => 'other_pet_service_register']); ?>">
-                    <img src="/assets/img/other.png" width="250">
-                </a>
+					</div>
+					<div class="col-md-4 mt-3 grid-margin stretch-card">
+            <div class="card" style="border-radius: 10px;">
+              <div class="card-body">
+
+               <h4 class="card-title  mb-2"><i class="icon-md" data-feather="users"></i> St. Joseph Montessori School</h4>
+			   <p class="text-muted mb-3">Columbus, OH </p>
+                <table id="dataTableExample" class="table table-bordered align-middle">
+  <thead class="table-light">
+    <tr>
+      <th>Quote Request #</th>
+      <th>Effective Date & Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a href="quote-details.html" class="btn btn-xs btn-primary btn-rounded"><i class="icon-md" data-feather="file"></i> #7695</a></td>
+      <td>Date: 01/11/2026<br><span class="badge bg-warning">Illustrative Quote Ready</span></td>
+    </tr>
+    <tr>
+      <td><a href="quote-details.html" class="btn btn-xs btn-primary btn-rounded"><i class="icon-md" data-feather="file"></i> #7696</a></td>
+      <td> Date: 02/09/2026<br><span class="badge bg-danger">Draft </span></td>
+    </tr>
+    <tr>
+      <td><a href="quote-details.html" class="btn btn-xs btn-primary btn-rounded"><i class="icon-md" data-feather="file"></i> #7696</a></td>
+      <td>Date: 01/18/2026<br><span class="badge bg-danger">Draft </span></td>
+    </tr>
+    <tr>
+      <td><a href="quote-details.html" class="btn btn-xs btn-primary btn-rounded"><i class="icon-md" data-feather="file"></i> #7697</a></td>
+      <td>Date: 01/13/2026<br><span class="badge bg-danger">Draft </span></td>
+    </tr>
+
+  </tbody>
+</table>
+
+
+              </div>
             </div>
-            <div class="col-lg-4 col-md-4 col-sm-6">
-                <a href="<?php echo $this->Url->build(['controller' => 'users', 'action' => 'pet_parent_register']); ?>">
-                    <img src="/assets/img/parent.png" width="250">
-                </a>
+					</div>
+					<div class="col-md-4 mt-3 grid-margin stretch-card">
+            <div class="card" style="border-radius: 10px;">
+              <div class="card-body">
+
+               <h4 class="card-title  mb-2"><i class="icon-md" data-feather="users"></i> Test New Group</h4>
+			   <p class="text-muted mb-3">New york, NY </p>
+                <table id="dataTableExample" class="table table-bordered align-middle">
+  <thead class="table-light">
+    <tr>
+      <th>Quote Request #</th>
+      <th>Effective Date & Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a href="quote-details.html" class="btn btn-xs btn-primary btn-rounded"><i class="icon-md" data-feather="file"></i> #7695</a></td>
+      <td>Date: 01/11/2026<br><span class="badge bg-warning">Illustrative Quote Ready</span></td>
+    </tr>
+    <tr>
+      <td><a href="quote-details.html" class="btn btn-xs btn-primary btn-rounded"><i class="icon-md" data-feather="file"></i> #7696</a></td>
+      <td> Date: 02/09/2026<br><span class="badge bg-danger">Draft </span></td>
+    </tr>
+    <tr>
+      <td><a href="quote-details.html" class="btn btn-xs btn-primary btn-rounded"><i class="icon-md" data-feather="file"></i> #7696</a></td>
+      <td>Date: 01/18/2026<br><span class="badge bg-danger">Draft </span></td>
+    </tr>
+    <tr>
+      <td><a href="quote-details.html" class="btn btn-xs btn-primary btn-rounded"><i class="icon-md" data-feather="file"></i> #7697</a></td>
+      <td>Date: 01/13/2026<br><span class="badge bg-danger">Draft </span></td>
+    </tr>
+
+  </tbody>
+</table>
+
+
+              </div>
             </div>
-        <?php } ?>
-			
-        <?php if (!empty($this->request->getSession()->read('RitevetUsers.usersinformation.UTYPE'))) { ?>
-            <div style="margin:50px 0 20px 0" class="col-lg-12 col-md-12 col-sm-6">
-                <a href="<?php echo $this->Url->build(['controller' => 'users', 'action' => 'request']); ?>">
-                    <img src="/assets/img/request.png" width="250">
-                </a>
-            </div>
-            <div class="col-lg-6 col-md-6 col-sm-6">
-                <a href="<?php echo $this->Url->build(['controller' => 'Freestaffs', 'action' => 'index']); ?>">
-                    <img src="/assets/img/free.png" width="250">
-                    <!--<img src="/assets/img/free_2.png" width="250">-->
-                </a>
-            </div>
-            <div class="col-lg-6 col-md-6 col-sm-6">
-                <a href="<?php echo $this->Url->build(['controller' => 'Products', 'action' => 'index']); ?>">
-                    <img src="/assets/img/store.png" width="250">
-                    <!--<img src="/assets/img/store_2.png" width="250">-->
-                </a>
-            </div>
-        <?php } ?>
-	</div>
-</div>
+					</div>
+
+				</div>
+
+
+
+		<!-- row -->
+
+			</div>
