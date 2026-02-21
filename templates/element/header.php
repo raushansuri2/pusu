@@ -37,7 +37,7 @@ if ($request->getParam('controller') === 'Pages' && $request->getParam('action')
 						</li>
 						<li class="nav-item dropdown">
 							<a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								<img class="wd-30 ht-30 rounded-circle" src="<?php echo $this->Url->build('/');?>img/user.png" alt="profile"> John Youngs
+								<img class="wd-30 ht-30 rounded-circle" src="<?php echo $this->Url->build('/');?>img/user.png" alt="profile"> <?php echo $this->request->getSession()->read('ERISAQuoteProSession.Users.firstName');?>
 							</a>
 							<div class="dropdown-menu p-0" aria-labelledby="profileDropdown">
 								<div class="d-flex flex-column align-items-center border-bottom px-5 py-3">
@@ -45,13 +45,13 @@ if ($request->getParam('controller') === 'Pages' && $request->getParam('action')
 										<img class="wd-80 ht-80 rounded-circle" src="<?php echo $this->Url->build('/');?>img/user.png" alt="">
 									</div>
 									<div class="text-center">
-										<p class="tx-16 fw-bolder">John Youngs </p>
-										<p class="tx-12 text-muted">john_youngs@gmail.com</p>
+										<p class="tx-16 fw-bolder"><?php echo $this->request->getSession()->read('ERISAQuoteProSession.Users.firstName');?> </p>
+										<p class="tx-12 text-muted"><?php echo $this->request->getSession()->read('ERISAQuoteProSession.Users.email');?></p>
 									</div>
 								</div>
                 <ul class="list-unstyled p-1">
                   <li class="dropdown-item py-2">
-                    <a href="<?php echo $this->Url->build(['controller' => 'Users', 'action' => 'profile']); ?>" class="text-body ms-0">
+                    <a href="<?php echo $this->Url->build(['controller' => 'Users', 'action' => 'editprofile']); ?>" class="text-body ms-0">
                       <i class="me-2 icon-md" data-feather="user"></i>
                       <span>Profile</span>
                     </a>

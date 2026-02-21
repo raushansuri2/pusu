@@ -18,7 +18,7 @@
         <div class="col-md-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
-
+<?php echo $this->Flash->render(); ?>
                     <div class="table-responsive">
                         <table class="table table-bordered align-middle">
                             <thead class="table-light">
@@ -33,116 +33,61 @@
                             </thead>
 
                             <tbody>
-                                <tr>
-                                    <td>
-                                        <div class="circle">A</div>
-                                    </td>
-                                    <td>
-                                        <a href="<?php echo $this->Url->build(['controller' => 'Users', 'action' => 'groupDetails']); ?>">
-                                            AP Professional Security, LLC
-                                        </a>
-                                    </td>
-                                    <td>
-                                        1110 London Street
-                                        Suite 101
-                                    </td>
-                                    <td>Myrtle Beach</td>
-                                    <td>SC</td>
-                                    <td>29577</td>
-                                </tr>
+                                <?php foreach ($groups as $group): ?>
+                                    <tr>
+                                        <td>
+                                            <div class="circle"><?= h(substr($group->group_name, 0, 1)) ?></div>
+                                        </td>
+                                        <td>
+                                            <a href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'groupDetails', $group->id]) ?>">
+                                                <?= h($group->group_name) ?>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <?= h($group->address1) ?>
+                                            <?php if (!empty($group->address2)): ?>
+                                                <br><?= h($group->address2) ?>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td><?= h($group->city) ?></td>
+                                        <td><?= h($group->state_name) ?></td>
+                                        <td><?= h($group->zip) ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                                </tbody>
 
-                                <tr>
-                                    <td>
-                                        <div class="circle">A</div>
-                                    </td>
-                                    <td>
-                                        <a href="<?php echo $this->Url->build(['controller' => 'Users', 'action' => 'groupDetails']); ?>">
-                                            Arion Care Solutions V2
-                                        </a>
-                                    </td>
-                                    <td>3200 Dobson Road</td>
-                                    <td>Chandler</td>
-                                    <td>AZ</td>
-                                    <td>85224</td>
-                                </tr>
-
-                                <tr>
-                                    <td>
-                                        <div class="circle">C</div>
-                                    </td>
-                                    <td>
-                                        <a href="<?php echo $this->Url->build(['controller' => 'Users', 'action' => 'groupDetails']); ?>">
-                                            Colvin Ford
-                                        </a>
-                                    </td>
-                                    <td>1925 OR-99 W</td>
-                                    <td>McMinnville</td>
-                                    <td>OR</td>
-                                    <td>97128</td>
-                                </tr>
-
-                                <tr>
-                                    <td>
-                                        <div class="circle">I</div>
-                                    </td>
-                                    <td>
-                                        <a href="<?php echo $this->Url->build(['controller' => 'Users', 'action' => 'groupDetails']); ?>">
-                                            Innerstaff PEO
-                                        </a>
-                                    </td>
-                                    <td>808 W. Dallas Street</td>
-                                    <td>Conroe</td>
-                                    <td>TX</td>
-                                    <td>77301</td>
-                                </tr>
-
-                                <tr>
-                                    <td>
-                                        <div class="circle">S</div>
-                                    </td>
-                                    <td>
-                                        <a href="<?php echo $this->Url->build(['controller' => 'Users', 'action' => 'groupDetails']); ?>">
-                                            Sawyer Manufacturing Company
-                                        </a>
-                                    </td>
-                                    <td>7799 S. Regency Drive</td>
-                                    <td>Tulsa</td>
-                                    <td>OK</td>
-                                    <td>74131</td>
-                                </tr>
-
-                                <tr>
-                                    <td>
-                                        <div class="circle">T</div>
-                                    </td>
-                                    <td>
-                                        <a href="<?php echo $this->Url->build(['controller' => 'Users', 'action' => 'groupDetails']); ?>">
-                                            Test New Group
-                                        </a>
-                                    </td>
-                                    <td>1 Infinite Loop</td>
-                                    <td>New York</td>
-                                    <td>NY</td>
-                                    <td>10118</td>
-                                </tr>
-
-                                <tr>
-                                    <td>
-                                        <div class="circle">T</div>
-                                    </td>
-                                    <td>
-                                        <a href="<?php echo $this->Url->build(['controller' => 'Users', 'action' => 'groupDetails']); ?>">
-                                            TSI Touch Inc
-                                        </a>
-                                    </td>
-                                    <td>1 Millennium Drive</td>
-                                    <td>Uniontown</td>
-                                    <td>PA</td>
-                                    <td>15401</td>
-                                </tr>
-                            </tbody>
                         </table>
                     </div>
+
+                    <!-- pegination start -->
+                   <div class="d-flex justify-content-center mt-3">
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination">
+                                <?= $this->Paginator->prev('&laquo; Previous', [
+                                    'class' => 'page-item', 
+                                    'escape' => false, 
+                                    'disabledClass' => 'disabled'
+                                ]) ?>
+
+                                <?= $this->Paginator->numbers([
+                                    'modulus' => 5,
+                                    'first' => 1,
+                                    'last' => 1,
+                                    'templates' => [
+                                        'number' => '<li class="page-item"><a class="page-link" href="{{url}}">{{text}}</a></li>',
+                                        'current' => '<li class="page-item active" aria-current="page"><a class="page-link" href="javascript:void(0)">{{text}}</a></li>',
+                                    ],
+                                ]) ?>
+
+                                <?= $this->Paginator->next('Next &raquo;', [
+                                    'class' => 'page-item', 
+                                    'escape' => false, 
+                                    'disabledClass' => 'disabled'
+                                ]) ?>
+                            </ul>
+                        </nav>
+                    </div>
+                    <!-- pegination end -->
 
                 </div>
             </div>

@@ -1,251 +1,83 @@
-<style>
-    /* Basic styling for the form */
-    body {
-        font-family: Arial, sans-serif; /* Set a default font for better readability */
-        background-color: #f8f9fa; /* Light background for contrast */
-        color: #333; /* Dark text for readability */
-    }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="">
+	<meta name="author" content="NobleUI">
+	<meta name="keywords" content="">
 
-    .form-group {
-        margin: 20px 0; /* Adjusted margin for better spacing */
-    }
+	<title>ERISAQuote Pro Login</title>
 
-    .input-container {
-        position: relative;
-        width: 100%; /* Full width */
-    }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+ <link rel="stylesheet" href="assets/vendors/core/core.css">
+   <link rel="stylesheet" href="assets/vendors/flatpickr/flatpickr.min.css">
+ 	<link rel="stylesheet" href="assets/fonts/feather-font/css/iconfont.css">
+	<link rel="stylesheet" href="assets/vendors/flag-icon-css/css/flag-icon.min.css">
+ 	<link rel="stylesheet" href="assets/css/demo1/style.css">
+  <link rel="shortcut icon" href="assets/images/favicon.png" />
+  <link rel="stylesheet" href="assets/vendors/easymde/easymde.min.css">
+</head>
+<body>
+	<div class="main-wrapper">
+		<div class="page-wrapper full-page" style="background:#182e81">
+			<div class="page-content d-flex align-items-center justify-content-center">
 
-    .input-container input {
-        width: 100%; /* Full width for the input */
-        padding-right: 40px; /* Space for the eye icon */
-        box-sizing: border-box; /* Include padding in width */
-        border: 1px solid #ced4da; /* Border color */
-        border-radius: 4px; /* Rounded corners */
-        transition: border-color 0.3s; /* Smooth transition for border color */
-    }
-
-    .input-container input:focus {
-        border-color: #80bdff; /* Change border color on focus */
-        outline: none; /* Remove default outline */
-    }
-
-    .eye-icon {
-        position: absolute;
-        right: 10px; /* Position the icon */
-        top: 50%;
-        transform: translateY(-50%);
-        cursor: pointer;
-        color: #888; /* Icon color */
-        font-size: 1.2em; /* Adjust icon size */
-    }
-
-    .slash {
-        position: absolute;
-        width: 100%;
-        height: 2px; /* Thickness of the slash */
-        background-color: red; /* Color of the slash */
-        transform: rotate(45deg); /* Rotate to create a slash effect */
-        top: 50%;
-        left: 0;
-        pointer-events: none; /* Prevent interaction with the slash */
-        display: block; /* Initially show the slash */
-    }
-
-    .keep-signin-container {
-        display: flex; /* Use flexbox for alignment */
-        justify-content: space-between; /* Space between items */
-        align-items: center; /* Center items vertically */
-        margin-top: 10px; /* Add some margin on top */
-    }
-
-    .keep-signin-container label {
-        margin: 0; /* Remove default margin */
-        font-size: 14px; /* Adjust font size */
-    }
-
-    .forgot-password {
-        font-size: 14px; /* Adjust font size */
-        color: #007bff; /* Link color */
-        text-decoration: none; /* Remove underline */
-    }
-
-    .forgot-password:hover {
-        text-decoration: underline; /* Underline on hover */
-    }
-
-    .center {
-        text-align: center; /* Center text */
-    }
-
-    .mrg-top-5 {
-        margin-top: 20px; /* Increased margin for better spacing */
-    }
-
-    .bottom-login {
-        font-size: 16px; /* Adjust font size */
-        color: #555; /* Darker text color for better readability */
-    }
-
-    .bottom-login span {
-        margin-right: 5px; /* Space between text and link */
-    }
-
-    .bottom-login a {
-        color: #007bff; /* Link color */
-        text-decoration: none; /* Remove underline */
-        font-weight: bold; /* Make the link bold */
-        transition: color 0.3s ease; /* Smooth transition for hover effect */
-    }
-
-    .bottom-login a:hover {
-        color: #0056b3; /* Darker shade on hover */
-        text-decoration: underline; /* Underline on hover */
-    }
-
-    /* Button Styles */
-    .btn {
-        background-color: #007bff; /* Button background color */
-        color: white; /* Button text color */
-        border: none; /* Remove border */
-        padding: 10px 20px; /* Padding for button */
-        border-radius: 4px; /* Rounded corners */
-        cursor: pointer; /* Pointer cursor on hover */
-        transition: background-color 0.3s; /* Smooth transition for background color */
-    }
-
-    .btn:hover {
-        background-color: #0056b3; /* Darker background on hover */
-    }
-
-    /* Responsive Styles */
-    @media (max-width: 768px) {
-        .col-md-6 {
-            width: 100%; /* Full width on smaller screens */
-        }
-    }
-</style>
-
-<div class="row">
-    <div class="col-md-6 col-sm-12">
-        <?php echo $this->Flash->render(); ?>
-        <div class="wel-back">
-            <h2>Sign <span class="theme-cl">In</span></h2>
-        </div>
-        <?php echo $this->Form->create(null, ['url'=>['controller'=>'users','action'=>'login'], 'id' => 'loginForm']);?>
-        <?php $submittedData = $this->request->getData();?>
-            <input type="hidden" name="_csrfToken" value="<?php echo $this->request->getAttribute('csrfToken'); ?>">
-            <div class="form-group">
-                <label>Email Address<span class="mandatory">*</span></label>
-                <input type="email" name="email" id="loginEmail" class="form-control" placeholder="Email Address" autocomplete="off" required value="<?php echo isset($submittedData['email']) ? h($submittedData['email']) : ''; ?>">
-            </div>
-            <div class="form-group">
-                <label for="loginPassword">Password<span class="mandatory">*</span></label>
-                <div class="input-container">
-                    <input type="password" name="password" id="loginPassword" class="form-control" minlength="8" placeholder="********" autocomplete="off" required>
-                    <span class="eye-icon" id="togglePassword">
-                        <span id="eyeIcon">👁️</span> <!-- Default eye icon with slash -->
-                        <span class="slash" id="slash"></span> <!-- Slash overlay -->
-                    </span>
+				<div class="row w-100 mx-0 auth-page">
+					<div class="col-md-8 col-xl-4 mx-auto">
+						<div class="card">
+							<div class="row">
+                
+                <div class="col-md-12">
+                  <div class="auth-form-wrapper px-4 py-5" style="">
+                  <p class="text-center"><img src="assets/images/logo.png" style="width:60%; margin:0 auto"></p>
+                    
+                    <form class="forms-sample" style="padding: 30px 15px 15px 15px;">
+					<div class="mb-3"><p class="text-center">Sign in your ERISAQuote Pro account!</p></div>
+                      <div class="mb-3">
+                        <input type="email" class="form-control" id="userEmail" placeholder="Email Address" style="padding: 17px;border-radius: 9px;">
+                      </div>
+                      <div class="mb-3">
+                        <input type="password" class="form-control" id="userPassword" autocomplete="current-password" placeholder="Password" style="padding: 17px;border-radius: 9px;">
+                      </div>
+                      
+                      <div>
+                        <input type="submit" value="SIGN IN" class="btn" style="width: 100%;padding: 15px;font-weight: bold;text-transform: uppercase;font-size: 23px;background: #41b42b;border-color: #41b42b;border-radius: 9px;color: #fff;">
+                        
+                      </div> 
+					
+					  
+                      <p class="text-center mt-4"> <a href="forgot-password.html"><span class="reset-password-link show-reset-password-form cursor" style="cursor: pointer">Forgot
+                    Password? - Click Here</span></a></p>
+                    </form>
+                  </div>
                 </div>
-            </div>
-            <div class="form-group keep-signin-container">
-                <label>
-                    <input type="checkbox" name="keep_signed_in" id="keepSignedIn"> Keep me signed in
-                </label>
-                <a href="<?php echo $this->Url->build(['controller'=>'Users', 'action'=>'forgotpassword']);?>" class="forgot-password">Forgot password?</a>
-            </div>
-            <div class="center">
-                <button type="submit" id="loginSubmit" class="btn btn-midium theme-btn btn-radius width-200"> Sign In </button>
-            </div>
-        </form>
-        <div class="center mrg-top-5">
-            <div class="bottom-login text-center">
-                <span>Don't have an account?</span>
-                <a href="<?php echo $this->Url->build(['controller'=>'Users', 'action'=>'signup']);?>" class="">Register Now</a>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6 col-sm-12 hidden-xs">
-        <img src="<?php echo $this->Url->build('/');?>assets/img/dog-doctor.jpg" style="width:100%; margin-top:5px;">
-    </div>
-</div>
+              </div>
+						</div>
+					</div>
+				</div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script type="text/javascript">
-    document.getElementById("loginForm").onsubmit = function(event) {
-        // Prevent the default form submission
-        event.preventDefault();
+			</div>
+		</div>
+	</div>
 
-        // Clear previous error messages
-        const errorMessages = document.querySelectorAll('.loginResponse');
-        errorMessages.forEach(function(msg) {
-            msg.remove();
-        });
+	<!-- core:js -->
+	<script src="assets/vendors/core/core.js"></script>
+	<!-- endinject -->
 
-        // Get form values
-        const loginEmail = document.getElementById("loginEmail").value;
-        const loginPassword = document.getElementById("loginPassword").value;
+	<!-- Plugin js for this page -->
+	<!-- End plugin js for this page -->
 
-        let isValid = true;
+	<!-- inject:js -->
+	<script src="assets/vendors/feather-icons/feather.min.js"></script>
+	<script src="assets/js/template.js"></script>
+	<!-- endinject -->
 
-        // Validate email
-        if (loginEmail.trim() === '') {
-            isValid = false;
-            const emailError = document.createElement("span");
-            emailError.className = "loginResponse";
-            emailError.style.color = "rgb(255, 0, 0)";
-            emailError.textContent = "Please enter your email address.";
-            document.getElementById("loginEmail").after(emailError);
-        }
+	<!-- Custom js for this page -->
+	<!-- End custom js for this page -->
 
-        // Validate password
-        if (loginPassword.trim() === '') {
-            isValid = false;
-            const passwordError = document.createElement("span");
-            passwordError.className = "loginResponse";
-            passwordError.style.color = "rgb(255, 0, 0)";
-            passwordError.textContent = "Please enter your password.";
-            document.getElementById("loginPassword").after(passwordError);
-        }
-
-        // If the form is valid, append the timezone and submit
-        if (isValid) {
-            // Detect the user's timezone
-            const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            
-            console.log("Timezone set successfully:", userTimeZone);
-            
-            // Create a hidden input for the timezone
-            const timezoneInput = document.createElement("input");
-            timezoneInput.type = "hidden";
-            timezoneInput.name = "timezone";
-            timezoneInput.value = userTimeZone;
-
-            // Append the hidden input to the form
-            this.appendChild(timezoneInput);
-
-            // Submit the form
-            this.submit();
-        }
-    };
-</script>
-<script>
-    document.getElementById('togglePassword').addEventListener('click', function () {
-        const passwordInput = document.getElementById('loginPassword');
-        const eyeIcon = document.getElementById('eyeIcon');
-        const slash = document.getElementById('slash');
-
-        // Toggle the type attribute
-        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-        passwordInput.setAttribute('type', type);
-
-        // Change the eye icon and display the slash based on visibility
-        if (type === 'password') {
-            eyeIcon.innerHTML = '👁️'; // Eye icon when password is hidden
-            slash.style.display = 'block'; // Show the slash
-        } else {
-            eyeIcon.innerHTML = '👁️'; // Keep the eye icon
-            slash.style.display = 'none'; // Hide the slash
-        }
-    });
-</script>
+</body>
+</html>

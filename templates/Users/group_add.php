@@ -10,66 +10,82 @@
         <div class="col-md-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
-
-                    <form class="forms-sample">
+                    <?php echo $this->Flash->render(); ?>
+                    <form method="post" action="<?php echo $this->Url->build(['controller' => 'Users', 'action' => 'groupAdd']); ?>" enctype="multipart/form-data" accept-charset="utf-8">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">Group Name</label>
-                                    <input type="text" class="form-control" placeholder="Group Name">
+                                    <label class="form-label">Group Name *</label>
+                                    <input type="text" class="form-control" name="group_name" placeholder="Group Name" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">SIC or NAICS Code</label>
-                                    <select class="form-select mb-3">
-                                        <option selected="">Open this select menu</option>
-                                        <option value="1">One</option>
-                                        <option value="2">Two</option>
-                                        <option value="3">Three</option>
-                                    </select>
+                                    <label class="form-label">SIC or NAICS Code *</label>
+                                    <input type="text" class="form-control" name="SIC_Code" placeholder="SIC or NAICS Code" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">Address Line 1</label>
-                                    <input type="text" class="form-control" placeholder="Address Line 1">
+                                    <label class="form-label">Address Line 1 *</label>
+                                    <input type="text" class="form-control" name="address1" placeholder="Address Line 1" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">Address Line 2</label>
-                                    <input type="text" class="form-control" placeholder="Address Line 2">
+                                    <input type="text" class="form-control" name="address2" placeholder="Address Line 2">
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label class="form-label">City</label>
-                                    <input type="text" class="form-control" placeholder="City">
+                                    <label class="form-label">City *</label>
+                                    <input type="text" class="form-control" name="city" placeholder="City" required>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label class="form-label">State</label>
-                                    <select class="form-select mb-3">
-                                        <option selected="" disabled>Select State</option>
-                                        <option value="1">One</option>
-                                        <option value="2">Two</option>
-                                        <option value="3">Three</option>
+                                    <label class="form-label">State *</label>
+                                    <select class="form-control form-select" name="state_name" required>
+                                        <option value="">Select State</option>
+                                        <?php
+                                        // USA states list
+                                        $states = [
+                                            'AL' => 'Alabama', 'AK' => 'Alaska', 'AZ' => 'Arizona', 'AR' => 'Arkansas',
+                                            'CA' => 'California', 'CO' => 'Colorado', 'CT' => 'Connecticut', 'DE' => 'Delaware',
+                                            'FL' => 'Florida', 'GA' => 'Georgia', 'HI' => 'Hawaii', 'ID' => 'Idaho',
+                                            'IL' => 'Illinois', 'IN' => 'Indiana', 'IA' => 'Iowa', 'KS' => 'Kansas',
+                                            'KY' => 'Kentucky', 'LA' => 'Louisiana', 'ME' => 'Maine', 'MD' => 'Maryland',
+                                            'MA' => 'Massachusetts', 'MI' => 'Michigan', 'MN' => 'Minnesota', 'MS' => 'Mississippi',
+                                            'MO' => 'Missouri', 'MT' => 'Montana', 'NE' => 'Nebraska', 'NV' => 'Nevada',
+                                            'NH' => 'New Hampshire', 'NJ' => 'New Jersey', 'NM' => 'New Mexico', 'NY' => 'New York',
+                                            'NC' => 'North Carolina', 'ND' => 'North Dakota', 'OH' => 'Ohio', 'OK' => 'Oklahoma',
+                                            'OR' => 'Oregon', 'PA' => 'Pennsylvania', 'RI' => 'Rhode Island', 'SC' => 'South Carolina',
+                                            'SD' => 'South Dakota', 'TN' => 'Tennessee', 'TX' => 'Texas', 'UT' => 'Utah',
+                                            'VT' => 'Vermont', 'VA' => 'Virginia', 'WA' => 'Washington', 'WV' => 'West Virginia',
+                                            'WI' => 'Wisconsin', 'WY' => 'Wyoming'
+                                        ];
+                                        foreach ($states as $code => $name) {
+                                            echo '<option value="' . $code . '">' . $name . '</option>';
+                                        }
+                                        ?>
                                     </select>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label class="form-label">Zip</label>
-                                    <input type="text" class="form-control" placeholder="Zip">
+                                    <label class="form-label">Zip *</label>
+                                    <input type="text" class="form-control" name="zip" placeholder="Zip" required>
                                 </div>
                             </div>
-
                         </div>
-                        <button type="submit" class="btn btn-primary me-2">Submit</button>
-                        <button class="btn btn-secondary">Cancel</button>
+
+                        <div class="d-flex justify-content-end gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <a href="<?php echo $this->Url->build(['controller' => 'Users', 'action' => 'group']); ?>" class="btn btn-secondary">Cancel</a>
+                        </div>
                     </form>
+
 
                 </div>
             </div>

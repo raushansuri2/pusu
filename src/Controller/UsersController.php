@@ -136,8 +136,8 @@ class UsersController extends AppController
 
     public function login()
     {
-        $this->viewBuilder()->setLayout('pages');
-        $layoutTitle = 'ERISAQuote Pro. - Sign In';
+        $this->viewBuilder()->setLayout('home');
+        $layoutTitle = 'ERISAQuote Pro - Sign In';
         $url = Router::url('/', true);
         $breadcum = [
             'Title' => 'SIGN IN',
@@ -149,34 +149,28 @@ class UsersController extends AppController
 
         // Check if user is already logged in
         $session = $this->request->getSession();
-        if ($session->read('ERISAQuote Pro.Users.role') === 'Member') {
+        if ($session->read('ERISAQuoteProSession.Users.role') === 'Member') {
             return $this->redirect(['controller' => 'Users', 'action' => 'dashboard']);
         }
 
-        // Check cookie-based login
-        if ($this->request->getCookie('user_id')) {
-            $usersTable = $this->fetchTable('Users');
-            try {
-                $user = $usersTable->get($this->request->getCookie('user_id'), contain: [
-                    'Cities',
-                    'States',
-                    'Countries',
-                    'Usersinformations'
-                ]);
+        // // Check cookie-based login
+        // if ($this->request->getCookie('user_id')) {
+        //     $usersTable = $this->fetchTable('Users');
+        //     try {
+        //         $user = $usersTable->get(primaryKey: $this->request->getCookie('user_id'));
 
-                $session->renew();
-                $session->write('ERISAQuote Pro.Users', $user);
-                return $this->redirect(['controller' => 'Users', 'action' => 'dashboard']);
-            } catch (RecordNotFoundException $e) {
-                // Invalid cookie, proceed to manual login
-            }
-        }
+        //         $session->renew();
+        //         $session->write('ERISAQuoteProSession.Users', $user);
+        //         return $this->redirect(['controller' => 'Users', 'action' => 'dashboard']);
+        //     } catch (RecordNotFoundException $e) {
+        //         // Invalid cookie, proceed to manual login
+        //     }
+        // }
 
         if ($this->request->is('post')) {
             $usersTable = $this->fetchTable('Users');
             $user = $usersTable->find()
                 ->where(['Users.email' => $this->request->getData('email')])
-                ->contain(['Cities', 'States', 'Countries', 'Usersinformations'])
                 ->first();
 
             if ($user) {
@@ -184,41 +178,12 @@ class UsersController extends AppController
                 if ($passwordHasher->check($this->request->getData('password'), $user->password)) {
                     if ($user->status == 1) {
                         $session->renew();
-                        $session->write('ERISAQuote Pro.Users', $user);
+                        $session->write('ERISAQuoteProSession.Users', $user);
 
                         if ($this->request->getData('keep_signed_in')) {
                             $this->response = $this->response->withCookie(new Cookie(
                                 'user_id', // name
                                 $user->id, // value
-                                new \DateTime('+30 days'), // expires
-                                '/', // path
-                                true, // secure
-                                true  // httpOnly
-                            ));
-                        }
-
-                        // Update latitude/longitude based on IP
-                        $clientIP = $this->request->clientIp();
-                        $apiUrl = "http://ip-api.com/json/{$clientIP}";
-                        $response = file_get_contents($apiUrl);
-                        if ($response !== false) {
-                            $data = json_decode($response, true);
-                            if ($data && $data['status'] === 'success') {
-                                $usersTable->updateAll(
-                                    ['latitude' => $data['lat'], 'longitude' => $data['lon']],
-                                    ['id' => $user->id]
-                                );
-                            }
-                        }
-
-                        // Handle timezone
-                        if ($timezone = $this->request->getData('timezone')) {
-                            $session->write('Config.timezone', $timezone);
-
-                            // Create a new cookie with positional parameters
-                            $this->response = $this->response->withCookie(new Cookie(
-                                'timezone', // name
-                                $timezone,  // value
                                 new \DateTime('+30 days'), // expires
                                 '/', // path
                                 true, // secure
@@ -392,36 +357,72 @@ class UsersController extends AppController
     {
         $this->viewBuilder()->setLayout('login');
         $layoutTitle = 'ERISAQuote Pro. - Quoting Details';
-        //die('dd');
-        //$session = $this->request->getSession();
-        //$userId = $session->read('ERISAQuote Pro.Users.id');
 
+        // Get the table
+        $groupsTable = $this->fetchTable('Quotgroups');
+        $group_data = $groupsTable->find()->where(['Quotgroups.status'=>1]);
+        // Use the built-in paginate() method
+        $groups = $this->paginate($group_data, [
+            'limit' => 10, // items per page
+            'order' => ['Quotgroups.id' => 'desc']
+        ]);
 
-        //return null; // Explicit return for non-redirect cases
+        // Pass to view
+        $this->set(compact('layoutTitle', 'groups'));
     }
 
     public function groupAdd()
     {
         $this->viewBuilder()->setLayout('login');
-        $layoutTitle = 'ERISAQuote Pro. - Quoting Details';
-        //die('dd');
-        //$session = $this->request->getSession();
-        //$userId = $session->read('ERISAQuote Pro.Users.id');
 
+        $layoutTitle = 'ERISAQuote Pro. - Add New Group';
+        $url = \Cake\Routing\Router::url('/', true);
 
-        //return null; // Explicit return for non-redirect cases
+        $breadcum = [
+            'Title' => 'ADD NEW GROUP',
+            'URL' => [
+                'Home' => $url,
+                'Groups' => $url . 'users/group'
+            ]
+        ];
+
+        $groupsTable = $this->fetchTable('Quotgroups');
+        $group = $groupsTable->newEmptyEntity();
+
+        if ($this->request->is('post')) {
+
+            $group = $groupsTable->patchEntity(
+                $group,
+                $this->request->getData(),
+                ['validate' => false]
+            );
+
+            if ($groupsTable->save($group)) {
+
+                $this->Flash->success(__('Group added successfully.'));
+                return $this->redirect(['controller' => 'Users', 'action' => 'group']);
+
+            } else {
+
+                $this->Flash->error(__('Please correct the errors below.'));
+            }
+        }
+
+        $this->set(compact('layoutTitle', 'breadcum', 'group'));
     }
+    
 
-    public function groupDetails()
+    public function groupDetails($id)
     {
         $this->viewBuilder()->setLayout('login');
         $layoutTitle = 'ERISAQuote Pro. - Quoting Details';
-        //die('dd');
-        //$session = $this->request->getSession();
-        //$userId = $session->read('ERISAQuote Pro.Users.id');
-
-
-        //return null; // Explicit return for non-redirect cases
+        if($id == ""){
+           return $this->redirect(['controller' => 'Users', 'action' => 'group']);
+        }
+        $groupsTable = $this->fetchTable('Quotgroups');
+        $group_data = $groupsTable->find()->where(['Quotgroups.id'=>$id])->first();
+        $this->set(compact('layoutTitle', 'group_data'));
+    
     }
 
 

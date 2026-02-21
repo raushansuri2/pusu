@@ -136,11 +136,11 @@
             <div class="panel-body">
                 <dl class="row">
                     <dt class="col-sm-3">Group Name</dt>
-                    <dd class="col-sm-9">AP Professional Security, LLC</dd>
+                    <dd class="col-sm-9"><?php echo $group_data->group_name;?></dd>
                     <dt class="col-sm-3">Address</dt>
-                    <dd class="col-sm-9"><address class="address-summary ">1110 London Street<br>Suite 101<br>Myrtle Beach, South Carolina 29577</address></dd>
+                    <dd class="col-sm-9"><address class="address-summary "><?php echo $group_data->address1;?><br><?php echo $group_data->address2;?><br><?php echo $group_data->city;?>, <?php echo $group_data->state_name;?> <?php echo $group_data->zip;?></address></dd>
                     <dt class="col-sm-3">Business Classification</dt>
-                    <dd class="col-sm-9">Security Guards and Patrol Services  (561612) / Detective and Armored Car Services (7381)</dd>
+                    <dd class="col-sm-9"><?php echo $group_data->SIC_Code;?></dd>
                 </dl>
             </div>
         </div>

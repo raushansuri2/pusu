@@ -77,9 +77,10 @@ class Application extends BaseApplication
                 // Debug: Log the path to see what we're getting
                 error_log("Request path: " . $path);
 
-                // Exclude CSRF protection for API endpoints and all admin routes
+                // Exclude CSRF protection for API endpoints and all admin/user routes
                 if (strpos($path, '/services/') !== 0 &&
-                    strpos($path, '/admin/') === false) {
+                    strpos($path, '/admin') !== 0 &&
+                    strpos($path, '/users') !== 0) {
                     return $csrf->process($request, $handler);
                 }
                 return $handler->handle($request);
