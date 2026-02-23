@@ -153,20 +153,6 @@ class UsersController extends AppController
             return $this->redirect(['controller' => 'Users', 'action' => 'dashboard']);
         }
 
-        // // Check cookie-based login
-        // if ($this->request->getCookie('user_id')) {
-        //     $usersTable = $this->fetchTable('Users');
-        //     try {
-        //         $user = $usersTable->get(primaryKey: $this->request->getCookie('user_id'));
-
-        //         $session->renew();
-        //         $session->write('ERISAQuoteProSession.Users', $user);
-        //         return $this->redirect(['controller' => 'Users', 'action' => 'dashboard']);
-        //     } catch (RecordNotFoundException $e) {
-        //         // Invalid cookie, proceed to manual login
-        //     }
-        // }
-
         if ($this->request->is('post')) {
             $usersTable = $this->fetchTable('Users');
             $user = $usersTable->find()
@@ -213,32 +199,23 @@ class UsersController extends AppController
     public function logout()
     {
         $session = $this->request->getSession();
-        if (empty($session->read('ERISAQuote Pro.Users.id'))) {
+        if (empty($session->read('ERISAQuoteProSession.Users.id'))) {
             return $this->redirect(['controller' => 'Users', 'action' => 'login']);
         }
 
         $usersTable = $this->fetchTable('Users');
-        $userId = $session->read('ERISAQuote Pro.Users.id');
+        $userId = $session->read('ERISAQuoteProSession.Users.id');
 
-        // Update last login time with error handling
-        try {
-            $user = $usersTable->get($userId);
-            $user->lastLogin = DateTime::now()->i18nFormat('yyyy-MM-dd HH:mm:ss');
-            if (!$usersTable->save($user)) {
-                // Log the failure if needed, but don’t interrupt logout
-            }
-        } catch (RecordNotFoundException $e) {
-            // If user not found, proceed with logout anyway
-        }
+       
 
         // Clear cookies
-        $this->response = $this->response
-            ->withExpiredCookie(new Cookie('user_id', '', new \DateTime('now -1 day'))) // Set to expire 1 day ago
-            ->withExpiredCookie(new Cookie('timezone', '', new \DateTime('now -1 day'))); // Set to expire 1 day ago
+        // $this->response = $this->response
+        //     ->withExpiredCookie(new Cookie('user_id', '', new \DateTime('now -1 day'))) // Set to expire 1 day ago
+        //     ->withExpiredCookie(new Cookie('timezone', '', new \DateTime('now -1 day'))); // Set to expire 1 day ago
 
         // Clear session data
-        $session->delete('ERISAQuote Pro.Users');
-        $session->delete('Config.timezone');
+        $session->delete('ERISAQuoteProSession.Users');
+        //$session->delete('Config.timezone');
 
         $this->Flash->success(__('You have been logged out.'));
         return $this->redirect(['controller' => 'Users', 'action' => 'login']);
@@ -247,7 +224,7 @@ class UsersController extends AppController
     public function editprofile()
     {
         $this->viewBuilder()->setLayout('login');
-        $layoutTitle = 'ERISAQuote Pro. - My account';
+        $layoutTitle = 'ERISAQuote Pro - My account';
         $url = \Cake\Routing\Router::url('/', true);
         $breadcum = [
             'Title' => 'DASHBOARD',
@@ -256,32 +233,76 @@ class UsersController extends AppController
                 'DASHBOARD' => $url . 'users/dashboard'
             ]
         ];
-        //die('dd');
-        //$session = $this->request->getSession();
-        //$userId = $session->read('ERISAQuote Pro.Users.id');
+        $session = $this->request->getSession();
+        if ($session->read('ERISAQuoteProSession.Users.role') != 'Member') {
+            return $this->redirect(['controller' => 'Users', 'action' => 'logout']);
+        }
 
+        $usersTable = $this->fetchTable('Users');
+        $user = $usersTable->find()
+            ->where(['Users.id' => $session->read('ERISAQuoteProSession.Users.id')])
+            ->first();
 
-        //return null; // Explicit return for non-redirect cases
+        if(empty($user)){
+            $this->Flash->error(__('You have not permission to access.'));
+            return $this->redirect(['controller' => 'Users', 'action' => 'logout']);
+        }
+        if ($this->request->is('post')) {
+
+            $user = $usersTable->patchEntity(
+                $user,
+                $this->request->getData(),
+                ['validate' => false]
+            );
+
+            if ($usersTable->save($user)) {
+                $session->renew();
+                $session->write('ERISAQuoteProSession.Users', $user);
+                $this->Flash->success(__('Profile updated successfully.'));
+                return $this->redirect(['controller' => 'Users', 'action' => 'editprofile']);
+            } else {
+                $this->Flash->error(__('Please correct the errors below.'));
+            }
+        }
+        $this->set(compact('layoutTitle', 'breadcum', 'user'));
     }
 
     public function changepassword()
     {
         $this->viewBuilder()->setLayout('login');
         $layoutTitle = 'ERISAQuote Pro. - Changepassword';
-        $url = \Cake\Routing\Router::url('/', true);
-        $breadcum = [
-            'Title' => 'DASHBOARD',
-            'URL' => [
-                'Home' => $url,
-                'DASHBOARD' => $url . 'users/dashboard'
-            ]
-        ];
-        //die('dd');
-        //$session = $this->request->getSession();
-        //$userId = $session->read('ERISAQuote Pro.Users.id');
+       
+        $session = $this->request->getSession();
+        if ($session->read('ERISAQuoteProSession.Users.role') != 'Member') {
+            return $this->redirect(['controller' => 'Users', 'action' => 'logout']);
+        }
 
+        $usersTable = $this->fetchTable('Users');
+        $users = $usersTable->find()
+            ->where(['Users.id' => $session->read('ERISAQuoteProSession.Users.id')])
+            ->first();
 
-        //return null; // Explicit return for non-redirect cases
+        if(empty($users)){
+            $this->Flash->error(__('You have not permission to access.'));
+            return $this->redirect(['controller' => 'Users', 'action' => 'logout']);
+        }
+        if ($this->request->is('post')) {
+            if( $this->request->getData('newPassword') !=  $this->request->getData('confirmNewPassword')){
+                $this->Flash->error(__('New password and confirm password not match.'));
+                return $this->redirect(['controller' => 'Users', 'action' => 'changepassword']);
+            }
+            $passwordHasher = new DefaultPasswordHasher();
+			$check = $passwordHasher->check($this->request->getData('oldPassword'), $users->password);
+			if($check){
+				$users = $usersTable->patchEntity($users, ['password'=> $this->request->getData('newPassword')],['validate' => false]);
+				$usersTable->save($users);
+
+                $this->Flash->success(__('password changed successfully.'));
+            } else {
+                $this->Flash->error(__('Old password not match.'));
+            }
+        }
+        
     }
 
 	public function dashboard()
@@ -296,9 +317,13 @@ class UsersController extends AppController
                 'DASHBOARD' => $url . 'users/dashboard'
             ]
         ];
-        //die('dd');
-        //$session = $this->request->getSession();
-        //$userId = $session->read('ERISAQuote Pro.Users.id');
+        
+        //session check for login
+        $session = $this->request->getSession();
+        if ($session->read('ERISAQuoteProSession.Users.role') != 'Member') {
+            return $this->redirect(['controller' => 'Users', 'action' => 'logout']);
+        }
+        
 
 
         //return null; // Explicit return for non-redirect cases
@@ -308,9 +333,13 @@ class UsersController extends AppController
     {
         $this->viewBuilder()->setLayout('login');
         $layoutTitle = 'ERISAQuote Pro. - Dashboard';
-        //die('dd');
-        //$session = $this->request->getSession();
-        //$userId = $session->read('ERISAQuote Pro.Users.id');
+        
+        //session check for login
+        $session = $this->request->getSession();
+        if ($session->read('ERISAQuoteProSession.Users.role') != 'Member') {
+            return $this->redirect(['controller' => 'Users', 'action' => 'logout']);
+        }
+        
 
 
         //return null; // Explicit return for non-redirect cases
@@ -320,9 +349,13 @@ class UsersController extends AppController
     {
         $this->viewBuilder()->setLayout('login');
         $layoutTitle = 'ERISAQuote Pro. - Dashboard';
-        //die('dd');
-        //$session = $this->request->getSession();
-        //$userId = $session->read('ERISAQuote Pro.Users.id');
+       
+        //session check for login
+        $session = $this->request->getSession();
+        if ($session->read('ERISAQuoteProSession.Users.role') != 'Member') {
+            return $this->redirect(['controller' => 'Users', 'action' => 'logout']);
+        }
+        
 
 
         //return null; // Explicit return for non-redirect cases
@@ -333,8 +366,12 @@ class UsersController extends AppController
         $this->viewBuilder()->setLayout('login');
         $layoutTitle = 'ERISAQuote Pro. - Quoting Details';
         //die('dd');
-        //$session = $this->request->getSession();
-        //$userId = $session->read('ERISAQuote Pro.Users.id');
+        //session check for login
+        $session = $this->request->getSession();
+        if ($session->read('ERISAQuoteProSession.Users.role') != 'Member') {
+            return $this->redirect(['controller' => 'Users', 'action' => 'logout']);
+        }
+        
 
 
         //return null; // Explicit return for non-redirect cases
@@ -343,13 +380,25 @@ class UsersController extends AppController
     public function programChoose()
     {
         $this->viewBuilder()->setLayout('login');
-        $layoutTitle = 'ERISAQuote Pro. - Quoting Details';
-        //die('dd');
-        //$session = $this->request->getSession();
-        //$userId = $session->read('ERISAQuote Pro.Users.id');
+        $layoutTitle = 'Choose Program - ERISAQuote Pro';
+        
+        //session check for login
+        $session = $this->request->getSession();
+        if ($session->read('ERISAQuoteProSession.Users.role') != 'Member') {
+            return $this->redirect(['controller' => 'Users', 'action' => 'logout']);
+        }
+        
+        $NetworksRepricing = $this->fetchTable(alias: 'NetworksRepricing');
 
+        $programTable = $this->fetchTable(alias: 'Programs');
+        $program_list = $programTable->find()->where(['Programs.status'=>1])->toArray();
+        foreach($program_list as $program){
+            $count = $NetworksRepricing->find()->where(["FIND_IN_SET($program->id, program_id)"])->count();
+            $program->networks = $count;
+        }
+        //pr($program_list); die;
 
-        //return null; // Explicit return for non-redirect cases
+        $this->set(compact('layoutTitle', 'program_list'));
     }
 
 
@@ -358,9 +407,13 @@ class UsersController extends AppController
         $this->viewBuilder()->setLayout('login');
         $layoutTitle = 'ERISAQuote Pro. - Quoting Details';
 
+        $session = $this->request->getSession();
+        if ($session->read('ERISAQuoteProSession.Users.role') != 'Member') {
+            return $this->redirect(['controller' => 'Users', 'action' => 'logout']);
+        }
         // Get the table
         $groupsTable = $this->fetchTable('Quotgroups');
-        $group_data = $groupsTable->find()->where(['Quotgroups.status'=>1]);
+        $group_data = $groupsTable->find()->where(['Quotgroups.user_id'=>$session->read('ERISAQuoteProSession.Users.id'),'Quotgroups.status'=>1]);
         // Use the built-in paginate() method
         $groups = $this->paginate($group_data, [
             'limit' => 10, // items per page
@@ -372,12 +425,10 @@ class UsersController extends AppController
     }
 
     public function groupAdd()
-    {
+    { 
         $this->viewBuilder()->setLayout('login');
-
         $layoutTitle = 'ERISAQuote Pro. - Add New Group';
         $url = \Cake\Routing\Router::url('/', true);
-
         $breadcum = [
             'Title' => 'ADD NEW GROUP',
             'URL' => [
@@ -386,20 +437,70 @@ class UsersController extends AppController
             ]
         ];
 
+        $session = $this->request->getSession();
+        if ($session->read('ERISAQuoteProSession.Users.role') != 'Member') {
+            return $this->redirect(['controller' => 'Users', 'action' => 'logout']);
+        }
         $groupsTable = $this->fetchTable('Quotgroups');
         $group = $groupsTable->newEmptyEntity();
 
         if ($this->request->is('post')) {
-
+            $group_D = $this->request->getData();
+            $group_D['user_id'] = $session->read('ERISAQuoteProSession.Users.id');
             $group = $groupsTable->patchEntity(
                 $group,
-                $this->request->getData(),
+                $group_D,
                 ['validate' => false]
             );
 
             if ($groupsTable->save($group)) {
 
                 $this->Flash->success(__('Group added successfully.'));
+                return $this->redirect(['controller' => 'Users', 'action' => 'group']);
+
+            } else {
+
+                $this->Flash->error(__('Please correct the errors below.'));
+            }
+        }
+
+        $this->set(compact('layoutTitle', 'breadcum', 'group'));
+    }
+
+    public function groupedit($id)
+    {
+        $this->viewBuilder()->setLayout('login');
+        $layoutTitle = 'Edit Group - ERISAQuote Pro';
+        $url = \Cake\Routing\Router::url('/', true);
+        $breadcum = [
+            'Title' => 'ADD NEW GROUP',
+            'URL' => [
+                'Home' => $url,
+                'Groups' => $url . 'users/group'
+            ]
+        ];
+
+        $session = $this->request->getSession();
+        if ($session->read('ERISAQuoteProSession.Users.role') != 'Member') {
+            return $this->redirect(['controller' => 'Users', 'action' => 'logout']);
+        }
+        $groupsTable = $this->fetchTable('Quotgroups');
+        $group = $groupsTable->find()->where(['Quotgroups.user_id'=>$session->read('ERISAQuoteProSession.Users.id'),'Quotgroups.id'=>$id])->first();
+        if(empty($group)){
+            return $this->redirect(['controller' => 'Users', 'action' => 'group']);
+        }
+        if ($this->request->is('post')) {
+            $group_D = $this->request->getData();
+            $group_D['user_id'] = $session->read('ERISAQuoteProSession.Users.id');
+            $group = $groupsTable->patchEntity(
+                $group,
+                $group_D,
+                ['validate' => false]
+            );
+
+            if ($groupsTable->save($group)) {
+
+                $this->Flash->success(__('Group updated successfully.'));
                 return $this->redirect(['controller' => 'Users', 'action' => 'group']);
 
             } else {
@@ -419,6 +520,12 @@ class UsersController extends AppController
         if($id == ""){
            return $this->redirect(['controller' => 'Users', 'action' => 'group']);
         }
+        //session check for login
+        $session = $this->request->getSession();
+        if ($session->read('ERISAQuoteProSession.Users.role') != 'Member') {
+            return $this->redirect(['controller' => 'Users', 'action' => 'logout']);
+        }
+
         $groupsTable = $this->fetchTable('Quotgroups');
         $group_data = $groupsTable->find()->where(['Quotgroups.id'=>$id])->first();
         $this->set(compact('layoutTitle', 'group_data'));

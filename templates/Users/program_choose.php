@@ -46,13 +46,14 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <?php foreach($program_list as $program){ ?>
                                     <div class="col-md-4 stretch-card grid-margin grid-margin-md-0">
                                         <div class="card">
                                             <div class="card-body">
                                                 <i data-feather="file-text" class="text-primary icon-xxl d-block mx-auto my-3"></i>
-                                                <h4 class="text-center mb-2">Fusion Health Plans</h4>
-                                                <p class="text-muted text-center mb-0 fw-light" style="line-height:30px;"><span class="badge bg-success">9</span> available networks/repricing<br>
-                                                    <span class="badge bg-danger">5</span> available employee benefit plans
+                                                <h4 class="text-center mb-2"><?php echo $program->name;?></h4>
+                                                <p class="text-muted text-center mb-0 fw-light" style="line-height:30px;"><span class="badge bg-success"><?php echo $program->networks;?></span> available networks/repricing<br>
+                                                    <span class="badge bg-danger"><?php echo $program->employee_benefit_plans;?></span> available employee benefit plans
                                                 </p>
                                                 <div class="d-grid">
                                                     <a href="<?php echo $this->Url->build(['controller'=>'Users','action'=>'addquotingRequest']);?>" class="btn btn-lg  btn-danger mt-4">Choose Program</a>
@@ -60,6 +61,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <?php } ?>
 
 
 

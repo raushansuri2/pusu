@@ -126,7 +126,7 @@
 
       <div class="col-md-3 text-end d-print-none">
 
-        <a href="edit-group.html"
+        <a href="<?php echo $this->Url->build(['controller'=>'Users','action'=>'groupedit', $group_data->id]); ?>"
            class="btn btn-sm btn-danger btn-rounded">
            Edit Group
         </a>

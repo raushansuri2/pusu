@@ -841,7 +841,7 @@
                                             <tbody>
                                                 <tr>
                                                     <td class="d-flex align-items-center gap-3">
-                                                        <img src="assets/images/logod.svg" style="max-height: 110px;width: 290px;border-radius: 0;" alt="Prodigy Health Insurance logo" class="img-fluid" style="max-height: 40px;">
+                                                        <img src="<?php echo $this->Url->build('/');?>images/logod.svg" style="max-height: 110px;width: 290px;border-radius: 0;" alt="Prodigy Health Insurance logo" class="img-fluid" style="max-height: 40px;">
                                                         <span>Prodigy Health Insurance</span>
                                                     </td>
 
@@ -938,3 +938,40 @@
 
 
 </div>
+
+
+
+
+<script>
+  let currentStep = 0;
+    const steps = document.querySelectorAll(".step");
+    const stepItems = document.querySelectorAll(".stepper li");
+
+    document.getElementById("nextBtn").addEventListener("click", () => {
+  if (currentStep < steps.length - 1) {
+    currentStep++;
+    updateSteps();
+  }
+});
+
+    document.getElementById("prevBtn").addEventListener("click", () => {
+  if (currentStep > 0) {
+    currentStep--;
+    updateSteps();
+  }
+});
+
+    function updateSteps() {
+  steps.forEach((step, index) => {
+    step.classList.toggle("active", index === currentStep);
+  });
+
+  stepItems.forEach((item, index) => {
+    item.classList.toggle("active", index === currentStep);
+  });
+
+  document.getElementById("nextBtn").innerText =
+    currentStep === steps.length - 1 ? "Submit" : "Next";
+}
+
+</script>
