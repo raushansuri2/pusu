@@ -339,9 +339,76 @@ class UsersController extends AppController
         if ($session->read('ERISAQuoteProSession.Users.role') != 'Member') {
             return $this->redirect(['controller' => 'Users', 'action' => 'logout']);
         }
+        $censusTable = $this->fetchTable('Census');
+        $groupsTable = $this->fetchTable('Quotgroups');
+        $group_list = $groupsTable->find('list',['id','group_name'])->where(['Quotgroups.user_id'=>$session->read('ERISAQuoteProSession.Users.id'),'Quotgroups.status'=>1])->toArray();
+
+        $networksTable = $this->fetchTable('NetworksRepricing');
+        $network_list = $networksTable->find('list',['id','name'])->where(['NetworksRepricing.status'=>1])->toArray();
         
+        $lossPlansTable = $this->fetchTable('LossPlans');
+        $loss_plans_list = $lossPlansTable->find()->where(['LossPlans.status'=>1])->toArray();
+        
+        $benifitPlansTable = $this->fetchTable('BenifitPlans');
+        $benifit_plans_list = $benifitPlansTable->find()->where(['BenifitPlans.status'=>1])->toArray();
+        
+        //pr($benifit_plans_list); die;
+        // if ($this->request->is('post')) {
+        //     pr($this->request->getData());
+        //     die;
+            
+        // }
+        $RequestQuotsTable = $this->fetchTable('RequestQuots');
+        $RequestQuots = $RequestQuotsTable->newEmptyEntity();
 
+        if ($this->request->is('post')) {
+            // pr($this->request->getData());
+            // die;
 
+            $Requesy_D = $this->request->getData();
+            $Requesy_D['user_id'] = $session->read('ERISAQuoteProSession.Users.id');
+            $Requesy_D['status'] = 1;
+            $Requesy_D['networking_id'] = ($this->request->getData('quote_request_networks')) ? implode(',', $this->request->getData('quote_request_networks')) : null;
+            $Requesy_D['loss_plan'] = ($this->request->getData('loose')) ? implode(',', $this->request->getData('loose')) : null;
+            $Requesy_D['benifit_plan'] = ($this->request->getData('benifit_plans')) ? implode(',', $this->request->getData('benifit_plans')) : null;
+            
+            $RequestQuots = $RequestQuotsTable->patchEntity(
+                $RequestQuots,
+                $Requesy_D,
+                ['validate' => false]
+            );
+
+            if ($RequestQuotsTable->save($RequestQuots)) {
+                
+                $file = $this->request->getData('census_file');
+                if ($file && $file->getError() === UPLOAD_ERR_OK) {
+                    $filename = time().'_'.$file->getClientFilename();
+                    $targetPath = WWW_ROOT . 'img/uploads/census/' . $filename;
+
+                    $census_data = [
+                        'request_id'=> $RequestQuots->id,
+                        'user_id' => $session->read('ERISAQuoteProSession.Users.id'),
+                        'xl_file' => $filename
+                    ];
+                    $census = $censusTable->newEmptyEntity();
+                    $census = $censusTable->patchEntity(
+                        $census,
+                        $census_data,
+                        ['validate' => false]);
+
+                    $file->moveTo($targetPath);
+                }
+
+                $this->Flash->success(__('Group added successfully.'));
+                return $this->redirect(['controller' => 'Users', 'action' => 'requestlist']);
+
+            } else {
+
+                $this->Flash->error(__('Please correct the errors below.'));
+            }
+        }
+
+        $this->set(compact('layoutTitle','group_list','network_list','loss_plans_list','benifit_plans_list'));
         //return null; // Explicit return for non-redirect cases
     }
 
@@ -389,12 +456,16 @@ class UsersController extends AppController
         }
         
         $NetworksRepricing = $this->fetchTable(alias: 'NetworksRepricing');
+        $BenifitPlans = $this->fetchTable(alias: 'BenifitPlans');
 
         $programTable = $this->fetchTable(alias: 'Programs');
         $program_list = $programTable->find()->where(['Programs.status'=>1])->toArray();
         foreach($program_list as $program){
             $count = $NetworksRepricing->find()->where(["FIND_IN_SET($program->id, program_id)"])->count();
             $program->networks = $count;
+
+            $benifit_plans_count = $BenifitPlans->find()->where(["FIND_IN_SET($program->id, program_id)"])->count();
+            $program->benifit_plans = $benifit_plans_count;
         }
         //pr($program_list); die;
 

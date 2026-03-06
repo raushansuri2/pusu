@@ -53,10 +53,10 @@
                                                 <i data-feather="file-text" class="text-primary icon-xxl d-block mx-auto my-3"></i>
                                                 <h4 class="text-center mb-2"><?php echo $program->name;?></h4>
                                                 <p class="text-muted text-center mb-0 fw-light" style="line-height:30px;"><span class="badge bg-success"><?php echo $program->networks;?></span> available networks/repricing<br>
-                                                    <span class="badge bg-danger"><?php echo $program->employee_benefit_plans;?></span> available employee benefit plans
+                                                    <span class="badge bg-danger"><?php echo $program->benifit_plans;?></span> available employee benefit plans
                                                 </p>
                                                 <div class="d-grid">
-                                                    <a href="<?php echo $this->Url->build(['controller'=>'Users','action'=>'addquotingRequest']);?>" class="btn btn-lg  btn-danger mt-4">Choose Program</a>
+                                                    <a href="<?php echo $this->Url->build(['controller'=>'Users','action'=>'addquotingRequest?programid='.$program->id]);?>" class="btn btn-lg  btn-danger mt-4">Choose Program</a>
                                                 </div>
                                             </div>
                                         </div>

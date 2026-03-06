@@ -22,7 +22,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">SIC or NAICS Code *</label>
-                                    <input type="text" class="form-control" name="SIC_Code" placeholder="SIC or NAICS Code" value="<?php echo $group->group_name; ?>" required>
+                                    <input type="text" class="form-control" name="SIC_Code" placeholder="SIC or NAICS Code" value="<?php echo $group->SIC_Code; ?>" required>
                                 </div>
                             </div>
                             <div class="col-md-6">

@@ -1,3 +1,28 @@
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $("#business-group-id").on('change', function() {
+
+            var selectedValue = $(this).val();
+            var selectedText = $(this).find("option:selected").text();
+
+            $("#group_ID").html('#'+selectedValue);
+            $("#group_NAME").html(selectedText);
+
+        });
+
+        $("#date-policy-start, #final_proposal_date").on("input change", function () {
+            headerset();
+        });
+        
+    });
+
+        function headerset(){
+            $("#PE").html($("#date-policy-start").val());
+            $("#FPD").html($("#final_proposal_date").val());
+        }
+</script>
+
 <div class="page-content">
     <nav class="page-breadcrumb">
         <ol class="breadcrumb">
@@ -16,10 +41,10 @@
                         <!-- Left: Title -->
                         <div class="col-md-12">
                             <h4 class="mb-0 d-flex align-items-center flex-wrap">
-                                <span class="me-2">#7802:</span>
+                                <span class="me-2" id="group_ID">#:</span>
 
-                                <a href="group-details.html" class="link-no-color fw-semibold me-3">
-                                    St. Joseph Montessori School
+                                <a href="javascript::" class="link-no-color fw-semibold me-3" id="group_NAME">
+                                    
                                 </a>
 
                                 <span style="font-size: 12px;" class="badge bg-danger">
@@ -29,7 +54,7 @@
                         </div>
                         <div class="col-md-12">
                             <p style="font-size: 13px;margin-top: 7px;">
-                                <strong>Final Proposals Due</strong> 7/4/25 <strong>Plan Effective</strong> 8/1/2025 <strong>Census Used</strong> Census St Joseph Motesorri.xlsx (71 members)
+                                <strong>Final Proposals Due</strong><spam id="FPD"> 7/4/25 </spam><strong> &nbsp;&nbsp;&nbsp; Plan Effective</strong> <spam id="PE">8/1/2025</spam> <strong>  &nbsp;&nbsp;&nbsp;Census Used</strong> Census St Joseph Motesorri.xlsx (71 members)
                             </p>
                         </div>
                     </div>
@@ -43,7 +68,9 @@
                     </ul>
 
                     <!-- Form -->
-                    <form id="multiStepForm">
+                    <!-- <form id="multiStepForm"> -->
+                    <?php echo $this->Flash->render(); ?>
+                    <form method="post" action="<?php echo $this->Url->build(['controller' => 'Users', 'action' => 'addquotingRequest']); ?>" enctype="multipart/form-data" accept-charset="utf-8">
                         <div class="step active">
                             <div class="row">
                                 <div class="col-12">
@@ -56,15 +83,20 @@
                                         <div class="col-md-6">
                                             <div class="d-flex align-items-center gap-3">
                                                 <div class="w-50">
-                                                    <select class="form-select select2" name="business_group_id" id="business-group-id" required>
+                                                    <select class="form-select select2" name="group_id" id="business-group-id" required>
                                                         <option value="">Select a group</option>
+                                                        <?php 
+                                                        foreach ($group_list as $code => $name) {
+                                                            echo '<option value="' . $code . '">' . $name . '</option>';
+                                                        }
+                                                        ?>
                                                         <!-- options preserved -->
                                                     </select>
                                                 </div>
 
                                                 <span>or</span>
 
-                                                <a href="add-new-group.html" class="btn btn-link fw-semibold p-0">
+                                                <a href="<?php echo $this->Url->build(['controller'=>'Users','action'=>'groupAdd']);?>" class="btn btn-link fw-semibold p-0">
                                                     Add a new group
                                                 </a>
                                             </div>
@@ -97,7 +129,12 @@
                                                         <option value="">Group 3</option>
                                                     </select>
                                                 </div>
-                                                <div id="add-new-census"></div>
+                                                <span>or</span>
+                                                <div> <input type="file" name="census_file" id="actual-btn" hidden/>
+                                                    <label for="actual-btn" class="custom-file-button mt-0">Upload a new census</label>
+                                                    <span id="file-chosen">No file chosen</span>
+                                                </div> 
+
                                             </div>
                                         </div>
 
@@ -125,21 +162,21 @@
                                                     <label for="date-policy-start" class="form-label">
                                                         Policy Effective Date
                                                     </label>
-                                                    <input type="date" class="form-control datepicker" name="date_policy_start" id="date-policy-start" required>
+                                                    <input type="date" class="form-control datepicker" onkeyup="headerset()" name="Policy_Effective_Date" id="date-policy-start" required>
                                                 </div>
 
                                                 <div class="mb-3">
                                                     <label for="date-policy-end" class="form-label">
                                                         Policy Termination Date
                                                     </label>
-                                                    <input type="date" class="form-control datepicker" name="date_policy_end" id="date-policy-end" required>
+                                                    <input type="date" class="form-control datepicker" onkeyup="headerset()" name="Policy_Termination_Date" id="date-policy-end" required>
                                                 </div>
 
                                                 <div class="mb-3">
                                                     <label for="quotes-due-by" class="form-label">
                                                         Final Proposals Due
                                                     </label>
-                                                    <input type="date" class="form-control datepicker" required>
+                                                    <input type="date" onkeyup="headerset()" name="Final_Proposals_Due" id="final_proposal_date" class="form-control datepicker" required>
                                                 </div>
                                             </div>
 
@@ -172,125 +209,17 @@
                             <div class="row">
                                 <div class="col-12">
                                     <p>Please choose from the following networks or repricing:</p>
+                                    <?php
+                                    foreach($network_list as $key=>$network){ ?>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="quote_request_networks[<?php echo $key; ?>]" value="<?php echo $key;?>" id="network-<?php echo $key; ?>">
+                                            <label class="form-check-label" for="network-<?php echo $key; ?>">
+                                                <?php echo $network;?>
+                                            </label>
+                                        </div>
+                                    <?php } ?>
+                                    
 
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="quote_request_networks[0][status]" value="active" id="network-0">
-                                        <label class="form-check-label" for="network-0">
-                                            First Choice Health Plans of Mississippi
-                                        </label>
-                                    </div>
-
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="quote_request_networks[1][status]" value="active" id="network-1">
-                                        <label class="form-check-label" for="network-1">
-                                            Health Smart - Texas Only
-                                        </label>
-                                    </div>
-
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="quote_request_networks[2][status]" value="active" id="network-2">
-                                        <label class="form-check-label" for="network-2">
-                                            Alliance
-                                        </label>
-                                    </div>
-
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="quote_request_networks[3][status]" value="active" id="network-3">
-                                        <label class="form-check-label" for="network-3">
-                                            Anthem
-                                        </label>
-                                    </div>
-
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="quote_request_networks[4][status]" value="active" id="network-4">
-                                        <label class="form-check-label" for="network-4">
-                                            Health Smart (all states excl Texas)
-                                        </label>
-                                    </div>
-
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="quote_request_networks[5][status]" value="active" id="network-5">
-                                        <label class="form-check-label" for="network-5">
-                                            Cigna PPO
-                                        </label>
-                                    </div>
-
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="quote_request_networks[6][status]" value="active" id="network-6">
-                                        <label class="form-check-label" for="network-6">
-                                            Healthcare Highways
-                                        </label>
-                                    </div>
-
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="quote_request_networks[7][status]" value="active" id="network-7">
-                                        <label class="form-check-label" for="network-7">
-                                            Blue Cross / Blue Shield
-                                        </label>
-                                    </div>
-
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="quote_request_networks[8][status]" value="active" id="network-8">
-                                        <label class="form-check-label" for="network-8">
-                                            Cash Centric
-                                        </label>
-                                    </div>
-
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="quote_request_networks[9][status]" value="active" id="network-9">
-                                        <label class="form-check-label" for="network-9">
-                                            Healthlink and Freedom
-                                        </label>
-                                    </div>
-
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="quote_request_networks[10][status]" value="active" id="network-10">
-                                        <label class="form-check-label" for="network-10">
-                                            Encore
-                                        </label>
-                                    </div>
-
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="quote_request_networks[11][status]" value="active" id="network-11">
-                                        <label class="form-check-label" for="network-11">
-                                            Multiplan
-                                        </label>
-                                    </div>
-
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="quote_request_networks[12][status]" value="active" id="network-12">
-                                        <label class="form-check-label" for="network-12">
-                                            Medical Mutual of Ohio (MMO)
-                                        </label>
-                                    </div>
-
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="quote_request_networks[13][status]" value="active" id="network-13">
-                                        <label class="form-check-label" for="network-13">
-                                            MedCost
-                                        </label>
-                                    </div>
-
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="quote_request_networks[14][status]" value="active" id="network-14">
-                                        <label class="form-check-label" for="network-14">
-                                            Healthlink
-                                        </label>
-                                    </div>
-
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="quote_request_networks[15][status]" value="active" id="network-15">
-                                        <label class="form-check-label" for="network-15">
-                                            Reliance Health Partners RBP
-                                        </label>
-                                    </div>
-
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="quote_request_networks[16][status]" value="active" id="network-16">
-                                        <label class="form-check-label" for="network-16">
-                                            First Health
-                                        </label>
-                                    </div>
 
                                 </div>
                             </div>
@@ -348,184 +277,20 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-
-                                                        <tr>
-                                                            <td>
-                                                                <input class="form-check-input" type="checkbox" checked>
-                                                            </td>
-                                                            <td><strong>35k: 12-12</strong></td>
-                                                            <td>$35,000</td>
-                                                            <td>12/12</td>
-                                                            <td>$0</td>
-                                                            <td>12/12</td>
-                                                            <td>1.20</td>
-                                                            <td>0.00%</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td><input class="form-check-input" type="checkbox" checked></td>
-                                                            <td><strong>35k: 12-18</strong></td>
-                                                            <td>$35,000</td>
-                                                            <td>12/18</td>
-                                                            <td>$0</td>
-                                                            <td>12/18</td>
-                                                            <td>1.20</td>
-                                                            <td>0.00%</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td><input class="form-check-input" type="checkbox" checked></td>
-                                                            <td><strong>40k: 12-12</strong></td>
-                                                            <td>$40,000</td>
-                                                            <td>12/12</td>
-                                                            <td>$0</td>
-                                                            <td>12/12</td>
-                                                            <td>1.20</td>
-                                                            <td>0.00%</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td><input class="form-check-input" type="checkbox" checked></td>
-                                                            <td><strong>40k: 12-18</strong></td>
-                                                            <td>$40,000</td>
-                                                            <td>12/18</td>
-                                                            <td>$0</td>
-                                                            <td>12/18</td>
-                                                            <td>1.20</td>
-                                                            <td>0.00%</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td><input class="form-check-input" type="checkbox" checked></td>
-                                                            <td><strong>45k: 12-12</strong></td>
-                                                            <td>$45,000</td>
-                                                            <td>12/12</td>
-                                                            <td>$0</td>
-                                                            <td>12/12</td>
-                                                            <td>1.20</td>
-                                                            <td>0.00%</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td><input class="form-check-input" type="checkbox" checked></td>
-                                                            <td><strong>45k: 12-18</strong></td>
-                                                            <td>$45,000</td>
-                                                            <td>12/18</td>
-                                                            <td>$0</td>
-                                                            <td>12/18</td>
-                                                            <td>1.20</td>
-                                                            <td>0.00%</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td><input class="form-check-input" type="checkbox" checked></td>
-                                                            <td><strong>50k: 12-12</strong></td>
-                                                            <td>$50,000</td>
-                                                            <td>12/12</td>
-                                                            <td>$0</td>
-                                                            <td>12/12</td>
-                                                            <td>1.20</td>
-                                                            <td>0.00%</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td><input class="form-check-input" type="checkbox" checked></td>
-                                                            <td><strong>50k: 12-18</strong></td>
-                                                            <td>$50,000</td>
-                                                            <td>12/18</td>
-                                                            <td>$0</td>
-                                                            <td>12/18</td>
-                                                            <td>1.20</td>
-                                                            <td>0.00%</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td><input class="form-check-input" type="checkbox" checked></td>
-                                                            <td><strong>55k: 12-12</strong></td>
-                                                            <td>$55,000</td>
-                                                            <td>12/12</td>
-                                                            <td>$0</td>
-                                                            <td>12/12</td>
-                                                            <td>1.20</td>
-                                                            <td>0.00%</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td><input class="form-check-input" type="checkbox" checked></td>
-                                                            <td><strong>55k: 12-18</strong></td>
-                                                            <td>$55,000</td>
-                                                            <td>12/18</td>
-                                                            <td>$0</td>
-                                                            <td>12/18</td>
-                                                            <td>1.20</td>
-                                                            <td>0.00%</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td><input class="form-check-input" type="checkbox" checked></td>
-                                                            <td><strong>60k: 12-12</strong></td>
-                                                            <td>$60,000</td>
-                                                            <td>12/12</td>
-                                                            <td>$0</td>
-                                                            <td>12/12</td>
-                                                            <td>1.20</td>
-                                                            <td>0.00%</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td><input class="form-check-input" type="checkbox" checked></td>
-                                                            <td><strong>60k: 12-18</strong></td>
-                                                            <td>$60,000</td>
-                                                            <td>12/18</td>
-                                                            <td>$0</td>
-                                                            <td>12/18</td>
-                                                            <td>1.20</td>
-                                                            <td>0.00%</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td><input class="form-check-input" type="checkbox" checked></td>
-                                                            <td><strong>65k: 12-12</strong></td>
-                                                            <td>$65,000</td>
-                                                            <td>12/12</td>
-                                                            <td>$0</td>
-                                                            <td>12/12</td>
-                                                            <td>1.20</td>
-                                                            <td>0.00%</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td><input class="form-check-input" type="checkbox" checked></td>
-                                                            <td><strong>65k: 12-18</strong></td>
-                                                            <td>$65,000</td>
-                                                            <td>12/18</td>
-                                                            <td>$0</td>
-                                                            <td>12/18</td>
-                                                            <td>1.20</td>
-                                                            <td>0.00%</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td><input class="form-check-input" type="checkbox" checked></td>
-                                                            <td><strong>75k: 12-12</strong></td>
-                                                            <td>$75,000</td>
-                                                            <td>12/12</td>
-                                                            <td>$0</td>
-                                                            <td>12/12</td>
-                                                            <td>1.20</td>
-                                                            <td>0.00%</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td><input class="form-check-input" type="checkbox" checked></td>
-                                                            <td><strong>75k: 12-18</strong></td>
-                                                            <td>$75,000</td>
-                                                            <td>12/18</td>
-                                                            <td>$0</td>
-                                                            <td>12/18</td>
-                                                            <td>1.20</td>
-                                                            <td>0.00%</td>
-                                                        </tr>
+                                                        <?php foreach($loss_plans_list as $loss_plans){ ?>
+                                                            <tr>
+                                                                <td>
+                                                                    <input class="form-check-input" type="checkbox" name="loose[]" value="<?php echo $loss_plans->id;?>" checked>
+                                                                </td>
+                                                                <td><strong><?php echo $loss_plans->plan_name;?></strong></td>
+                                                                <td>$<?php echo $loss_plans->Spec_Deductible;?></td>
+                                                                <td><?php echo $loss_plans->Spec_Contract;?></td>
+                                                                <td>$<?php echo $loss_plans->Aggregating_Spec_Deductible;?></td>
+                                                                <td><?php echo $loss_plans->Agg_Contract;?></td>
+                                                                <td><?php echo $loss_plans->Agg_Corridor;?></td>
+                                                                <td><?php echo $loss_plans->Commission;?>%</td>
+                                                            </tr>
+                                                        <?php } ?>
 
                                                     </tbody>
                                                 </table>
@@ -551,23 +316,23 @@
 
                                     <div class="row mt-3">
                                         <div class="col-md-6">
-                                            <form method="post" action="">
+                                            
 
                                                 <!-- Stop Loss Coverage Type -->
                                                 <h5 class="mb-2">Stop Loss Coverage Type</h5>
                                                 <div class="form-group custom-controls-stacked">
                                                     <label class="custom-control custom-radio">
-                                                        <input type="radio" name="include" value="both" class="custom-control-input" checked>
+                                                        <input type="radio" name="Stop_Loss_Coverage_Type" value="both" class="custom-control-input" checked>
                                                         <span class="custom-control-label">Specific and aggregate stop loss</span> </label>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="custom-control custom-radio">
-                                                        <input type="radio" name="include" value="spec" class="custom-control-input">
+                                                        <input type="radio" name="Stop_Loss_Coverage_Type" value="spec" class="custom-control-input">
                                                         <span class="custom-control-label">Specific stop loss only</span> </label>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="custom-control custom-radio">
-                                                        <input type="radio" name="include" value="agg" class="custom-control-input">
+                                                        <input type="radio" name="Stop_Loss_Coverage_Type" value="agg" class="custom-control-input">
                                                         <span class="custom-control-label">Aggregate stop loss only</span> </label>
                                                 </div>
 
@@ -576,12 +341,12 @@
                                                 <div class="form-group custom-controls-stacked">
                                                     <label>Specific includes prescription drugs?</label><br>
                                                     <label class="custom-control custom-radio">
-                                                        <input type="radio" name="spec_include_rx" value="1" class="custom-control-input" checked>
+                                                        <input type="radio" name="Specific_includes_PD" value="1" class="custom-control-input" checked>
                                                         <span class="custom-control-label">Yes</span> </label>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="custom-control custom-radio">
-                                                        <input type="radio" name="spec_include_rx" value="0" class="custom-control-input">
+                                                        <input type="radio" name="Specific_includes_PD" value="0" class="custom-control-input">
                                                         <span class="custom-control-label">No</span> </label>
                                                 </div>
                                                 <div class="form-group custom-controls-stacked">
@@ -589,12 +354,12 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="custom-control custom-radio">
-                                                        <input type="radio" name="agg_include_rx" value="1" class="custom-control-input" checked>
+                                                        <input type="radio" name="Aggregate_includes_PD" value="1" class="custom-control-input" checked>
                                                         <span class="custom-control-label">Yes</span> </label>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="custom-control custom-radio">
-                                                        <input type="radio" name="agg_include_rx" value="0" class="custom-control-input">
+                                                        <input type="radio" name="Aggregate_includes_PD" value="0" class="custom-control-input">
                                                         <span class="custom-control-label">No</span> </label>
                                                 </div>
 
@@ -602,11 +367,11 @@
                                                 <h5 class="mb-2">Level Funded Stop Loss</h5>
                                                 <div class="form-group">
                                                     <label class="custom-control custom-checkbox">
-                                                        <input type="checkbox" name="level_funded_included" value="1" class="custom-control-input">
+                                                        <input type="checkbox" name="Include_level_quote" value="1" class="custom-control-input">
                                                         <span class="custom-control-label">Include level quote if available?</span> </label>
                                                 </div>
-                                                <button type="submit" class="btn btn-primary"> Review Stop Loss Options </button>
-                                            </form>
+                                                <button class="btn btn-primary"> Review Stop Loss Options </button>
+                                            
                                         </div>
 
                                         <!-- Help Panel -->
@@ -664,103 +429,22 @@
                                                     </thead>
 
                                                     <tbody>
+                                                        <?php foreach($benifit_plans_list as $benifit_plans){ ?>
                                                         <tr>
-                                                            <td><input class="form-check-input" type="checkbox" checked></td>
-                                                            <td><strong>Plan 1</strong></td>
-                                                            <td>In: $250<br>Out: $500</td>
-                                                            <td>In: 80%<br>Out: 60%</td>
-                                                            <td>In: $2,000<br>Out: $4,000</td>
-                                                            <td>In: Yes<br>Out: Yes</td>
-                                                            <td>$0</td>
-                                                            <td>$25</td>
-                                                            <td>$50</td>
-                                                            <td>Yes</td>
-                                                            <td>$200</td>
+                                                            <td><input class="form-check-input" type="checkbox" name="benifit_plans[]" value="<?php echo $benifit_plans->id;?>" checked></td>
+                                                            <td><strong><?php echo $benifit_plans->plan_name; ?></strong></td>
+                                                            <td>In: $<?php echo $benifit_plans->deductible_in; ?><br>Out: $<?php echo $benifit_plans->deductible_out; ?></td>
+                                                            <td>In: <?php echo $benifit_plans->coinsurance_in; ?>%<br>Out: <?php echo $benifit_plans->coinsurance_out; ?>%</td>
+                                                            <td>In: $<?php echo $benifit_plans->oop_maximum_in; ?><br>Out: $<?php echo $benifit_plans->oop_maximum_out; ?></td>
+                                                            <td>In: <?php echo ($benifit_plans->oop_includes_deductible_in == 1) ? 'Yes' : 'No'; ?><br>Out: <?php echo ($benifit_plans->oop_includes_deductible_out == 1) ? 'Yes' : 'No'; ?></td>
+                                                            <td>$<?php echo $benifit_plans->rx_copay_generic; ?></td>
+                                                            <td>$<?php echo $benifit_plans->rx_copay_formulary; ?></td>
+                                                            <td>$<?php echo $benifit_plans->rx_copay_non_formulary; ?></td>
+                                                            <td><?php echo ($benifit_plans->rx_covers_specialty == 1) ? 'Yes' : 'NO'; ?></td>
+                                                            <td>$<?php echo $benifit_plans->rx_copay_specialty; ?></td>
                                                         </tr>
-
-                                                        <tr>
-                                                            <td><input class="form-check-input" type="checkbox" checked></td>
-                                                            <td><strong>Plan 2</strong></td>
-                                                            <td>In: $500<br>Out: $1,000</td>
-                                                            <td>In: 80%<br>Out: 60%</td>
-                                                            <td>In: $3,000<br>Out: $6,000</td>
-                                                            <td>In: Yes<br>Out: Yes</td>
-                                                            <td>$0</td>
-                                                            <td>$25</td>
-                                                            <td>$50</td>
-                                                            <td>Yes</td>
-                                                            <td>$200</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td><input class="form-check-input" type="checkbox" checked></td>
-                                                            <td><strong>Plan 3</strong></td>
-                                                            <td>In: $1,500<br>Out: $3,000</td>
-                                                            <td>In: 80%<br>Out: 60%</td>
-                                                            <td>In: $3,500<br>Out: $7,000</td>
-                                                            <td>In: Yes<br>Out: Yes</td>
-                                                            <td>$0</td>
-                                                            <td>$25</td>
-                                                            <td>$50</td>
-                                                            <td>Yes</td>
-                                                            <td>$200</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td><input class="form-check-input" type="checkbox" checked></td>
-                                                            <td><strong>Plan 4</strong></td>
-                                                            <td>In: $2,000<br>Out: $4,000</td>
-                                                            <td>In: 80%<br>Out: 60%</td>
-                                                            <td>In: $5,000<br>Out: $10,000</td>
-                                                            <td>In: Yes<br>Out: Yes</td>
-                                                            <td>$0</td>
-                                                            <td>$35</td>
-                                                            <td>$70</td>
-                                                            <td>Yes</td>
-                                                            <td>$300</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td><input class="form-check-input" type="checkbox" checked></td>
-                                                            <td><strong>Plan 5</strong></td>
-                                                            <td>In: $3,500<br>Out: $7,000</td>
-                                                            <td>In: 80%<br>Out: 60%</td>
-                                                            <td>In: $5,000<br>Out: $10,000</td>
-                                                            <td>In: Yes<br>Out: Yes</td>
-                                                            <td>$0</td>
-                                                            <td>$0</td>
-                                                            <td>$0</td>
-                                                            <td>Yes</td>
-                                                            <td>$300</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td><input class="form-check-input" type="checkbox" checked></td>
-                                                            <td><strong>Plan 6</strong></td>
-                                                            <td>In: $5,000<br>Out: $10,000</td>
-                                                            <td>In: 70%<br>Out: 50%</td>
-                                                            <td>In: $6,000<br>Out: $12,000</td>
-                                                            <td>In: Yes<br>Out: Yes</td>
-                                                            <td>$0</td>
-                                                            <td>$0</td>
-                                                            <td>$0</td>
-                                                            <td>Yes</td>
-                                                            <td>$300</td>
-                                                        </tr>
-
-                                                        <tr>
-                                                            <td><input class="form-check-input" type="checkbox" checked></td>
-                                                            <td><strong>Plan 7</strong></td>
-                                                            <td>In: $0<br>Out: $2,000</td>
-                                                            <td>In: 100%<br>Out: 75%</td>
-                                                            <td>In: $5,000<br>Out: $5,000</td>
-                                                            <td>In: Yes<br>Out: Yes</td>
-                                                            <td>$10</td>
-                                                            <td>$25</td>
-                                                            <td>$50</td>
-                                                            <td>Yes</td>
-                                                            <td>$200</td>
-                                                        </tr>
+                                                        <?php } ?>
+                                                       
 
                                                     </tbody>
                                                 </table>
@@ -805,7 +489,7 @@
                                         Add any notes regarding the quote request below to provide the quote request recipient with additional information. </span>
                                 </div>
                                 <div class="panel-body">
-                                    <div class="form-group textarea "><label for="general-notes">General Notes</label><textarea class="form-control " name="general_notes" id="general-notes" rows="5" maxlength="100000"></textarea></div>
+                                    <div class="form-group textarea "><label for="general-notes">General Notes</label><textarea class="form-control " name="notes" id="general-notes" rows="5" maxlength="100000"></textarea></div>
                                 </div>
                             </div>
 
@@ -891,7 +575,7 @@
                                                             <td>TPA, PPO, PBM, Service Providers</td>
                                                             <td>PEPM</td>
                                                             <td style="max-width: 200px;">
-                                                                <input type="text" class="form-control" name="fees[1d683413-08fe-4889-b165-bdf66b68d242]" id="fees-1d683413-08fe-4889-b165-bdf66b68d242" placeholder="70.00" value="70.00" aria-label="Fee amount">
+                                                                <input type="text" class="form-control" name="fee_tpa" id="fees-1d683413-08fe-4889-b165-bdf66b68d242" placeholder="70.00" value="70.00" aria-label="Fee amount">
                                                             </td>
                                                             <td>
                                                                 <small class="text-muted">This fee is editable</small>
@@ -902,7 +586,7 @@
                                                             <td>Broker Fee</td>
                                                             <td>PEPM</td>
                                                             <td style="max-width: 200px;">
-                                                                <input type="text" class="form-control" name="fees[d612aff2-5d13-46b2-983a-2ceca9c2fceb]" id="fees-d612aff2-5d13-46b2-983a-2ceca9c2fceb" placeholder="35.00" value="35.00" aria-label="Fee amount">
+                                                                <input type="text" class="form-control" name="fees_broker_fee" id="fees-d612aff2-5d13-46b2-983a-2ceca9c2fceb" placeholder="35.00" value="35.00" aria-label="Fee amount">
                                                             </td>
                                                             <td>
                                                                 <small class="text-muted">This fee is editable</small>
@@ -925,6 +609,7 @@
                         <div class="d-flex   mt-4">
                             <button type="button" class="btn btn-secondary" id="prevBtn">Previous Step</button> &nbsp;
                             <button type="button" class="btn btn-primary" id="nextBtn">Next Step</button> &nbsp;
+                            <button type="submit" class="btn btn-primary" id="submit">Submit</button> &nbsp;
                             <button type="button" class="btn btn-warning" id="nextBtn">Save Draft</button>
                         </div>
                     </form>
@@ -975,3 +660,15 @@
 }
 
 </script>
+
+<style>.custom-file-button {
+  background-color: #198754;
+  color: white;
+  padding: 0.5rem;
+  font-family: sans-serif;
+  border-radius: 0.3rem;
+  cursor: pointer;
+  /* Ensure margin works correctly */
+  display: inline-block;
+  margin-top: 1rem;
+}</style>
