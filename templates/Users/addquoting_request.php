@@ -70,7 +70,7 @@
                     <!-- Form -->
                     <!-- <form id="multiStepForm"> -->
                     <?php echo $this->Flash->render(); ?>
-                    <form method="post" action="<?php echo $this->Url->build(['controller' => 'Users', 'action' => 'addquotingRequest']); ?>" enctype="multipart/form-data" accept-charset="utf-8">
+                    <form method="post" action="<?php echo $this->Url->build(['controller' => 'Users', 'action' => 'addquotingRequest']); ?>?programid=<?php echo $this->request->getQuery('programid'); ?>" enctype="multipart/form-data" accept-charset="utf-8">
                         <div class="step active">
                             <div class="row">
                                 <div class="col-12">
@@ -469,7 +469,9 @@
                                         </div>
 
                                         <div class="col-md-3 text-right">
-                                            <a href="#" class="btn btn-rounded btn-secondary mr-1 d-print-none">Upload Files</a> <a href="#" class="btn btn-rounded btn-primary d-print-none" data-no-ajax="1">Download All</a>
+                                            <input type="file" name="attach_file" class="btn btn-rounded btn-secondary mr-1 d-print-none" />
+                                            <!-- <a href="#" class="btn btn-rounded btn-secondary mr-1 d-print-none">Upload Files</a>  -->
+                                            <a href="#" class="btn btn-rounded btn-primary d-print-none" data-no-ajax="1">Download All</a>
                                         </div>
                                     </div>
                                 </div>
@@ -575,7 +577,7 @@
                                                             <td>TPA, PPO, PBM, Service Providers</td>
                                                             <td>PEPM</td>
                                                             <td style="max-width: 200px;">
-                                                                <input type="text" class="form-control" name="fee_tpa" id="fees-1d683413-08fe-4889-b165-bdf66b68d242" placeholder="70.00" value="70.00" aria-label="Fee amount">
+                                                                <input type="text" class="form-control" name="fee_tpa" id="TPA_PPO" placeholder="70.00" value="70.00" aria-label="Fee amount">
                                                             </td>
                                                             <td>
                                                                 <small class="text-muted">This fee is editable</small>
@@ -586,7 +588,7 @@
                                                             <td>Broker Fee</td>
                                                             <td>PEPM</td>
                                                             <td style="max-width: 200px;">
-                                                                <input type="text" class="form-control" name="fees_broker_fee" id="fees-d612aff2-5d13-46b2-983a-2ceca9c2fceb" placeholder="35.00" value="35.00" aria-label="Fee amount">
+                                                                <input type="text" class="form-control" name="fees_broker_fee" id="Broke_Fee" placeholder="35.00" value="35.00" aria-label="Fee amount">
                                                             </td>
                                                             <td>
                                                                 <small class="text-muted">This fee is editable</small>
@@ -607,9 +609,9 @@
 
                         <!-- Navigation buttons -->
                         <div class="d-flex   mt-4">
-                            <button type="button" class="btn btn-secondary" id="prevBtn">Previous Step</button> &nbsp;
+                            <button type="button" class="btn btn-secondary" id="prevBtn" style="display:none;">Previous Step</button> &nbsp;
                             <button type="button" class="btn btn-primary" id="nextBtn">Next Step</button> &nbsp;
-                            <button type="submit" class="btn btn-primary" id="submit">Submit</button> &nbsp;
+                            <button type="submit" class="btn btn-primary" id="submit" style="display: none;">Submit</button> &nbsp;
                             <button type="button" class="btn btn-warning" id="nextBtn">Save Draft</button>
                         </div>
                     </form>
@@ -636,6 +638,15 @@
   if (currentStep < steps.length - 1) {
     currentStep++;
     updateSteps();
+    document.getElementById("prevBtn").style.display = "block";
+    if(currentStep == 4){
+        document.getElementById("submit").style.display = "block";
+        document.getElementById("nextBtn").style.display = "none";
+    }else{
+        document.getElementById("submit").style.display = "none";
+        document.getElementById("nextBtn").style.display = "block";
+    }
+    
   }
 });
 
@@ -643,6 +654,16 @@
   if (currentStep > 0) {
     currentStep--;
     updateSteps();
+    if(currentStep == 0){
+        document.getElementById("prevBtn").style.display = "none";
+    }
+    if(currentStep == 4){
+        document.getElementById("submit").style.display = "block";
+        document.getElementById("nextBtn").style.display = "none";
+    }else{
+        document.getElementById("submit").style.display = "none";
+        document.getElementById("nextBtn").style.display = "block";
+    }
   }
 });
 

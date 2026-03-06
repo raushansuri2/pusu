@@ -334,6 +334,10 @@ class UsersController extends AppController
         $this->viewBuilder()->setLayout('login');
         $layoutTitle = 'ERISAQuote Pro. - Dashboard';
         
+        if($this->request->getQuery('programid') == ""){
+            $this->Flash->error(__('Please select a program first.'));
+            return $this->redirect(['controller' => 'Users', 'action' => 'programChoose']);
+        }
         //session check for login
         $session = $this->request->getSession();
         if ($session->read('ERISAQuoteProSession.Users.role') != 'Member') {
@@ -371,7 +375,7 @@ class UsersController extends AppController
             $Requesy_D['networking_id'] = ($this->request->getData('quote_request_networks')) ? implode(',', $this->request->getData('quote_request_networks')) : null;
             $Requesy_D['loss_plan'] = ($this->request->getData('loose')) ? implode(',', $this->request->getData('loose')) : null;
             $Requesy_D['benifit_plan'] = ($this->request->getData('benifit_plans')) ? implode(',', $this->request->getData('benifit_plans')) : null;
-            
+            $Requesy_D['program_id'] = $this->request->getQuery('programid');
             $RequestQuots = $RequestQuotsTable->patchEntity(
                 $RequestQuots,
                 $Requesy_D,
@@ -395,12 +399,12 @@ class UsersController extends AppController
                         $census,
                         $census_data,
                         ['validate' => false]);
-
+                    $censusTable->save($census);
                     $file->moveTo($targetPath);
                 }
 
-                $this->Flash->success(__('Group added successfully.'));
-                return $this->redirect(['controller' => 'Users', 'action' => 'requestlist']);
+                $this->Flash->success(__('Quote requested successfully.'));
+                return $this->redirect(['controller' => 'Users', 'action' => 'quotingRequest']);
 
             } else {
 
