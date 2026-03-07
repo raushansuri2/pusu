@@ -60,6 +60,27 @@ $action_name = $this->request->getParam('action');
         </a>
     </li>
 
+    <!-- Networks Repricing -->
+    <li class="<?= ($module_name == 'NetworksRepricings') ? 'active' : '' ?>">
+        <a href="<?= $this->Url->build(['controller' => 'NetworksRepricings', 'action' => 'index', 'prefix' => 'Admin']) ?>">
+            <i class="fa fa-network-wired"></i> <span>Networks Repricing</span>
+        </a>
+    </li>
+
+    <!-- Benefit Plans -->
+    <li class="<?= ($module_name == 'BenifitPlans') ? 'active' : '' ?>">
+        <a href="<?= $this->Url->build(['controller' => 'BenifitPlans', 'action' => 'index', 'prefix' => 'Admin']) ?>">
+            <i class="fa fa-heartbeat"></i> <span>Benefit Plans</span>
+        </a>
+    </li>
+
+    <!-- Loose Plans -->
+    <li class="<?= ($module_name == 'LoosePlans') ? 'active' : '' ?>">
+        <a href="<?= $this->Url->build(['controller' => 'LoosePlans', 'action' => 'index', 'prefix' => 'Admin']) ?>">
+            <i class="fa fa-cog"></i> <span>Loose Plans</span>
+        </a>
+    </li>
+
     <!-- Fees -->
     <li class="<?= ($module_name == 'Fees') ? 'active' : '' ?>">
         <a href="<?= $this->Url->build(['controller' => 'Fees', 'action' => 'index', 'prefix' => 'Admin']) ?>">

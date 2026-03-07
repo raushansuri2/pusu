@@ -42,7 +42,8 @@
                                                 <th>ID</th>
                                                 <th>Name</th>
                                                 <th>Type</th>
-                                                <th>Network</th>
+                                               
+                                                <th>Status</th>
                                                 <th>Actions</th>
                                             </tr>
                                         </thead>
@@ -52,7 +53,13 @@
                                                     <td><?= $program->id ?></td>
                                                     <td><?= h($program->name) ?></td>
                                                     <td><?= h($program->p_type) ?></td>
-                                                    <td><?= h($program->networks_repricing->name ?? 'No Network') ?></td>
+                                                    <td>
+                                                        <?php if ($program->status == 1): ?>
+                                                            <span class="badge badge-success">Active</span>
+                                                        <?php else: ?>
+                                                            <span class="badge badge-danger">Inactive</span>
+                                                        <?php endif; ?>
+                                                    </td>
                                                     <td>
                                                         <?= $this->Html->link('<i class="fa fa-edit"></i>', ['action' => 'edit', $program->id], ['class' => 'btn btn-sm btn-primary mr5', 'escape' => false]) ?>
                                                         <?= $this->Form->postLink('<i class="fa fa-trash"></i>', ['action' => 'delete', $program->id], [

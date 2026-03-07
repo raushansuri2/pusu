@@ -45,6 +45,12 @@ class ProgramsTable extends Table
             ->integer('network_id')
             ->allowEmptyString('network_id');
 
+        $validator
+            ->integer('status')
+            ->requirePresence('status', 'create')
+            ->notEmptyString('status')
+            ->inList('status', [0, 1], 'Status must be either 0 (Inactive) or 1 (Active)');
+
         return $validator;
     }
 

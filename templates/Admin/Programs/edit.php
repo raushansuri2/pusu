@@ -65,15 +65,17 @@
                             </div><!-- form-group -->
                         </div><!-- row -->
 
+                        
+
                         <div class="row">
                             <div class="form-group">
-                                <label class="col-sm-3 control-label">Network</label>
+                                <label class="col-sm-3 control-label">Status</label>
                                 <div class="col-sm-9">
-                                    <?php echo $this->Form->input('network_id', [
+                                    <?php echo $this->Form->input('status', [
                                         'class' => 'form-control',
                                         'type' => 'select',
-                                        'options' => $networks,
-                                        'empty' => 'Select network',
+                                        'options' => [1 => 'Active', 0 => 'Inactive'],
+                                        'empty' => 'Select status',
                                         'div' => false,
                                         'label' => false
                                     ]); ?>
