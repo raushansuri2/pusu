@@ -50,22 +50,34 @@ class LoosePlansController extends AppController
             return $this->redirect(['controller' => 'Admins', 'action' => 'login', 'prefix' => 'Admin']);
         }
 
+        // Fetch programs for multi-select
+        $programsTable = $this->fetchTable('Programs');
+        $programs = $programsTable->find('list', ['keyField' => 'id', 'valueField' => 'name'])->toArray();
+
+
         $loosePlansTable = $this->fetchTable('LoosePlans');
         $loosePlan = $loosePlansTable->newEmptyEntity();
 
         if ($this->request->is('post')) {
             $data = $this->request->getData();
+            // Handle multiple program IDs - convert array to comma-separated string
+            if (isset($data['program_id']) && is_array($data['program_id'])) {
+                $data['program_id'] = implode(',', array_filter($data['program_id']));
+            } else {
+                $data['program_id'] = '';
+            }
             $loosePlan = $loosePlansTable->patchEntity($loosePlan, $data);
 
             if ($loosePlansTable->save($loosePlan)) {
-                $this->Flash->success(__('Loose plan added successfully.'));
+                $this->Flash->success(__('Losse plan added successfully.'));
                 return $this->redirect(['action' => 'index']);
             } else {
-                $this->Flash->error(__('Unable to add loose plan. Please, try again.'));
+                //pr($loosePlansTable->getErrors()); die;
+                $this->Flash->error(__('Unable to add losse plan. Please, try again.'));
             }
         }
 
-        $this->set(compact('loosePlan'));
+        $this->set(compact('loosePlan','programs'));
     }
 
     public function edit($id = null)
@@ -79,6 +91,9 @@ class LoosePlansController extends AppController
             $session->destroy();
             return $this->redirect(['controller' => 'Admins', 'action' => 'login', 'prefix' => 'Admin']);
         }
+        // Fetch programs for multi-select
+        $programsTable = $this->fetchTable('Programs');
+        $programs = $programsTable->find('list', ['keyField' => 'id', 'valueField' => 'name'])->toArray();
 
         $loosePlansTable = $this->fetchTable('LoosePlans');
         $loosePlan = $loosePlansTable->get($id);
@@ -90,6 +105,13 @@ class LoosePlansController extends AppController
 
         if ($this->request->is(['patch', 'post', 'put'])) {
             $data = $this->request->getData();
+             // Handle multiple program IDs - convert array to comma-separated string
+            if (isset($data['program_id']) && is_array($data['program_id'])) {
+                $data['program_id'] = implode(',', array_filter($data['program_id']));
+            } else {
+                $data['program_id'] = '';
+            }
+
             $loosePlan = $loosePlansTable->patchEntity($loosePlan, $data);
 
             if ($loosePlansTable->save($loosePlan)) {
@@ -100,7 +122,7 @@ class LoosePlansController extends AppController
             }
         }
 
-        $this->set(compact('loosePlan'));
+        $this->set(compact('loosePlan','programs'));
     }
 
     public function delete($id = null)

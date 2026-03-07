@@ -81,6 +81,13 @@ $action_name = $this->request->getParam('action');
         </a>
     </li>
 
+    <!-- Request Quotes -->
+    <li class="<?= ($module_name == 'RequestQuotes') ? 'active' : '' ?>">
+        <a href="<?= $this->Url->build(['controller' => 'RequestQuotes', 'action' => 'index', 'prefix' => 'Admin']) ?>">
+            <i class="fa fa-file-text"></i> <span>Request Quotes</span>
+        </a>
+    </li>
+
     <!-- Fees -->
     <li class="<?= ($module_name == 'Fees') ? 'active' : '' ?>">
         <a href="<?= $this->Url->build(['controller' => 'Fees', 'action' => 'index', 'prefix' => 'Admin']) ?>">

@@ -34,30 +34,45 @@
                     <div class="panel-body">
                         <div class="row">
                             <div class="form-group">
-                                <label class="col-sm-3 control-label">Name <span class="asterisk">*</span></label>
+                                <label class="col-sm-3 control-label">Plan Name <span class="asterisk">*</span></label>
                                 <div class="col-sm-9">
-                                    <?php echo $this->Form->input('name', [
-                                        'error' => ['Please enter name'],
+                                    <?php echo $this->Form->input('plan_name', [
+                                        'error' => ['Please enter plan name'],
                                         'class' => 'form-control',
                                         'type' => 'text',
                                         'required' => false,
-                                        'placeholder' => 'Enter name',
+                                        'placeholder' => 'Enter plan name',
                                         'div' => false,
                                         'label' => false
                                     ]); ?>
                                 </div>
                             </div><!-- form-group -->
                         </div><!-- row -->
-
+                        
                         <div class="row">
                             <div class="form-group">
-                                <label class="col-sm-3 control-label">Description</label>
+                                <label class="col-sm-3 control-label">Programs</label>
                                 <div class="col-sm-9">
-                                    <?php echo $this->Form->input('description', [
+                                    <?php echo $this->Form->input('program_id', [
                                         'class' => 'form-control',
-                                        'type' => 'textarea',
-                                        'rows' => 4,
-                                        'placeholder' => 'Enter description',
+                                        'type' => 'select',
+                                        'options' => $programs,
+                                        'multiple' => 'multiple',
+                                        'div' => false,
+                                        'label' => false
+                                    ]); ?>
+                                </div>
+                            </div><!-- form-group -->
+                        </div><!-- row -->
+                        
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Spec Deductible</label>
+                                <div class="col-sm-9">
+                                    <?php echo $this->Form->input('Spec_Deductible', [
+                                        'class' => 'form-control',
+                                        'type' => 'number',
+                                        'placeholder' => '0',
                                         'div' => false,
                                         'label' => false
                                     ]); ?>
@@ -67,12 +82,12 @@
 
                         <div class="row">
                             <div class="form-group">
-                                <label class="col-sm-3 control-label">Type</label>
+                                <label class="col-sm-3 control-label">Spec Contract</label>
                                 <div class="col-sm-9">
-                                    <?php echo $this->Form->input('type', [
+                                    <?php echo $this->Form->input('Spec_Contract', [
                                         'class' => 'form-control',
                                         'type' => 'text',
-                                        'placeholder' => 'Enter type',
+                                        'placeholder' => 'Enter Spec Contract',
                                         'div' => false,
                                         'label' => false
                                     ]); ?>
@@ -83,14 +98,14 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label class="col-sm-6 control-label">Deductible In</label>
+                                    <label class="col-sm-6 control-label">Aggregating Spec Deductible</label>
                                     <div class="col-sm-6">
-                                        <?php echo $this->Form->input('deductible_in', [
+                                        <?php echo $this->Form->input('Aggregating_Spec_Deductible', [
                                             'class' => 'form-control',
                                             'type' => 'number',
                                             'step' => '0.01',
                                             'min' => '0',
-                                            'placeholder' => '0.00',
+                                            'placeholder' => '0',
                                             'div' => false,
                                             'label' => false
                                         ]); ?>
@@ -99,14 +114,12 @@
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label class="col-sm-6 control-label">Deductible Out</label>
+                                    <label class="col-sm-6 control-label">Agg Contract</label>
                                     <div class="col-sm-6">
-                                        <?php echo $this->Form->input('deductible_out', [
+                                        <?php echo $this->Form->input('Agg_Contract', [
                                             'class' => 'form-control',
-                                            'type' => 'number',
-                                            'step' => '0.01',
-                                            'min' => '0',
-                                            'placeholder' => '0.00',
+                                            'type' => 'text',
+                                            'placeholder' => '12/12',
                                             'div' => false,
                                             'label' => false
                                         ]); ?>
@@ -118,137 +131,29 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label class="col-sm-6 control-label">Coinsurance In(%)</label>
+                                    <label class="col-sm-6 control-label">Agg Corridor</label>
                                     <div class="col-sm-6">
-                                        <?php echo $this->Form->input('deductible_co_insurance', [
+                                        <?php echo $this->Form->input('Agg_Corridor', [
                                             'class' => 'form-control',
                                             'type' => 'number',
                                             'step' => '0.1',
                                             'min' => '0',
                                             'max' => '100',
-                                            'placeholder' => '80',
+                                            'placeholder' => '0',
                                             'div' => false,
                                             'label' => false
                                         ]); ?>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="col-sm-6 control-label">Coinsurance Out(%)</label>
-                                    <div class="col-sm-6">
-                                        <?php echo $this->Form->input('deductible_co_insurance_out', [
-                                            'class' => 'form-control',
-                                            'type' => 'number',
-                                            'step' => '0.1',
-                                            'min' => '0',
-                                            'max' => '100',
-                                            'placeholder' => '60',
-                                            'div' => false,
-                                            'label' => false
-                                        ]); ?>
-                                    </div>
-                                </div>
-                            </div>
-                        </div><!-- row -->
 
-                        <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label class="col-sm-6 control-label">OOP Max In</label>
+                                    <label class="col-sm-6 control-label">Commission(%)</label>
                                     <div class="col-sm-6">
-                                        <?php echo $this->Form->input('deductible_oop_in', [
+                                        <?php echo $this->Form->input('Commission', [
                                             'class' => 'form-control',
                                             'type' => 'number',
-                                            'step' => '0.01',
-                                            'min' => '0',
-                                            'placeholder' => '2000.00',
-                                            'div' => false,
-                                            'label' => false
-                                        ]); ?>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="col-sm-6 control-label">OOP Max Out</label>
-                                    <div class="col-sm-6">
-                                        <?php echo $this->Form->input('deductible_oop_out', [
-                                            'class' => 'form-control',
-                                            'type' => 'number',
-                                            'step' => '0.01',
-                                            'min' => '0',
-                                            'placeholder' => '4000.00',
-                                            'div' => false,
-                                            'label' => false
-                                        ]); ?>
-                                    </div>
-                                </div>
-                            </div>
-                        </div><!-- row -->
-
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="col-sm-6 control-label">RX Copay Generic</label>
-                                    <div class="col-sm-6">
-                                        <?php echo $this->Form->input('rx_copay_generic', [
-                                            'class' => 'form-control',
-                                            'type' => 'number',
-                                            'step' => '0.01',
-                                            'min' => '0',
-                                            'placeholder' => '10.00',
-                                            'div' => false,
-                                            'label' => false
-                                        ]); ?>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="col-sm-6 control-label">RX Copay Formulary</label>
-                                    <div class="col-sm-6">
-                                        <?php echo $this->Form->input('rx_copay_formulary', [
-                                            'class' => 'form-control',
-                                            'type' => 'number',
-                                            'step' => '0.01',
-                                            'min' => '0',
-                                            'placeholder' => '25.00',
-                                            'div' => false,
-                                            'label' => false
-                                        ]); ?>
-                                    </div>
-                                </div>
-                            </div>
-                        </div><!-- row -->
-
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="col-sm-6 control-label">RX Copay Non-Formulary</label>
-                                    <div class="col-sm-6">
-                                        <?php echo $this->Form->input('rx_copay_non_formulary', [
-                                            'class' => 'form-control',
-                                            'type' => 'number',
-                                            'step' => '0.01',
-                                            'min' => '0',
-                                            'placeholder' => '50.00',
-                                            'div' => false,
-                                            'label' => false
-                                        ]); ?>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="col-sm-6 control-label">RX Copay Specialty</label>
-                                    <div class="col-sm-6">
-                                        <?php echo $this->Form->input('rx_copay_specialty', [
-                                            'class' => 'form-control',
-                                            'type' => 'number',
-                                            'step' => '0.01',
-                                            'min' => '0',
-                                            'placeholder' => '200.00',
                                             'div' => false,
                                             'label' => false
                                         ]); ?>

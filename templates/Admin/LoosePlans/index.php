@@ -40,11 +40,9 @@
                                         <thead>
                                             <tr>
                                                 <th>ID</th>
-                                                <th>Name</th>
-                                                <th>Type</th>
-                                                <th>Deductible In/Out</th>
-                                                <th>Coinsurance In/Out</th>
-                                                <th>OOP Max In/Out</th>
+                                                <th>Plan Name</th>
+                                                <th>Program</th>
+                                                <th>Commisiion(%)</th>
                                                 <th>Status</th>
                                                 <th>Actions</th>
                                             </tr>
@@ -53,11 +51,33 @@
                                             <?php foreach ($loosePlans as $plan): ?>
                                                 <tr>
                                                     <td><?= $plan->id ?></td>
-                                                    <td><?= h($plan->name) ?></td>
-                                                    <td><?= h($plan->type) ?></td>
-                                                    <td>$<?= number_format($plan->deductible_in ?? 0, 2) ?> / $<?= number_format($plan->deductible_out ?? 0, 2) ?></td>
-                                                    <td><?= number_format($plan->deductible_co_insurance ?? 0, 1) ?>% / <?= number_format($plan->deductible_co_insurance_out ?? 0, 1) ?>%</td>
-                                                    <td>$<?= number_format($plan->deductible_oop_in ?? 0, 2) ?> / $<?= number_format($plan->deductible_oop_out ?? 0, 2) ?></td>
+                                                    <td><?= h($plan->plan_name) ?></td>
+                                                    <td>
+                                                        <?php 
+                                                        if (!empty($plan->program_id)) {
+                                                            // Handle both string and array types
+                                                            if (is_array($plan->program_id)) {
+                                                                $programIds = $plan->program_id;
+                                                            } else {
+                                                                $programIds = explode(',', $plan->program_id);
+                                                            }
+                                                            $programsTable = \Cake\ORM\TableRegistry::getTableLocator()->get('Programs');
+                                                            $programNames = [];
+                                                            foreach ($programIds as $programId) {
+                                                                if (!empty($programId)) {
+                                                                    $program = $programsTable->find()->where(['id' => $programId])->first();
+                                                                    if ($program) {
+                                                                        $programNames[] = h($program->name);
+                                                                    }
+                                                                }
+                                                            }
+                                                            echo !empty($programNames) ? implode(', ', $programNames) : 'No Programs';
+                                                        } else {
+                                                            echo 'No Programs';
+                                                        }
+                                                        ?>
+                                                    </td>
+                                                    <td>$<?= $plan->Commission; ?></td>
                                                     <td>
                                                         <?php if ($plan->status == 1): ?>
                                                             <span class="badge badge-success">Active</span>

@@ -19,129 +19,44 @@ class LoosePlansTable extends Table
     public function validationDefault(Validator $validator): Validator
     {
         $validator
-            ->scalar('name')
-            ->maxLength('name', 255)
-            ->requirePresence('name', 'create')
-            ->notEmptyString('name');
+            ->scalar('plan_name')
+            ->maxLength('plan_name', 255)
+            ->requirePresence('plan_name', 'create')
+            ->notEmptyString('plan_name');
 
         $validator
-            ->scalar('description')
-            ->allowEmptyString('description');
+            ->scalar('program_id')
+            ->allowEmptyString('program_id');
 
         $validator
-            ->scalar('type')
-            ->maxLength('type', 255)
-            ->allowEmptyString('type');
+            ->scalar('Spec_Deductible')
+            ->numeric('Spec_Deductible')
+            ->allowEmptyString('Spec_Deductible');
 
         $validator
-            ->scalar('plan_type')
-            ->maxLength('plan_type', 255)
-            ->allowEmptyString('plan_type');
+            ->scalar('Spec_Contract')
+            ->maxLength('Spec_Contract', 255)
+            ->allowEmptyString('Spec_Contract');
 
         $validator
-            ->scalar('deductible_in')
-            ->decimal('deductible_in', 2)
-            ->allowEmptyString('deductible_in');
+            ->scalar('Aggregating_Spec_Deductible')
+            ->numeric('Aggregating_Spec_Deductible')
+            ->allowEmptyString('Aggregating_Spec_Deductible');
 
         $validator
-            ->scalar('deductible_out')
-            ->decimal('deductible_out', 2)
-            ->allowEmptyString('deductible_out');
+            ->scalar('Agg_Contract')
+            ->maxLength('Agg_Contract', 255)
+            ->allowEmptyString('Agg_Contract');
 
         $validator
-            ->scalar('deductible_co_insurance')
-            ->decimal('deductible_co_insurance', 2)
-            ->allowEmptyString('deductible_co_insurance');
+            ->scalar('Agg_Corridor')
+            ->numeric('Agg_Corridor')
+            ->allowEmptyString('Agg_Corridor');
 
         $validator
-            ->scalar('deductible_co_insurance_out')
-            ->decimal('deductible_co_insurance_out', 2)
-            ->allowEmptyString('deductible_co_insurance_out');
-
-        $validator
-            ->scalar('deductible_oop_in')
-            ->decimal('deductible_oop_in', 2)
-            ->allowEmptyString('deductible_oop_in');
-
-        $validator
-            ->scalar('deductible_oop_out')
-            ->decimal('deductible_oop_out', 2)
-            ->allowEmptyString('deductible_oop_out');
-
-        $validator
-            ->scalar('deductible_oop_includes_deductible_in')
-            ->boolean('deductible_oop_includes_deductible_in')
-            ->allowEmptyString('deductible_oop_includes_deductible_in');
-
-        $validator
-            ->scalar('deductible_oop_includes_deductible_out')
-            ->boolean('deductible_oop_includes_deductible_out')
-            ->allowEmptyString('deductible_oop_includes_deductible_out');
-
-        $validator
-            ->scalar('rx_copay_generic')
-            ->decimal('rx_copay_generic', 2)
-            ->allowEmptyString('rx_copay_generic');
-
-        $validator
-            ->scalar('rx_copay_formulary')
-            ->decimal('rx_copay_formulary', 2)
-            ->allowEmptyString('rx_copay_formulary');
-
-        $validator
-            ->scalar('rx_copay_non_formulary')
-            ->decimal('rx_copay_non_formulary', 2)
-            ->allowEmptyString('rx_copay_non_formulary');
-
-        $validator
-            ->scalar('rx_copay_specialty')
-            ->decimal('rx_copay_specialty', 2)
-            ->allowEmptyString('rx_copay_specialty');
-
-        $validator
-            ->scalar('rx_covers_specialty')
-            ->boolean('rx_covers_specialty')
-            ->allowEmptyString('rx_covers_specialty');
-
-        $validator
-            ->scalar('rx_deductible')
-            ->decimal('rx_deductible', 2)
-            ->allowEmptyString('rx_deductible');
-
-        $validator
-            ->scalar('rx_max_copay')
-            ->decimal('rx_max_copay', 2)
-            ->allowEmptyString('rx_max_copay');
-
-        $validator
-            ->scalar('rx_max_out_of_pocket')
-            ->decimal('rx_max_out_of_pocket', 2)
-            ->allowEmptyString('rx_max_out_of_pocket');
-
-        $validator
-            ->scalar('plan_level')
-            ->maxLength('plan_level', 255)
-            ->allowEmptyString('plan_level');
-
-        $validator
-            ->scalar('plan_category')
-            ->maxLength('plan_category', 255)
-            ->allowEmptyString('plan_category');
-
-        $validator
-            ->scalar('plan_tier')
-            ->maxLength('plan_tier', 255)
-            ->allowEmptyString('plan_tier');
-
-        $validator
-            ->scalar('plan_network')
-            ->maxLength('plan_network', 255)
-            ->allowEmptyString('plan_network');
-
-        $validator
-            ->scalar('coinsurance')
-            ->decimal('coinsurance', 2)
-            ->allowEmptyString('coinsurance');
+            ->scalar('Commission')
+            ->numeric('Commission')
+            ->allowEmptyString('Commission');
 
         $validator
             ->integer('status')
