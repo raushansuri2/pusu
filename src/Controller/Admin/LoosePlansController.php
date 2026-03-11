@@ -24,11 +24,10 @@ class LoosePlansController extends AppController
         }
 
         $keyword = $this->request->getQuery('keyword');
-	    $condition[] = ['LoosePlans.status' => 1];
+	    $condition[] = ['LoosePlans.id >' => 0];
 
 	    if (!empty($keyword)) {
 	        $condition = [
-	            'LoosePlans.status' => 1,
 	            'OR' => [
 	                'LoosePlans.plan_name LIKE' => "%{$keyword}%",
 	            ]

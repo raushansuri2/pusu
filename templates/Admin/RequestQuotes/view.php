@@ -66,15 +66,57 @@
                                     </tr>
                                     <tr>
                                         <td><strong>Networking ID:</strong></td>
-                                        <td><?= h($requestQuote->network->name ?? $requestQuote->networking_id) ?></td>
+                                        <td>
+                                            <?php
+                                            $networkNames = [];
+                                            if (!empty($requestQuote->networking_id)) {
+                                                $ids = array_filter(array_map('trim', explode(',', (string)$requestQuote->networking_id)));
+                                                foreach ($ids as $nid) {
+                                                    $nid = (int)$nid;
+                                                    if (!empty($networkNamesById[$nid])) {
+                                                        $networkNames[] = $networkNamesById[$nid];
+                                                    }
+                                                }
+                                            }
+                                            echo h(!empty($networkNames) ? implode(', ', $networkNames) : ($requestQuote->networking_id ?? ''));
+                                            ?>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td><strong>Loss Plan:</strong></td>
-                                        <td><?= h($requestQuote->loosePlan->plan_name ?? $requestQuote->loss_plan) ?></td>
+                                        <td>
+                                            <?php
+                                            $lossPlanNames = [];
+                                            if (!empty($requestQuote->loss_plan)) {
+                                                $ids = array_filter(array_map('trim', explode(',', (string)$requestQuote->loss_plan)));
+                                                foreach ($ids as $pid) {
+                                                    $pid = (int)$pid;
+                                                    if (!empty($lossPlanNamesById[$pid])) {
+                                                        $lossPlanNames[] = $lossPlanNamesById[$pid];
+                                                    }
+                                                }
+                                            }
+                                            echo h(!empty($lossPlanNames) ? implode(', ', $lossPlanNames) : ($requestQuote->loss_plan ?? ''));
+                                            ?>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td><strong>Benefit Plan:</strong></td>
-                                        <td><?= h($requestQuote->benifitPlan->plan_name ?? $requestQuote->benifit_plan) ?></td>
+                                        <td>
+                                            <?php
+                                            $benifitPlanNames = [];
+                                            if (!empty($requestQuote->benifit_plan)) {
+                                                $ids = array_filter(array_map('trim', explode(',', (string)$requestQuote->benifit_plan)));
+                                                foreach ($ids as $pid) {
+                                                    $pid = (int)$pid;
+                                                    if (!empty($benifitPlanNamesById[$pid])) {
+                                                        $benifitPlanNames[] = $benifitPlanNamesById[$pid];
+                                                    }
+                                                }
+                                            }
+                                            echo h(!empty($benifitPlanNames) ? implode(', ', $benifitPlanNames) : ($requestQuote->benifit_plan ?? ''));
+                                            ?>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td><strong>Stop Loss Coverage Type:</strong></td>

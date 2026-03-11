@@ -25,13 +25,12 @@ class BenifitPlansController extends AppController
         }
 
         $keyword = $this->request->getQuery('keyword');
-	    $condition[] = ['BenifitPlans.status' => 1];
+	    $condition[] = ['BenifitPlans.id >' => 0];
 
 	    if (!empty($keyword)) {
 	        $condition = [
-	            'BenifitPlans.status' => 1,
 	            'OR' => [
-	                'BenifitPlans.plan_name LIKE' => '%' . $keyword . '%',
+	                'BenifitPlans.plan_name LIKE' => "%{$keyword}%",
 	            ]
 	        ];
 	    }

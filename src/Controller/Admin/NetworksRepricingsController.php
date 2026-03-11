@@ -25,11 +25,10 @@ class NetworksRepricingsController extends AppController
         }
 
         $keyword = $this->request->getQuery('keyword');
-	    $condition[] = ['NetworksRepricing.status' => 1];
+	    $condition[] = ['NetworksRepricing.id >' => 0];
 
 	    if (!empty($keyword)) {
 	        $condition = [
-	            'NetworksRepricing.status' => 1,
 	            'OR' => [
 	                'NetworksRepricing.name LIKE' => "%{$keyword}%",
 	            ]

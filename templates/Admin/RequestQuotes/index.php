@@ -17,6 +17,21 @@
                     </ul>
                     <h4>Request Quotes</h4>
                 </div>
+
+
+                <div class="search-body" style="width: 39%;">
+                    <?= $this->Form->create(null, ['type' => 'get', 'valueSources' => ['query']]) ?>
+                    <?= $this->Form->control('keyword', [
+                        'class' => 'form-control width200',
+                        'placeholder' => 'Enter Keyword to Search',
+                        'style' => 'float:left',
+                        'label' => false,
+                        'autocomplete' => 'off'
+                    ]) ?>
+                    <?= $this->Form->button('Search', ['class' => 'btn btn-primary mr5 ml10']) ?>
+                    <?= $this->Form->end() ?>
+                </div>
+
             </div><!-- media -->
         </div><!-- pageheader -->
 
@@ -28,6 +43,9 @@
                     <div class="panel-heading">
                         <h4 class="panel-title">Request Quotes List</h4>
                         <p>View and manage all quote requests submitted by users.</p>
+
+
+
                     </div><!-- panel-heading -->
 
                     <div class="panel-body">
@@ -61,9 +79,51 @@
                                                 <td><?= h($quote->Policy_Effective_Date) ?></td>
                                                 <td><?= h($quote->Policy_Termination_Date) ?></td>
                                                 <td><?= h($quote->Final_Proposals_Due) ?></td>
-                                                <td><?= h($quote->network->name ?? $quote->networking_id) ?></td>
-                                                <td><?= h($quote->loosePlan->plan_name ?? $quote->loss_plan) ?></td>
-                                                <td><?= h($quote->benifitPlan->plan_name ?? $quote->benifit_plan) ?></td>
+                                                <td>
+                                                    <?php
+                                                    $networkNames = [];
+                                                    if (!empty($quote->networking_id)) {
+                                                        $ids = array_filter(array_map('trim', explode(',', (string)$quote->networking_id)));
+                                                        foreach ($ids as $nid) {
+                                                            $nid = (int)$nid;
+                                                            if (!empty($networkNamesById[$nid])) {
+                                                                $networkNames[] = $networkNamesById[$nid];
+                                                            }
+                                                        }
+                                                    }
+                                                    echo h(!empty($networkNames) ? implode(', ', $networkNames) : ($quote->networking_id ?? ''));
+                                                    ?>
+                                                </td>
+                                                <td>
+                                                    <?php
+                                                    $lossPlanNames = [];
+                                                    if (!empty($quote->loss_plan)) {
+                                                        $ids = array_filter(array_map('trim', explode(',', (string)$quote->loss_plan)));
+                                                        foreach ($ids as $pid) {
+                                                            $pid = (int)$pid;
+                                                            if (!empty($lossPlanNamesById[$pid])) {
+                                                                $lossPlanNames[] = $lossPlanNamesById[$pid];
+                                                            }
+                                                        }
+                                                    }
+                                                    echo h(!empty($lossPlanNames) ? implode(', ', $lossPlanNames) : ($quote->loss_plan ?? ''));
+                                                    ?>
+                                                </td>
+                                                <td>
+                                                    <?php
+                                                    $benifitPlanNames = [];
+                                                    if (!empty($quote->benifit_plan)) {
+                                                        $ids = array_filter(array_map('trim', explode(',', (string)$quote->benifit_plan)));
+                                                        foreach ($ids as $pid) {
+                                                            $pid = (int)$pid;
+                                                            if (!empty($benifitPlanNamesById[$pid])) {
+                                                                $benifitPlanNames[] = $benifitPlanNamesById[$pid];
+                                                            }
+                                                        }
+                                                    }
+                                                    echo h(!empty($benifitPlanNames) ? implode(', ', $benifitPlanNames) : ($quote->benifit_plan ?? ''));
+                                                    ?>
+                                                </td>
                                                 <td><?= h($quote->Stop_Loss_Coverage_Type) ?></td>
                                                 <td>
                                                     <?php if ($quote->status == 1): ?>

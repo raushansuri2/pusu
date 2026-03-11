@@ -18,6 +18,24 @@ class RequestQuotesController extends AppController
             return $this->redirect(['controller' => 'Admins', 'action' => 'login', 'prefix' => 'Admin']);
         }
 
+        $keyword = $this->request->getQuery('keyword');
+	    $condition[] = ['RequestQuotes.id >' => 0];
+
+	    if (!empty($keyword)) {
+	        $condition[] = [
+	            'OR' => [
+	                //'RequestQuotes.Final_Proposals_Due' => $keyword,
+                    //'RequestQuotes.Policy_Effective_Date' => $keyword,
+                    //'RequestQuotes.Policy_Termination_Date' => $keyword,
+                    'Users.firstName LIKE' => "%{$keyword}%",
+                    'Users.email LIKE' => "%{$keyword}%",
+                    'Users.contactNumber LIKE' => "%{$keyword}%",
+                    'Programs.name LIKE' => "%{$keyword}%",
+                    'Quotgroups.group_name LIKE' => "%{$keyword}%"
+	            ]
+	        ];
+	    }
+
         // Set pagination
         $this->paginate = [
             'limit' => 10,
@@ -26,7 +44,7 @@ class RequestQuotesController extends AppController
 
         // Fetch request quotes using pagination
         $requestQuotesTable = $this->fetchTable('RequestQuotes');
-        $query = $requestQuotesTable->find()->contain([
+        $query = $requestQuotesTable->find()->where($condition)->contain([
             'Users',
             'Programs',
             'Quotgroups',
@@ -37,7 +55,69 @@ class RequestQuotesController extends AppController
 
         $requestQuotes = $this->paginate($query);
 
-        $this->set(compact('requestQuotes'));
+        $networkIds = [];
+        $lossPlanIds = [];
+        $benifitPlanIds = [];
+        foreach ($requestQuotes as $rq) {
+            if (!empty($rq->networking_id)) {
+                $parts = array_filter(array_map('trim', explode(',', (string)$rq->networking_id)));
+                foreach ($parts as $p) {
+                    if ($p !== '') {
+                        $networkIds[] = (int)$p;
+                    }
+                }
+            }
+
+            if (!empty($rq->loss_plan)) {
+                $parts = array_filter(array_map('trim', explode(',', (string)$rq->loss_plan)));
+                foreach ($parts as $p) {
+                    if ($p !== '') {
+                        $lossPlanIds[] = (int)$p;
+                    }
+                }
+            }
+
+            if (!empty($rq->benifit_plan)) {
+                $parts = array_filter(array_map('trim', explode(',', (string)$rq->benifit_plan)));
+                foreach ($parts as $p) {
+                    if ($p !== '') {
+                        $benifitPlanIds[] = (int)$p;
+                    }
+                }
+            }
+        }
+        $networkIds = array_values(array_unique(array_filter($networkIds)));
+        $lossPlanIds = array_values(array_unique(array_filter($lossPlanIds)));
+        $benifitPlanIds = array_values(array_unique(array_filter($benifitPlanIds)));
+
+        $networkNamesById = [];
+        if (!empty($networkIds)) {
+            $networks = $this->fetchTable('NetworksRepricing')
+                ->find('list', ['keyField' => 'id', 'valueField' => 'name'])
+                ->where(['NetworksRepricing.id IN' => $networkIds])
+                ->toArray();
+            $networkNamesById = $networks;
+        }
+
+        $lossPlanNamesById = [];
+        if (!empty($lossPlanIds)) {
+            $lossPlans = $this->fetchTable('LoosePlans')
+                ->find('list', ['keyField' => 'id', 'valueField' => 'plan_name'])
+                ->where(['LoosePlans.id IN' => $lossPlanIds])
+                ->toArray();
+            $lossPlanNamesById = $lossPlans;
+        }
+
+        $benifitPlanNamesById = [];
+        if (!empty($benifitPlanIds)) {
+            $benifitPlans = $this->fetchTable('BenifitPlans')
+                ->find('list', ['keyField' => 'id', 'valueField' => 'plan_name'])
+                ->where(['BenifitPlans.id IN' => $benifitPlanIds])
+                ->toArray();
+            $benifitPlanNamesById = $benifitPlans;
+        }
+
+        $this->set(compact('requestQuotes', 'networkNamesById', 'lossPlanNamesById', 'benifitPlanNamesById'));
     }
 
     public function view($id = null)
@@ -70,6 +150,50 @@ class RequestQuotesController extends AppController
         }
 
         $this->set(compact('requestQuote'));
+
+        $networkIds = [];
+        $lossPlanIds = [];
+        $benifitPlanIds = [];
+        if (!empty($requestQuote->networking_id)) {
+            $networkIds = array_values(array_unique(array_filter(array_map('intval', array_filter(array_map('trim', explode(',', (string)$requestQuote->networking_id)))))));
+        }
+
+        if (!empty($requestQuote->get('loss_plan'))) {
+            $lossPlanIds = array_values(array_unique(array_filter(array_map('intval', array_filter(array_map('trim', explode(',', (string)$requestQuote->get('loss_plan'))))))));
+        }
+
+        if (!empty($requestQuote->get('benifit_plan'))) {
+            $benifitPlanIds = array_values(array_unique(array_filter(array_map('intval', array_filter(array_map('trim', explode(',', (string)$requestQuote->get('benifit_plan'))))))));
+        }
+
+        $networkNamesById = [];
+        if (!empty($networkIds)) {
+            $networks = $this->fetchTable('NetworksRepricing')
+                ->find('list', ['keyField' => 'id', 'valueField' => 'name'])
+                ->where(['NetworksRepricing.id IN' => $networkIds])
+                ->toArray();
+            $networkNamesById = $networks;
+        }
+
+        $lossPlanNamesById = [];
+        if (!empty($lossPlanIds)) {
+            $lossPlans = $this->fetchTable('LoosePlans')
+                ->find('list', ['keyField' => 'id', 'valueField' => 'plan_name'])
+                ->where(['LoosePlans.id IN' => $lossPlanIds])
+                ->toArray();
+            $lossPlanNamesById = $lossPlans;
+        }
+
+        $benifitPlanNamesById = [];
+        if (!empty($benifitPlanIds)) {
+            $benifitPlans = $this->fetchTable('BenifitPlans')
+                ->find('list', ['keyField' => 'id', 'valueField' => 'plan_name'])
+                ->where(['BenifitPlans.id IN' => $benifitPlanIds])
+                ->toArray();
+            $benifitPlanNamesById = $benifitPlans;
+        }
+
+        $this->set(compact('networkNamesById', 'lossPlanNamesById', 'benifitPlanNamesById'));
     }
 
     public function delete($id = null)
