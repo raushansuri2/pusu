@@ -26,7 +26,14 @@ class RequestQuotesController extends AppController
 
         // Fetch request quotes using pagination
         $requestQuotesTable = $this->fetchTable('RequestQuotes');
-        $query = $requestQuotesTable->find();
+        $query = $requestQuotesTable->find()->contain([
+            'Users',
+            'Programs',
+            'Quotgroups',
+            'LoosePlans',
+            'BenifitPlans',
+            'NetworksRepricing'
+        ]);
 
         $requestQuotes = $this->paginate($query);
 
@@ -46,7 +53,16 @@ class RequestQuotesController extends AppController
         }
 
         $requestQuotesTable = $this->fetchTable('RequestQuotes');
-        $requestQuote = $requestQuotesTable->get($id);
+        $requestQuote = $requestQuotesTable->get($id, [
+            'contain' => [
+                'Users',
+                'Programs',
+                'Quotgroups',
+                'LoosePlans',
+                'BenifitPlans',
+                'NetworksRepricing'
+            ]
+        ]);
 
         if (!$requestQuote) {
             $this->Flash->error(__('Request quote not found.'));

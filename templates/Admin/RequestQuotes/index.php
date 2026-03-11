@@ -23,57 +23,70 @@
         <div class="contentpanel">
             <div class="row">
                 <?php echo $this->Flash->render(); ?>
-                
+
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4 class="panel-title">Request Quotes List</h4>
                         <p>View and manage all quote requests submitted by users.</p>
                     </div><!-- panel-heading -->
+
                     <div class="panel-body">
                         <div class="table-responsive">
                             <table class="table table-striped table-bordered">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Phone</th>
-                                        <th>Company</th>
-                                        <th>Product Type</th>
-                                        <th>Coverage Amount</th>
-                                        <th>State</th>
-                                        <th>Status</th>
+                                        <th><?= $this->Paginator->sort('id', 'ID') ?></th>
+                                        <th><?= $this->Paginator->sort('user_id', 'User') ?></th>
+                                        <th><?= $this->Paginator->sort('program_id', 'Program') ?></th>
+                                        <th><?= $this->Paginator->sort('group_id', 'Group') ?></th>
+                                        <th><?= $this->Paginator->sort('Policy_Effective_Date', 'Effective Date') ?></th>
+                                        <th><?= $this->Paginator->sort('Policy_Termination_Date', 'Termination Date') ?></th>
+                                        <th><?= $this->Paginator->sort('Final_Proposals_Due', 'Final Proposals Due') ?></th>
+                                        <th><?= $this->Paginator->sort('networking_id', 'Networking') ?></th>
+                                        <th><?= $this->Paginator->sort('loss_plan', 'Loss Plan') ?></th>
+                                        <th><?= $this->Paginator->sort('benifit_plan', 'Benefit Plan') ?></th>
+                                        <th><?= $this->Paginator->sort('Stop_Loss_Coverage_Type', 'Stop Loss Coverage Type') ?></th>
+                                        <th><?= $this->Paginator->sort('status', 'Status') ?></th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach ($requestQuotes as $quote): ?>
+                                    <?php if (!empty($requestQuotes)): ?>
+                                        <?php foreach ($requestQuotes as $quote): ?>
+                                            <tr>
+                                                <td><?= $quote->id ?></td>
+                                                <td><?= h($quote->user->firstName ?? $quote->user_id) ?></td>
+                                                <td><?= h($quote->program->name ?? $quote->program_id) ?></td>
+                                                <td><?= h($quote->quotgroup->group_name ?? $quote->group_id) ?></td>
+                                                <td><?= h($quote->Policy_Effective_Date) ?></td>
+                                                <td><?= h($quote->Policy_Termination_Date) ?></td>
+                                                <td><?= h($quote->Final_Proposals_Due) ?></td>
+                                                <td><?= h($quote->network->name ?? $quote->networking_id) ?></td>
+                                                <td><?= h($quote->loosePlan->plan_name ?? $quote->loss_plan) ?></td>
+                                                <td><?= h($quote->benifitPlan->plan_name ?? $quote->benifit_plan) ?></td>
+                                                <td><?= h($quote->Stop_Loss_Coverage_Type) ?></td>
+                                                <td>
+                                                    <?php if ($quote->status == 1): ?>
+                                                        <span class="badge badge-success">Processed</span>
+                                                    <?php else: ?>
+                                                        <span class="badge badge-warning">Pending</span>
+                                                    <?php endif; ?>
+                                                </td>
+                                                <td>
+                                                    <?= $this->Html->link('<i class="fa fa-eye"></i>', ['action' => 'view', $quote->id], ['class' => 'btn btn-xs btn-info', 'escape' => false, 'title' => 'View Details']); ?>
+                                                    <?= $this->Form->postLink('<i class="fa fa-trash"></i>', ['action' => 'delete', $quote->id], ['class' => 'btn btn-xs btn-danger', 'escape' => false, 'confirm' => 'Are you sure you want to delete this quote request?', 'title' => 'Delete']); ?>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
                                         <tr>
-                                            <td><?= $quote->id ?></td>
-                                            <td><?= h($quote->name) ?></td>
-                                            <td><?= h($quote->email) ?></td>
-                                            <td><?= h($quote->phone) ?></td>
-                                            <td><?= h($quote->company_name) ?></td>
-                                            <td><?= h($quote->product_type) ?></td>
-                                            <td><?= h($quote->coverage_amount) ?></td>
-                                            <td><?= h($quote->state) ?></td>
-                                            <td>
-                                                <?php if ($quote->status == 1): ?>
-                                                    <span class="badge badge-success">Processed</span>
-                                                <?php else: ?>
-                                                    <span class="badge badge-warning">Pending</span>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td>
-                                                <?= $this->Html->link('<i class="fa fa-eye"></i>', ['action' => 'view', $quote->id], ['class' => 'btn btn-xs btn-info', 'escape' => false, 'title' => 'View Details']); ?>
-                                                <?= $this->Form->postLink('<i class="fa fa-trash"></i>', ['action' => 'delete', $quote->id], ['class' => 'btn btn-xs btn-danger', 'escape' => false, 'confirm' => 'Are you sure you want to delete this quote request?', 'title' => 'Delete']); ?>
-                                            </td>
+                                            <td colspan="13" class="text-center">No request quotes found.</td>
                                         </tr>
-                                    <?php endforeach; ?>
+                                    <?php endif; ?>
                                 </tbody>
                             </table>
                         </div><!-- table-responsive -->
-                        
+
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="pagination-wrapper">

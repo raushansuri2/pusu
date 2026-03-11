@@ -24,6 +24,17 @@ class NetworksRepricingsController extends AppController
             return $this->redirect(['controller' => 'Admins', 'action' => 'login', 'prefix' => 'Admin']);
         }
 
+        $keyword = $this->request->getQuery('keyword');
+	    $condition[] = ['NetworksRepricing.status' => 1];
+
+	    if (!empty($keyword)) {
+	        $condition = [
+	            'NetworksRepricing.status' => 1,
+	            'OR' => [
+	                'NetworksRepricing.name LIKE' => "%{$keyword}%",
+	            ]
+	        ];
+	    }
         // Configure pagination
         $this->paginate = [
             'limit' => 10,
@@ -32,7 +43,7 @@ class NetworksRepricingsController extends AppController
 
         // Fetch networks without containing Programs to avoid Entity objects
         $networksTable = $this->fetchTable('NetworksRepricing');
-        $query = $networksTable->find();
+        $query = $networksTable->find()->where($condition);
 
         $networks = $this->paginate($query);
 
@@ -60,14 +71,14 @@ class NetworksRepricingsController extends AppController
 
         if ($this->request->is('post')) {
             $data = $this->request->getData();
-            
+
             // Handle multiple program IDs - convert array to comma-separated string
             if (isset($data['program_id']) && is_array($data['program_id'])) {
                 $data['program_id'] = implode(',', array_filter($data['program_id']));
             } else {
                 $data['program_id'] = '';
             }
-            
+
             $network = $networksTable->patchEntity($network, $data);
 
             if ($networksTable->save($network)) {
@@ -107,14 +118,14 @@ class NetworksRepricingsController extends AppController
 
         if ($this->request->is(['patch', 'post', 'put'])) {
             $data = $this->request->getData();
-            
+
             // Handle multiple program IDs - convert array to comma-separated string
             if (isset($data['program_id']) && is_array($data['program_id'])) {
                 $data['program_id'] = implode(',', array_filter($data['program_id']));
             } else {
                 $data['program_id'] = '';
             }
-            
+
             $network = $networksTable->patchEntity($network, $data);
 
             if ($networksTable->save($network)) {

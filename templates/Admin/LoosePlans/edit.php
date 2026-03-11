@@ -48,31 +48,23 @@
                                 </div>
                             </div><!-- form-group -->
                         </div><!-- row -->
-                        
+
                         <div class="row">
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Programs</label>
                                 <div class="col-sm-9">
-                                    <?php 
-                                    // Convert comma-separated program IDs to array for pre-selection
-                                    $selectedPrograms = [];
-                                    if (!empty($loosePlan->program_id)) {
-                                        $selectedPrograms = explode(',', $loosePlan->program_id);
-                                    }
-                                    
-                                    echo $this->Form->input('program_id', [
+                                    <?php echo $this->Form->input('program_id', [
                                         'class' => 'form-control',
                                         'type' => 'select',
                                         'options' => $programs,
                                         'multiple' => 'multiple',
-                                        'value' => $selectedPrograms,
                                         'div' => false,
                                         'label' => false
                                     ]); ?>
                                 </div>
                             </div><!-- form-group -->
                         </div><!-- row -->
-                        
+
                         <div class="row">
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Spec Deductible</label>
@@ -169,7 +161,7 @@
                             </div>
                         </div><!-- row -->
 
-                       
+
 
                         <div class="row">
                             <div class="col-sm-6">

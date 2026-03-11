@@ -23,6 +23,18 @@ class LoosePlansController extends AppController
             return $this->redirect(['controller' => 'Admins', 'action' => 'login', 'prefix' => 'Admin']);
         }
 
+        $keyword = $this->request->getQuery('keyword');
+	    $condition[] = ['LoosePlans.status' => 1];
+
+	    if (!empty($keyword)) {
+	        $condition = [
+	            'LoosePlans.status' => 1,
+	            'OR' => [
+	                'LoosePlans.plan_name LIKE' => "%{$keyword}%",
+	            ]
+	        ];
+	    }
+
         // Configure pagination
         $this->paginate = [
             'limit' => 10,
@@ -31,7 +43,7 @@ class LoosePlansController extends AppController
 
         // Fetch loose plans using pagination
         $loosePlansTable = $this->fetchTable('LoosePlans');
-        $query = $loosePlansTable->find();
+        $query = $loosePlansTable->find()->where($condition);
 
         $loosePlans = $this->paginate($query);
 

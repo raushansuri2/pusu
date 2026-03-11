@@ -24,6 +24,18 @@ class BenifitPlansController extends AppController
             return $this->redirect(['controller' => 'Admins', 'action' => 'login', 'prefix' => 'Admin']);
         }
 
+        $keyword = $this->request->getQuery('keyword');
+	    $condition[] = ['BenifitPlans.status' => 1];
+
+	    if (!empty($keyword)) {
+	        $condition = [
+	            'BenifitPlans.status' => 1,
+	            'OR' => [
+	                'BenifitPlans.plan_name LIKE' => '%' . $keyword . '%',
+	            ]
+	        ];
+	    }
+
         // Configure pagination
         $this->paginate = [
             'limit' => 10,
@@ -32,7 +44,7 @@ class BenifitPlansController extends AppController
 
         // Fetch benefit plans using pagination
         $benifitPlansTable = $this->fetchTable('BenifitPlans');
-        $query = $benifitPlansTable->find();
+        $query = $benifitPlansTable->find()->where($condition);
 
         $benifitPlans = $this->paginate($query);
 
@@ -60,14 +72,14 @@ class BenifitPlansController extends AppController
 
         if ($this->request->is('post')) {
             $data = $this->request->getData();
-            
+
             // Handle multiple program IDs - convert array to comma-separated string
             if (isset($data['program_id']) && is_array($data['program_id'])) {
                 $data['program_id'] = implode(',', array_filter($data['program_id']));
             } else {
                 $data['program_id'] = '';
             }
-            
+
             $benifitPlan = $benifitPlansTable->patchEntity($benifitPlan, $data);
 
             if ($benifitPlansTable->save($benifitPlan)) {
@@ -107,14 +119,14 @@ class BenifitPlansController extends AppController
 
         if ($this->request->is(['patch', 'post', 'put'])) {
             $data = $this->request->getData();
-            
+
             // Handle multiple program IDs - convert array to comma-separated string
             if (isset($data['program_id']) && is_array($data['program_id'])) {
                 $data['program_id'] = implode(',', array_filter($data['program_id']));
             } else {
                 $data['program_id'] = '';
             }
-            
+
             $benifitPlan = $benifitPlansTable->patchEntity($benifitPlan, $data);
 
             if ($benifitPlansTable->save($benifitPlan)) {

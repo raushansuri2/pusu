@@ -14,6 +14,39 @@ class RequestQuotesTable extends Table
         $this->setTable('request_quots');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
+
+        $this->belongsTo('Users', [
+            'foreignKey' => 'user_id',
+            'joinType' => 'LEFT'
+        ]);
+
+        $this->belongsTo('Programs', [
+            'foreignKey' => 'program_id',
+            'joinType' => 'LEFT'
+        ]);
+
+        $this->belongsTo('Quotgroups', [
+            'foreignKey' => 'group_id',
+            'joinType' => 'LEFT'
+        ]);
+
+        $this->belongsTo('LoosePlans', [
+            'foreignKey' => 'loss_plan',
+            'propertyName' => 'loosePlan',
+            'joinType' => 'LEFT'
+        ]);
+
+        $this->belongsTo('BenifitPlans', [
+            'foreignKey' => 'benifit_plan',
+            'propertyName' => 'benifitPlan',
+            'joinType' => 'LEFT'
+        ]);
+
+        $this->belongsTo('NetworksRepricing', [
+            'foreignKey' => 'networking_id',
+            'propertyName' => 'network',
+            'joinType' => 'LEFT'
+        ]);
     }
 
     public function validationDefault(Validator $validator): Validator

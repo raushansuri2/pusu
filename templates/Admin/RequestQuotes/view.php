@@ -32,49 +32,53 @@
                     <div class="panel-body">
                         <div class="row">
                             <div class="col-md-6">
-                                <h5><strong>Personal Information</strong></h5>
-                                <table class="table table-bordered table-striped">
-                                    <tr>
-                                        <td width="30%"><strong>Name:</strong></td>
-                                        <td><?= h($requestQuote->name) ?></td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Email:</strong></td>
-                                        <td><?= h($requestQuote->email) ?></td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Phone:</strong></td>
-                                        <td><?= h($requestQuote->phone) ?></td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Company Name:</strong></td>
-                                        <td><?= h($requestQuote->company_name) ?></td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Contact Person:</strong></td>
-                                        <td><?= h($requestQuote->contact_person) ?></td>
-                                    </tr>
-                                </table>
-                            </div>
-                            
-                            <div class="col-md-6">
                                 <h5><strong>Request Information</strong></h5>
                                 <table class="table table-bordered table-striped">
                                     <tr>
-                                        <td width="30%"><strong>Product Type:</strong></td>
-                                        <td><?= h($requestQuote->product_type) ?></td>
+                                        <td width="40%"><strong>User ID:</strong></td>
+                                        <td><?= h($requestQuote->user->firstName ?? $requestQuote->user_id) ?></td>
                                     </tr>
                                     <tr>
-                                        <td><strong>Coverage Amount:</strong></td>
-                                        <td><?= h($requestQuote->coverage_amount) ?></td>
+                                        <td><strong>Program ID:</strong></td>
+                                        <td><?= h($requestQuote->program->name ?? $requestQuote->program_id) ?></td>
                                     </tr>
                                     <tr>
-                                        <td><strong>Zip Code:</strong></td>
-                                        <td><?= h($requestQuote->zip_code) ?></td>
+                                        <td><strong>Group ID:</strong></td>
+                                        <td><?= h($requestQuote->quotgroup->group_name ?? $requestQuote->group_id) ?></td>
                                     </tr>
                                     <tr>
-                                        <td><strong>State:</strong></td>
-                                        <td><?= h($requestQuote->state) ?></td>
+                                        <td><strong>Policy Effective Date:</strong></td>
+                                        <td><?= h($requestQuote->Policy_Effective_Date) ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Policy Termination Date:</strong></td>
+                                        <td><?= h($requestQuote->Policy_Termination_Date) ?></td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <div class="col-md-6">
+                                <h5><strong>Plan & Coverage</strong></h5>
+                                <table class="table table-bordered table-striped">
+                                    <tr>
+                                        <td width="40%"><strong>Final Proposals Due:</strong></td>
+                                        <td><?= h($requestQuote->Final_Proposals_Due) ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Networking ID:</strong></td>
+                                        <td><?= h($requestQuote->network->name ?? $requestQuote->networking_id) ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Loss Plan:</strong></td>
+                                        <td><?= h($requestQuote->loosePlan->plan_name ?? $requestQuote->loss_plan) ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Benefit Plan:</strong></td>
+                                        <td><?= h($requestQuote->benifitPlan->plan_name ?? $requestQuote->benifit_plan) ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Stop Loss Coverage Type:</strong></td>
+                                        <td><?= h($requestQuote->Stop_Loss_Coverage_Type) ?></td>
                                     </tr>
                                     <tr>
                                         <td><strong>Status:</strong></td>
@@ -89,16 +93,16 @@
                                 </table>
                             </div>
                         </div>
-                        
+
                         <div class="row">
                             <div class="col-md-12">
-                                <h5><strong>Message</strong></h5>
+                                <h5><strong>Notes</strong></h5>
                                 <div class="well">
-                                    <?= !empty($requestQuote->message) ? nl2br(h($requestQuote->message)) : 'No message provided.' ?>
+                                    <?= !empty($requestQuote->notes) ? nl2br(h($requestQuote->notes)) : 'No notes provided.' ?>
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-actions">

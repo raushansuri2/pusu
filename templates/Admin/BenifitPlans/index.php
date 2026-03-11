@@ -1,8 +1,8 @@
 <div class="mainwrapper">
     <div class="leftpanel">
-        <?php echo $this->element('admin/sidebar'); ?>        
+        <?php echo $this->element('admin/sidebar'); ?>
     </div><!-- leftpanel -->
-    
+
     <div class="mainpanel">
         <div class="pageheader">
             <div class="media">
@@ -21,7 +21,7 @@
                 <?php echo $this->Flash->render(); ?>
             </div><!-- media -->
         </div><!-- pageheader -->
-        
+
         <div class="contentpanel">
             <div class="row">
                 <div class="col-md-12">
@@ -29,6 +29,19 @@
                         <div class="panel-heading">
                             <h4 class="panel-title">Benefit Plans List</h4>
                             <p>Manage all benefit plans in the system</p>
+                            <div class="search-body" style="width: 39%;">
+                                <?= $this->Form->create(null, ['type' => 'get', 'valueSources' => ['query']]) ?>
+                                <?= $this->Form->control('keyword', [
+                                    'class' => 'form-control width200',
+                                    'placeholder' => 'Enter Keyword to Search',
+                                    'style' => 'float:left',
+                                    'label' => false,
+                                    'autocomplete' => 'off'
+                                ]) ?>
+                                <?= $this->Form->button('Search', ['class' => 'btn btn-primary mr5 ml10']) ?>
+                                <?= $this->Form->end() ?>
+                            </div>
+
                             <div class="panel-btn">
                                 <?= $this->Html->link('<i class="fa fa-plus"></i> Add Benefit Plan', ['action' => 'add'], ['class' => 'btn btn-primary', 'escape' => false]) ?>
                             </div>
@@ -55,7 +68,7 @@
                                                     <td><?= $benifitPlan->id ?></td>
                                                     <td><?= h($benifitPlan->plan_name) ?></td>
                                                     <td>
-                                                        <?php 
+                                                        <?php
                                                         if (!empty($benifitPlan->program_id)) {
                                                             // Handle both string and array types
                                                             if (is_array($benifitPlan->program_id)) {
@@ -105,13 +118,13 @@
                             <?php else: ?>
                                 <div class="alert alert-warning">
                                     <strong>No Benefit Plans Found!</strong>
-                                    <p>There are currently no benefit plans configured. 
+                                    <p>There are currently no benefit plans configured.
                                     <?= $this->Html->link('Add Benefit Plan', ['action' => 'add'], ['class' => 'btn btn-primary']); ?>
                                     </p>
                                 </div>
                             <?php endif; ?>
                         </div><!-- panel-body -->
-                        
+
                         <?php if ($this->Paginator->hasPage()): ?>
                         <div class="panel-footer">
                             <div class="row">
