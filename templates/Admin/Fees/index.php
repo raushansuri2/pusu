@@ -46,6 +46,7 @@
                                                 <th>Program</th>
                                                 <th>Editable</th>
                                                 <th>Premium Applied</th>
+                                                <th>Status</th>
                                                 <th>Actions</th>
                                             </tr>
                                         </thead>
@@ -56,7 +57,21 @@
                                                     <td><?= h($fee->name) ?></td>
                                                     <td><?= $fee->value ?></td>
                                                     <td><?= h($fee->value_type) ?></td>
-                                                    <td><?= h($fee->program->name ?? 'No Program') ?></td>
+                                                    <td>
+                                                        <?php
+                                                        $programNames = [];
+                                                        if (!empty($fee->program_id)) {
+                                                            $ids = array_filter(array_map('trim', explode(',', (string)$fee->program_id)));
+                                                            foreach ($ids as $pid) {
+                                                                $pid = (int)$pid;
+                                                                if (!empty($programNamesById[$pid])) {
+                                                                    $programNames[] = $programNamesById[$pid];
+                                                                }
+                                                            }
+                                                        }
+                                                        echo h(!empty($programNames) ? implode(', ', $programNames) : 'No Program');
+                                                        ?>
+                                                    </td>
                                                     <td>
                                                         <?php if ($fee->is_editable): ?>
                                                             <span class="label label-success">Yes</span>
@@ -69,6 +84,13 @@
                                                             <span class="label label-warning">Yes</span>
                                                         <?php else: ?>
                                                             <span class="label label-default">No</span>
+                                                        <?php endif; ?>
+                                                    </td>
+                                                    <td>
+                                                        <?php if ((int)($fee->status ?? 0) === 1): ?>
+                                                            <span class="label label-success">Active</span>
+                                                        <?php else: ?>
+                                                            <span class="label label-default">Inactive</span>
                                                         <?php endif; ?>
                                                     </td>
                                                     <td>

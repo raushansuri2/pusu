@@ -24,14 +24,34 @@ class FeesController extends AppController
             return $this->redirect(['controller' => 'Admins', 'action' => 'login', 'prefix' => 'Admin']);
         }
 
-        // Fetch fees with program details using contain
+        // Fetch fees
         $feesTable = $this->fetchTable('Fees');
         $fees = $feesTable->find()
-            ->contain(['Programs'])
             ->order(['Fees.id' => 'ASC'])
             ->all();
 
-        $this->set(compact('fees'));
+        $programIds = [];
+        foreach ($fees as $fee) {
+            if (!empty($fee->program_id)) {
+                $parts = array_filter(array_map('trim', explode(',', (string)$fee->program_id)));
+                foreach ($parts as $p) {
+                    if ($p !== '') {
+                        $programIds[] = (int)$p;
+                    }
+                }
+            }
+        }
+        $programIds = array_values(array_unique(array_filter($programIds)));
+
+        $programNamesById = [];
+        if (!empty($programIds)) {
+            $programsTable = $this->fetchTable('Programs');
+            $programNamesById = $programsTable->find('list', ['keyField' => 'id', 'valueField' => 'name'])
+                ->where(['Programs.id IN' => $programIds])
+                ->toArray();
+        }
+
+        $this->set(compact('fees', 'programNamesById'));
     }
 
     public function add()
@@ -53,8 +73,24 @@ class FeesController extends AppController
         $programsTable = $this->fetchTable('Programs');
         $programs = $programsTable->find('list', ['keyField' => 'id', 'valueField' => 'name'])->toArray();
 
+        $statusOptions = [1 => 'Active', 0 => 'Inactive'];
+
         if ($this->request->is('post')) {
             $data = $this->request->getData();
+
+            $programIds = $data['program_id'] ?? ($data['program_id[]'] ?? null);
+            if (is_array($programIds)) {
+                $flatProgramIds = [];
+                array_walk_recursive($programIds, function ($v) use (&$flatProgramIds) {
+                    if (is_scalar($v) || $v === null) {
+                        $flatProgramIds[] = (string)$v;
+                    }
+                });
+                $flatProgramIds = array_values(array_filter(array_map('trim', $flatProgramIds)));
+                $data['program_id'] = !empty($flatProgramIds) ? implode(',', $flatProgramIds) : '';
+            } elseif ($programIds === null) {
+                $data['program_id'] = '';
+            }
             $fee = $feesTable->patchEntity($fee, $data);
 
             if ($feesTable->save($fee)) {
@@ -65,7 +101,7 @@ class FeesController extends AppController
             }
         }
 
-        $this->set(compact('fee', 'programs'));
+        $this->set(compact('fee', 'programs', 'statusOptions'));
     }
 
     public function edit($id = null)
@@ -92,11 +128,24 @@ class FeesController extends AppController
         $programsTable = $this->fetchTable('Programs');
         $programs = $programsTable->find('list', ['keyField' => 'id', 'valueField' => 'name'])->toArray();
 
-        $networksTable = $this->fetchTable('NetworksRepricing');
-        $networks = $networksTable->find('list', ['keyField' => 'id', 'valueField' => 'name'])->toArray();
+        $statusOptions = [1 => 'Active', 0 => 'Inactive'];
 
         if ($this->request->is(['patch', 'post', 'put'])) {
             $data = $this->request->getData();
+
+            $programIds = $data['program_id'] ?? ($data['program_id[]'] ?? null);
+            if (is_array($programIds)) {
+                $flatProgramIds = [];
+                array_walk_recursive($programIds, function ($v) use (&$flatProgramIds) {
+                    if (is_scalar($v) || $v === null) {
+                        $flatProgramIds[] = (string)$v;
+                    }
+                });
+                $flatProgramIds = array_values(array_filter(array_map('trim', $flatProgramIds)));
+                $data['program_id'] = !empty($flatProgramIds) ? implode(',', $flatProgramIds) : '';
+            } elseif ($programIds === null) {
+                $data['program_id'] = '';
+            }
             $fee = $feesTable->patchEntity($fee, $data);
 
             if ($feesTable->save($fee)) {
@@ -107,7 +156,7 @@ class FeesController extends AppController
             }
         }
 
-        $this->set(compact('fee', 'programs'));
+        $this->set(compact('fee', 'programs', 'statusOptions'));
     }
 
     public function delete($id = null)

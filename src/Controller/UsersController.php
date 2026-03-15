@@ -206,7 +206,7 @@ class UsersController extends AppController
         $usersTable = $this->fetchTable('Users');
         $userId = $session->read('ERISAQuoteProSession.Users.id');
 
-       
+
 
         // Clear cookies
         // $this->response = $this->response
@@ -271,7 +271,7 @@ class UsersController extends AppController
     {
         $this->viewBuilder()->setLayout('login');
         $layoutTitle = 'ERISAQuote Pro. - Changepassword';
-       
+
         $session = $this->request->getSession();
         if ($session->read('ERISAQuoteProSession.Users.role') != 'Member') {
             return $this->redirect(['controller' => 'Users', 'action' => 'logout']);
@@ -302,7 +302,7 @@ class UsersController extends AppController
                 $this->Flash->error(__('Old password not match.'));
             }
         }
-        
+
     }
 
 	public function dashboard()
@@ -317,13 +317,13 @@ class UsersController extends AppController
                 'DASHBOARD' => $url . 'users/dashboard'
             ]
         ];
-        
+
         //session check for login
         $session = $this->request->getSession();
         if ($session->read('ERISAQuoteProSession.Users.role') != 'Member') {
             return $this->redirect(['controller' => 'Users', 'action' => 'logout']);
         }
-        
+
 
 
         //return null; // Explicit return for non-redirect cases
@@ -333,7 +333,7 @@ class UsersController extends AppController
     {
         $this->viewBuilder()->setLayout('login');
         $layoutTitle = 'ERISAQuote Pro. - Dashboard';
-        
+
         if($this->request->getQuery('programid') == ""){
             $this->Flash->error(__('Please select a program first.'));
             return $this->redirect(['controller' => 'Users', 'action' => 'programChoose']);
@@ -349,18 +349,21 @@ class UsersController extends AppController
 
         $networksTable = $this->fetchTable('NetworksRepricing');
         $network_list = $networksTable->find('list',['id','name'])->where(['NetworksRepricing.status'=>1])->toArray();
-        
-        $lossPlansTable = $this->fetchTable('LossPlans');
-        $loss_plans_list = $lossPlansTable->find()->where(['LossPlans.status'=>1])->toArray();
-        
+
+        $lossPlansTable = $this->fetchTable('LoosePlans');
+        $loss_plans_list = $lossPlansTable->find()->where(['LoosePlans.status'=>1])->toArray();
+
         $benifitPlansTable = $this->fetchTable('BenifitPlans');
         $benifit_plans_list = $benifitPlansTable->find()->where(['BenifitPlans.status'=>1])->toArray();
-        
+
+        $feesTable = $this->fetchTable('Fees');
+        $fees_list = $feesTable->find()->where(['Fees.status'=>1])->toArray();
+
         //pr($benifit_plans_list); die;
         // if ($this->request->is('post')) {
         //     pr($this->request->getData());
         //     die;
-            
+
         // }
         $RequestQuotsTable = $this->fetchTable('RequestQuots');
         $RequestQuots = $RequestQuotsTable->newEmptyEntity();
@@ -383,7 +386,7 @@ class UsersController extends AppController
             );
 
             if ($RequestQuotsTable->save($RequestQuots)) {
-                
+
                 $file = $this->request->getData('census_file');
                 if ($file && $file->getError() === UPLOAD_ERR_OK) {
                     $filename = time().'_'.$file->getClientFilename();
@@ -412,7 +415,7 @@ class UsersController extends AppController
             }
         }
 
-        $this->set(compact('layoutTitle','group_list','network_list','loss_plans_list','benifit_plans_list'));
+        $this->set(compact('layoutTitle','group_list','network_list','loss_plans_list','benifit_plans_list', 'fees_list'));
         //return null; // Explicit return for non-redirect cases
     }
 
@@ -420,13 +423,13 @@ class UsersController extends AppController
     {
         $this->viewBuilder()->setLayout('login');
         $layoutTitle = 'ERISAQuote Pro. - Dashboard';
-       
+
         //session check for login
         $session = $this->request->getSession();
         if ($session->read('ERISAQuoteProSession.Users.role') != 'Member') {
             return $this->redirect(['controller' => 'Users', 'action' => 'logout']);
         }
-        
+
 
 
         //return null; // Explicit return for non-redirect cases
@@ -442,7 +445,7 @@ class UsersController extends AppController
         if ($session->read('ERISAQuoteProSession.Users.role') != 'Member') {
             return $this->redirect(['controller' => 'Users', 'action' => 'logout']);
         }
-        
+
 
 
         //return null; // Explicit return for non-redirect cases
@@ -452,13 +455,13 @@ class UsersController extends AppController
     {
         $this->viewBuilder()->setLayout('login');
         $layoutTitle = 'Choose Program - ERISAQuote Pro';
-        
+
         //session check for login
         $session = $this->request->getSession();
         if ($session->read('ERISAQuoteProSession.Users.role') != 'Member') {
             return $this->redirect(['controller' => 'Users', 'action' => 'logout']);
         }
-        
+
         $NetworksRepricing = $this->fetchTable(alias: 'NetworksRepricing');
         $BenifitPlans = $this->fetchTable(alias: 'BenifitPlans');
 
@@ -500,7 +503,7 @@ class UsersController extends AppController
     }
 
     public function groupAdd()
-    { 
+    {
         $this->viewBuilder()->setLayout('login');
         $layoutTitle = 'ERISAQuote Pro. - Add New Group';
         $url = \Cake\Routing\Router::url('/', true);
@@ -586,7 +589,7 @@ class UsersController extends AppController
 
         $this->set(compact('layoutTitle', 'breadcum', 'group'));
     }
-    
+
 
     public function groupDetails($id)
     {
@@ -604,7 +607,7 @@ class UsersController extends AppController
         $groupsTable = $this->fetchTable('Quotgroups');
         $group_data = $groupsTable->find()->where(['Quotgroups.id'=>$id])->first();
         $this->set(compact('layoutTitle', 'group_data'));
-    
+
     }
 
 

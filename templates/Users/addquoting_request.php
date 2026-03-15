@@ -14,7 +14,7 @@
         $("#date-policy-start, #final_proposal_date").on("input change", function () {
             headerset();
         });
-        
+
     });
 
         function headerset(){
@@ -44,7 +44,7 @@
                                 <span class="me-2" id="group_ID">#:</span>
 
                                 <a href="javascript::" class="link-no-color fw-semibold me-3" id="group_NAME">
-                                    
+
                                 </a>
 
                                 <span style="font-size: 12px;" class="badge bg-danger">
@@ -85,7 +85,7 @@
                                                 <div class="w-50">
                                                     <select class="form-select select2" name="group_id" id="business-group-id" required>
                                                         <option value="">Select a group</option>
-                                                        <?php 
+                                                        <?php
                                                         foreach ($group_list as $code => $name) {
                                                             echo '<option value="' . $code . '">' . $name . '</option>';
                                                         }
@@ -133,7 +133,7 @@
                                                 <div> <input type="file" name="census_file" id="actual-btn" hidden/>
                                                     <label for="actual-btn" class="custom-file-button mt-0">Upload a new census</label>
                                                     <span id="file-chosen">No file chosen</span>
-                                                </div> 
+                                                </div>
 
                                             </div>
                                         </div>
@@ -218,7 +218,7 @@
                                             </label>
                                         </div>
                                     <?php } ?>
-                                    
+
 
 
                                 </div>
@@ -316,7 +316,7 @@
 
                                     <div class="row mt-3">
                                         <div class="col-md-6">
-                                            
+
 
                                                 <!-- Stop Loss Coverage Type -->
                                                 <h5 class="mb-2">Stop Loss Coverage Type</h5>
@@ -371,7 +371,7 @@
                                                         <span class="custom-control-label">Include level quote if available?</span> </label>
                                                 </div>
                                                 <button class="btn btn-primary"> Review Stop Loss Options </button>
-                                            
+
                                         </div>
 
                                         <!-- Help Panel -->
@@ -444,7 +444,7 @@
                                                             <td>$<?php echo $benifit_plans->rx_copay_specialty; ?></td>
                                                         </tr>
                                                         <?php } ?>
-                                                       
+
 
                                                     </tbody>
                                                 </table>
@@ -573,17 +573,24 @@
                                                     </thead>
 
                                                     <tbody>
+                                                        <?php if($fees_list){
+                                                            foreach($fees_list as $key=>$fees){
+                                                        ?>
                                                         <tr>
-                                                            <td>TPA, PPO, PBM, Service Providers</td>
-                                                            <td>PEPM</td>
+                                                            <td><?php echo $fees->name; ?></td>
+                                                            <td><?php echo $fees->value_type;?></td>
                                                             <td style="max-width: 200px;">
-                                                                <input type="text" class="form-control" name="fee_tpa" id="TPA_PPO" placeholder="70.00" value="70.00" aria-label="Fee amount">
+                                                                <input type="text" class="form-control" name="<?php echo strtoupper(str_replace(" ", "_", trim($fees->name)));?>" id="TPA_PPO_<?php echo $key;?>" placeholder="70.00" value="<?php echo $fees->value;?>" aria-label="Fee amount" <?php echo ($fees->is_editable != 1) ? "disabled" :"";?>>
                                                             </td>
                                                             <td>
+                                                                <?php if($fees->is_editable == 1){ ?>
                                                                 <small class="text-muted">This fee is editable</small>
+                                                                <?php }else{ ?>
+                                                                <small class="text-muted">This fee is not editable</small>
+                                                                <?php } ?>
                                                             </td>
                                                         </tr>
-
+                                                        <?php } } ?>
                                                         <tr>
                                                             <td>Broker Fee</td>
                                                             <td>PEPM</td>
@@ -639,14 +646,14 @@
     currentStep++;
     updateSteps();
     document.getElementById("prevBtn").style.display = "block";
-    if(currentStep == 4){
+    if(currentStep == 5){
         document.getElementById("submit").style.display = "block";
         document.getElementById("nextBtn").style.display = "none";
     }else{
         document.getElementById("submit").style.display = "none";
         document.getElementById("nextBtn").style.display = "block";
     }
-    
+
   }
 });
 
@@ -657,7 +664,7 @@
     if(currentStep == 0){
         document.getElementById("prevBtn").style.display = "none";
     }
-    if(currentStep == 4){
+    if(currentStep == 5){
         document.getElementById("submit").style.display = "block";
         document.getElementById("nextBtn").style.display = "none";
     }else{
@@ -668,15 +675,15 @@
 });
 
     function updateSteps() {
-  steps.forEach((step, index) => {
-    step.classList.toggle("active", index === currentStep);
-  });
+        steps.forEach((step, index) => {
+        step.classList.toggle("active", index === currentStep);
+    });
 
-  stepItems.forEach((item, index) => {
-    item.classList.toggle("active", index === currentStep);
-  });
+    stepItems.forEach((item, index) => {
+        item.classList.toggle("active", index === currentStep);
+    });
 
-  document.getElementById("nextBtn").innerText =
+    document.getElementById("nextBtn").innerText =
     currentStep === steps.length - 1 ? "Submit" : "Next";
 }
 

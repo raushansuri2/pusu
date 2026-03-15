@@ -91,7 +91,25 @@
                                         'class' => 'form-control',
                                         'type' => 'select',
                                         'options' => $programs,
-                                        'empty' => 'Select program',
+                                        'multiple' => true,
+                                        'name' => 'program_id[]',
+                                        //'empty' => 'Select program',
+                                        'div' => false,
+                                        'label' => false
+                                    ]); ?>
+                                </div>
+                            </div><!-- form-group -->
+                        </div><!-- row -->
+
+                        <div class="row">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Status</label>
+                                <div class="col-sm-9">
+                                    <?php echo $this->Form->input('status', [
+                                        'class' => 'form-control',
+                                        'type' => 'select',
+                                        'options' => $statusOptions,
+                                        'empty' => false,
                                         'div' => false,
                                         'label' => false
                                     ]); ?>
