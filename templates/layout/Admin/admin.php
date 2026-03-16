@@ -17,8 +17,8 @@ use Cake\View\Helper\HtmlHelper;
             <?php echo $this->fetch('content'); ?>
         </section>
         <!--<div class="cl" style="min-height:50px;"></div>-->
-        <div class="footer-heading">		
-		    <p>copyright © <?php echo date('Y');?><strong> Dating APP LLP</strong> All rights reserved. <br>
+        <div class="footer-heading">
+		    <p>copyright © <?php echo date('Y');?><strong> ERISA  Quote Pro</strong> All rights reserved. <br>
             Reproduction in whole or in part in any form or medium without express written permission is prohibited.</p>
             <!--<p class="fl"><?php echo $this->Html->image('admin/logo.png', array('style' => 'width:50px; margin-right: 5px'));?> designed and developed by <a href="https://evirtualservices.com" target="_blank">E-virtual services</a></p>-->
 		</div>

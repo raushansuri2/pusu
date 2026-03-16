@@ -14,11 +14,20 @@ class RequestQuotsTable extends Table
         $this->setTable('request_quots');
         //$this->setDisplayField('plan_name');
         $this->setPrimaryKey('id');
-        
-        // $this->hasMany('Programs', [
-        //     'foreignKey' => 'benifit_plan_id',
-        //     'dependent' => true
-        // ]);
+
+       $this->belongsTo('Users', [
+            'foreignKey' => 'user_id',
+            'joinType' => 'LEFT'
+        ]);
+
+        $this->belongsTo('Programs', [
+            'foreignKey' => 'program_id',
+            'joinType' => 'LEFT'
+        ]);
+         $this->belongsTo('Quotgroups', [
+            'foreignKey' => 'group_id',
+            'joinType' => 'LEFT'
+        ]);
     }
 
     // public function validationDefault(Validator $validator): Validator

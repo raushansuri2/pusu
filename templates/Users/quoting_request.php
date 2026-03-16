@@ -22,7 +22,7 @@
 
                     <div class="col-md-12">
                         <div class="d-flex">
-                            <form method="post" action="/quote-requests" class="w-100">
+                            <form method="get" action="" class="w-100">
                                 <div class="row">
                                     <div class="col-md-4">
                                         <select name="status[]" id="qr-filter-status" class="form-control">
@@ -42,9 +42,19 @@
                                             <option value="pending">Pending Decision</option>
                                         </select>
                                     </div>
-                                    <div class="col-md-4"><input type="checkbox" name="hide_expired" value="1" checked class="mt-2">
+                                    <div class="col-md-4">
+                                        <?php $hideExpired = $this->request->getQuery('hide_expired') ?? 1; ?>
+                                        <input type="hidden" name="hide_expired" value="0">
+                                        <input
+                                            type="checkbox"
+                                            name="hide_expired"
+                                            value="1"
+                                            class="mt-2"
+                                            <?= ($hideExpired == 1) ? 'checked' : '' ?>
+                                        >
                                         Hide groups past effective date</div>
-                                    <div class="col-md-4"><input type="text" name="keyword" placeholder="Search by group..." style="float: left;width: 85%;" class="form-control">
+                                    <div class="col-md-4">
+                                        <input type="text" name="keyword" placeholder="Search by group..." style="float: left;width: 85%;" class="form-control">
                                         <button type="submit" class="btn btn-primary">Go</button>
                                     </div>
                                 </div>
@@ -69,72 +79,44 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                <?php //pr($request_quote_list); die;
+                                if(!empty($request_quote_list)) {
+                                    foreach($request_quote_list as $request_quote) {
+                                ?>
                                 <tr>
                                     <td>
-                                        <a href="quote-details.html" class="btn btn-xs btn-primary btn-rounded"><i class="icon icon-left s7-ticket"></i><i class="icon-md" data-feather="file"></i> #7695</a>
+                                        <a href="quote-details.html" class="btn btn-xs btn-primary btn-rounded"><i class="icon icon-left s7-ticket"></i><i class="icon-md" data-feather="file"></i> <?php echo '#'.$request_quote->id;?></a>
                                     </td>
-                                    <td><a href="group-details.html" class="link-no-color">St. Joseph Montessori School</a></td>
-                                    <td>3/24/2025</td>
-                                    <td>2/24/2025</td>
-                                    <td>2/1/2025</td>
-                                    <td><span class="badge bg-warning">Illustrative Quote Ready</span></td>
+                                    <td><a href="<?php echo $this->Url->build(['controller'=>'Users','action'=>'groupDetails', $request_quote->quotgroup->id]);?>" class="link-no-color"><?php echo $request_quote->quotgroup->group_name;?></a></td>
+                                    <td><?php echo $request_quote->created_at; ?></td>
+                                    <td><?php echo $request_quote->Final_Proposals_Due; ?></td>
+                                    <td><?php echo $request_quote->Policy_Effective_Date; ?></td>
+                                    <td><?php if($request_quote->status == 1){?>
+                                        <span class="badge bg-success">Active</span>
+                                    <?php } elseif($request_quote->status == 2) { ?>
+                                        <span class="badge bg-warning">Illustrative Quote Ready</span>
+                                    <?php }elseif($request_quote->status == 3) { ?>
+                                        <span class="badge bg-danger">Closed</span>
+                                    <?php }elseif($request_quote->status == 0){?>
+                                        <span class="badge bg-secondary">Unknown</span>
+                                    <?php }elseif($request_quote->status == 4){?>
+                                        <span class="badge bg-info">Draft</span>
+                                    <?php }elseif($request_quote->status == 5){?>
+                                        <span class="badge bg-dark">Unknown</span>
+                                    <?php }else{?>
+                                        <span class="badge bg-light text-dark"> Unknown</span>
+                                    <?php }?>
+                                </td>
 
                                 </tr>
-                                <tr>
-                                    <td>
-                                        <a href="quote-details.html" class="btn btn-xs btn-primary btn-rounded"><i class="icon icon-left s7-ticket"></i><i class="icon-md" data-feather="file"></i> #7696</a>
-                                    </td>
-                                    <td><a href="group-details.html" class="link-no-color">St. Joseph Montessori School</a></td>
-                                    <td>2/24/2025</td>
-                                    <td>2/24/2025</td>
-                                    <td>2/1/2025</td>
-                                    <td><span class="badge bg-danger">Draft</span></td>
+                                <?php }
+                                } ?>
 
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <a href="quote-details.html" class="btn btn-xs btn-primary btn-rounded"><i class="icon icon-left s7-ticket"></i><i class="icon-md" data-feather="file"></i> #7693</a>
-                                    </td>
-                                    <td><a href="group-details.html" class="link-no-color">St. Joseph Montessori School</a></td>
-                                    <td>5/24/2025</td>
-                                    <td>2/24/2025</td>
-                                    <td>2/1/2025</td>
-                                    <td><span class="badge bg-success">Active</span></td>
 
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <a href="quote-details.html" class="btn btn-xs btn-primary btn-rounded"><i class="icon icon-left s7-ticket"></i><i class="icon-md" data-feather="file"></i> #7692</a>
-                                    </td>
-                                    <td><a href="group-details.html" class="link-no-color">St. Joseph Montessori School</a></td>
-                                    <td>9/24/2025</td>
-                                    <td>2/24/2025</td>
-                                    <td>2/1/2025</td>
-                                    <td><span class="badge bg-info">Underwritten Quote Ready</span></td>
 
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <a href="quote-details.html" class="btn btn-xs btn-primary btn-rounded"><i class="icon icon-left s7-ticket"></i><i class="icon-md" data-feather="file"></i> #7691</a>
-                                    </td>
-                                    <td><a href="group-details.html" class="link-no-color">St. Joseph Montessori School</a></td>
-                                    <td>2/24/2025</td>
-                                    <td>2/24/2025</td>
-                                    <td>2/1/2025</td>
-                                    <td><span class="badge bg-dark">Lost</span></td>
 
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <a href="quote-details.html" class="btn btn-xs btn-primary btn-rounded"><i class="icon icon-left s7-ticket"></i><i class="icon-md" data-feather="file"></i> #7690</a>
-                                    </td>
-                                    <td><a href="group-details.html" class="link-no-color">St. Joseph Montessori School</a></td>
-                                    <td>2/24/2025</td>
-                                    <td>2/24/2025</td>
-                                    <td>2/1/2025</td>
-                                    <td><span class="badge bg-light text-dark">Cancelled</span></td>
 
-                                </tr>
+
                             </tbody>
                         </table>
                     </div>

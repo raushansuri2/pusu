@@ -422,17 +422,53 @@ class UsersController extends AppController
     public function quotingRequest()
     {
         $this->viewBuilder()->setLayout('login');
-        $layoutTitle = 'ERISAQuote Pro. - Dashboard';
+        $layoutTitle = 'Request List-ERISAQuote Pro';
 
-        //session check for login
+        // Session check for login
         $session = $this->request->getSession();
+
         if ($session->read('ERISAQuoteProSession.Users.role') != 'Member') {
             return $this->redirect(['controller' => 'Users', 'action' => 'logout']);
         }
 
+        $keyword = $this->request->getQuery('keyword');
+        $hideExpired = $this->request->getQuery('hide_expired');
 
+        // Initialize conditions
+        $conditions = [];
 
-        //return null; // Explicit return for non-redirect cases
+        // User condition
+        $conditions['RequestQuots.user_id'] = $session->read('ERISAQuoteProSession.Users.id');
+
+        // Search condition
+        if (!empty($keyword)) {
+            $conditions['OR'] = [
+                'Quotgroups.group_name LIKE' => '%' . trim($keyword) . '%'
+            ];
+        }
+
+        // Hide expired condition
+        if ($hideExpired != 0 || !isset($hideExpired)) {
+            $conditions['RequestQuots.Policy_Effective_Date >='] = date('Y-m-d');
+        }
+        if ($hideExpired == 1 && isset($hideExpired)) {
+            $conditions['RequestQuots.Policy_Effective_Date >='] = date('Y-m-d');
+        }
+
+        // Fetch table
+        $requestQuotTable = $this->fetchTable('RequestQuots');
+
+        $query = $requestQuotTable->find()
+            ->where($conditions)
+            ->contain(['Users', 'Quotgroups', 'Programs']);
+
+        // Pagination
+        $request_quote_list = $this->paginate($query, [
+            'limit' => 10,
+            'order' => ['RequestQuots.id' => 'DESC']
+        ]);
+
+        $this->set(compact('request_quote_list', 'layoutTitle'));
     }
 
     public function quotingDetail()
