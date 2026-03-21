@@ -329,35 +329,36 @@ class UsersController extends AppController
         //return null; // Explicit return for non-redirect cases
     }
 
-    public function addquotingRequest()
+
+    public function editquotingRequest($id=null)
     {
         $this->viewBuilder()->setLayout('login');
-        $layoutTitle = 'ERISAQuote Pro. - Dashboard';
+        $layoutTitle = 'Edit Request-ERISAQuote Pro';
 
-        if($this->request->getQuery('programid') == ""){
-            $this->Flash->error(__('Please select a program first.'));
-            return $this->redirect(['controller' => 'Users', 'action' => 'programChoose']);
-        }
+
         //session check for login
         $session = $this->request->getSession();
         if ($session->read('ERISAQuoteProSession.Users.role') != 'Member') {
             return $this->redirect(['controller' => 'Users', 'action' => 'logout']);
         }
+        $RequestQuotsTable = $this->fetchTable('RequestQuots');
+        $RequestQuots = $RequestQuotsTable->find()->where(['RequestQuots.id'=>$id])->first();
+        $programID = $RequestQuots->program_id;
         $censusTable = $this->fetchTable('Census');
         $groupsTable = $this->fetchTable('Quotgroups');
         $group_list = $groupsTable->find('list',['id','group_name'])->where(['Quotgroups.user_id'=>$session->read('ERISAQuoteProSession.Users.id'),'Quotgroups.status'=>1])->toArray();
 
         $networksTable = $this->fetchTable('NetworksRepricing');
-        $network_list = $networksTable->find('list',['id','name'])->where(['NetworksRepricing.status'=>1])->toArray();
+        $network_list = $networksTable->find('list',['id','name'])->where(['NetworksRepricing.status'=>1, 'FIND_IN_SET('.$programID.', NetworksRepricing.program_id)'])->toArray();
 
         $lossPlansTable = $this->fetchTable('LoosePlans');
-        $loss_plans_list = $lossPlansTable->find()->where(['LoosePlans.status'=>1])->toArray();
+        $loss_plans_list = $lossPlansTable->find()->where(['LoosePlans.status'=>1, 'FIND_IN_SET('.$programID.', LoosePlans.program_id)'])->toArray();
 
         $benifitPlansTable = $this->fetchTable('BenifitPlans');
-        $benifit_plans_list = $benifitPlansTable->find()->where(['BenifitPlans.status'=>1])->toArray();
+        $benifit_plans_list = $benifitPlansTable->find()->where(['BenifitPlans.status'=>1, 'FIND_IN_SET('.$programID.', BenifitPlans.program_id)'])->toArray();
 
         $feesTable = $this->fetchTable('Fees');
-        $fees_list = $feesTable->find()->where(['Fees.status'=>1])->toArray();
+        $fees_list = $feesTable->find()->where(['Fees.status'=>1, 'FIND_IN_SET('.$programID.', Fees.program_id)'])->toArray();
 
         //pr($benifit_plans_list); die;
         // if ($this->request->is('post')) {
@@ -365,13 +366,13 @@ class UsersController extends AppController
         //     die;
 
         // }
-        $RequestQuotsTable = $this->fetchTable('RequestQuots');
+
         $RequestQuots = $RequestQuotsTable->newEmptyEntity();
 
         if ($this->request->is('post')) {
             // pr($this->request->getData());
             // die;
-
+            $filename2 = "";
             $Requesy_D = $this->request->getData();
             $Requesy_D['user_id'] = $session->read('ERISAQuoteProSession.Users.id');
             $Requesy_D['status'] = 1;
@@ -379,13 +380,22 @@ class UsersController extends AppController
             $Requesy_D['loss_plan'] = ($this->request->getData('loose')) ? implode(',', $this->request->getData('loose')) : null;
             $Requesy_D['benifit_plan'] = ($this->request->getData('benifit_plans')) ? implode(',', $this->request->getData('benifit_plans')) : null;
             $Requesy_D['program_id'] = $this->request->getQuery('programid');
+            $Requesy_D['Broke_Fee']= json_encode($this->request->getData('fees'));
+
+            $file2 = $this->request->getData('attach_file');
+            if ($file2 && $file2->getError() === UPLOAD_ERR_OK) {
+                $filename2 = time().'_'.$file2->getClientFilename();
+                $targetPath2 = WWW_ROOT . 'img/uploads/request_quote/' . $filename2;
+                $Requesy_D['group_upload'] = $filename2;
+            }
+            //pr($Requesy_D); die;
             $RequestQuots = $RequestQuotsTable->patchEntity(
                 $RequestQuots,
                 $Requesy_D,
                 ['validate' => false]
             );
 
-            if ($RequestQuotsTable->save($RequestQuots)) {
+            if ($RequestQuots = $RequestQuotsTable->save($RequestQuots)) {
 
                 $file = $this->request->getData('census_file');
                 if ($file && $file->getError() === UPLOAD_ERR_OK) {
@@ -404,6 +414,116 @@ class UsersController extends AppController
                         ['validate' => false]);
                     $censusTable->save($census);
                     $file->moveTo($targetPath);
+                }
+
+                //upload files
+                if ($filename2 !="") {
+                    $file2->moveTo($targetPath2);
+                }
+
+                $this->Flash->success(__('Quote requested successfully.'));
+                return $this->redirect(['controller' => 'Users', 'action' => 'quotingRequest']);
+
+            } else {
+
+                $this->Flash->error(__('Please correct the errors below.'));
+            }
+        }
+
+        $this->set(compact('layoutTitle','group_list','network_list','loss_plans_list','benifit_plans_list', 'fees_list'));
+        //return null; // Explicit return for non-redirect cases
+    }
+
+    public function addquotingRequest()
+    {
+        $this->viewBuilder()->setLayout('login');
+        $layoutTitle = 'Add Request-ERISAQuote Pro';
+
+        if($this->request->getQuery('programid') == ""){
+            $this->Flash->error(__('Please select a program first.'));
+            return $this->redirect(['controller' => 'Users', 'action' => 'programChoose']);
+        }
+        $programID = $this->request->getQuery('programid');
+        //session check for login
+        $session = $this->request->getSession();
+        if ($session->read('ERISAQuoteProSession.Users.role') != 'Member') {
+            return $this->redirect(['controller' => 'Users', 'action' => 'logout']);
+        }
+        $censusTable = $this->fetchTable('Census');
+        $groupsTable = $this->fetchTable('Quotgroups');
+        $group_list = $groupsTable->find('list',['id','group_name'])->where(['Quotgroups.user_id'=>$session->read('ERISAQuoteProSession.Users.id'),'Quotgroups.status'=>1])->toArray();
+
+        $networksTable = $this->fetchTable('NetworksRepricing');
+        $network_list = $networksTable->find('list',['id','name'])->where(['NetworksRepricing.status'=>1, 'FIND_IN_SET('.$programID.', NetworksRepricing.program_id)'])->toArray();
+
+        $lossPlansTable = $this->fetchTable('LoosePlans');
+        $loss_plans_list = $lossPlansTable->find()->where(['LoosePlans.status'=>1, 'FIND_IN_SET('.$programID.', LoosePlans.program_id)'])->toArray();
+
+        $benifitPlansTable = $this->fetchTable('BenifitPlans');
+        $benifit_plans_list = $benifitPlansTable->find()->where(['BenifitPlans.status'=>1, 'FIND_IN_SET('.$programID.', BenifitPlans.program_id)'])->toArray();
+
+        $feesTable = $this->fetchTable('Fees');
+        $fees_list = $feesTable->find()->where(['Fees.status'=>1, 'FIND_IN_SET('.$programID.', Fees.program_id)'])->toArray();
+
+        //pr($benifit_plans_list); die;
+        // if ($this->request->is('post')) {
+        //     pr($this->request->getData());
+        //     die;
+
+        // }
+        $RequestQuotsTable = $this->fetchTable('RequestQuots');
+        $RequestQuots = $RequestQuotsTable->newEmptyEntity();
+
+        if ($this->request->is('post')) {
+            // pr($this->request->getData());
+            // die;
+            $filename2 = "";
+            $Requesy_D = $this->request->getData();
+            $Requesy_D['user_id'] = $session->read('ERISAQuoteProSession.Users.id');
+            $Requesy_D['status'] = 1;
+            $Requesy_D['networking_id'] = ($this->request->getData('quote_request_networks')) ? implode(',', $this->request->getData('quote_request_networks')) : null;
+            $Requesy_D['loss_plan'] = ($this->request->getData('loose')) ? implode(',', $this->request->getData('loose')) : null;
+            $Requesy_D['benifit_plan'] = ($this->request->getData('benifit_plans')) ? implode(',', $this->request->getData('benifit_plans')) : null;
+            $Requesy_D['program_id'] = $this->request->getQuery('programid');
+            $Requesy_D['Broke_Fee']= json_encode($this->request->getData('fees'));
+
+            $file2 = $this->request->getData('attach_file');
+            if ($file2 && $file2->getError() === UPLOAD_ERR_OK) {
+                $filename2 = time().'_'.$file2->getClientFilename();
+                $targetPath2 = WWW_ROOT . 'img/uploads/census/' . $filename2;
+                $Requesy_D['group_upload'] = $filename2;
+            }
+            //pr($Requesy_D); die;
+            $RequestQuots = $RequestQuotsTable->patchEntity(
+                $RequestQuots,
+                $Requesy_D,
+                ['validate' => false]
+            );
+
+            if ($RequestQuots = $RequestQuotsTable->save($RequestQuots)) {
+
+                $file = $this->request->getData('census_file');
+                if ($file && $file->getError() === UPLOAD_ERR_OK) {
+                    $filename = time().'_'.$file->getClientFilename();
+                    $targetPath = WWW_ROOT . 'img/uploads/census/' . $filename;
+
+                    $census_data = [
+                        'request_id'=> $RequestQuots->id,
+                        'user_id' => $session->read('ERISAQuoteProSession.Users.id'),
+                        'xl_file' => $filename
+                    ];
+                    $census = $censusTable->newEmptyEntity();
+                    $census = $censusTable->patchEntity(
+                        $census,
+                        $census_data,
+                        ['validate' => false]);
+                    $censusTable->save($census);
+                    $file->moveTo($targetPath);
+                }
+
+                //upload files
+                if ($filename2 !="") {
+                    $file2->moveTo($targetPath2);
                 }
 
                 $this->Flash->success(__('Quote requested successfully.'));
@@ -471,7 +591,7 @@ class UsersController extends AppController
         $this->set(compact('request_quote_list', 'layoutTitle'));
     }
 
-    public function quotingDetail()
+    public function quotingDetail($id=null)
     {
         $this->viewBuilder()->setLayout('login');
         $layoutTitle = 'ERISAQuote Pro. - Quoting Details';
@@ -482,8 +602,10 @@ class UsersController extends AppController
             return $this->redirect(['controller' => 'Users', 'action' => 'logout']);
         }
 
+        $RequestQuotsTable = $this->fetchTable('RequestQuots');
+        $RequestQuots = $RequestQuotsTable->find()->where(['RequestQuots.id'=>$id])->contain(['Users','Groups'])->first();
 
-
+        $this->set(compact('RequestQuots', 'layoutTitle'));
         //return null; // Explicit return for non-redirect cases
     }
 

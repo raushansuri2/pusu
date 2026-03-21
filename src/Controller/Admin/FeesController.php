@@ -133,6 +133,12 @@ class FeesController extends AppController
         if ($this->request->is(['patch', 'post', 'put'])) {
             $data = $this->request->getData();
 
+            if(!isset($data['is_editable'])){
+                $data['is_editable'] = 0;
+            }
+            if(!isset($data['is_applied_to_premium'])){
+                $data['is_applied_to_premium'] = 0;
+            }
             $programIds = $data['program_id'] ?? ($data['program_id[]'] ?? null);
             if (is_array($programIds)) {
                 $flatProgramIds = [];

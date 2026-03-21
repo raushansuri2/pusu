@@ -85,7 +85,7 @@
                                 ?>
                                 <tr>
                                     <td>
-                                        <a href="quote-details.html" class="btn btn-xs btn-primary btn-rounded"><i class="icon icon-left s7-ticket"></i><i class="icon-md" data-feather="file"></i> <?php echo '#'.$request_quote->id;?></a>
+                                        <a href="<?php echo $this->Url->build(['controller'=>'Users','action'=>'quotingDetail', $request_quote->id]);?>" class="btn btn-xs btn-primary btn-rounded"><i class="icon icon-left s7-ticket"></i><i class="icon-md" data-feather="file"></i> <?php echo '#'.$request_quote->id;?></a>
                                     </td>
                                     <td><a href="<?php echo $this->Url->build(['controller'=>'Users','action'=>'groupDetails', $request_quote->quotgroup->id]);?>" class="link-no-color"><?php echo $request_quote->quotgroup->group_name;?></a></td>
                                     <td><?php echo $request_quote->created_at; ?></td>

@@ -709,7 +709,7 @@
                                                 <dt class="col-sm-4 text-right">Organization Type</dt>
                                                 <dd class="col-sm-8 text-capitalize">brokerage</dd>
                                                 <dt class="col-sm-4 text-right">Contact Person</dt>
-                                                <dd class="col-sm-8">John Youngs</dd>
+                                                <dd class="col-sm-8"></dd>
                                                 <dt class="col-sm-4 text-right">Contact Phone</dt>
                                                 <dd class="col-sm-8"> (916) 804-6009 </dd>
                                                 <dt class="col-sm-4 text-right">Contact Email</dt>

@@ -124,8 +124,10 @@
                                 <label class="col-sm-3 control-label">Is Editable</label>
                                 <div class="col-sm-9">
                                     <?php echo $this->Form->input('is_editable', [
-                                        'class' => 'form-control',
                                         'type' => 'checkbox',
+                                        'hiddenField' => true,
+                                        'value' => 1,
+                                        'uncheckValue' => 0,
                                         'div' => false,
                                         'label' => false
                                     ]); ?>
@@ -138,8 +140,10 @@
                                 <label class="col-sm-3 control-label">Applied to Premium</label>
                                 <div class="col-sm-9">
                                     <?php echo $this->Form->input('is_applied_to_premium', [
-                                        'class' => 'form-control',
                                         'type' => 'checkbox',
+                                        'hiddenField' => true,
+                                        'value' => 1,
+                                        'uncheckValue' => 0,
                                         'div' => false,
                                         'label' => false
                                     ]); ?>
