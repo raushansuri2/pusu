@@ -10,8 +10,8 @@
             <h4 class="mb-0 d-flex align-items-center flex-wrap">
                 <span class="me-2">#7802:</span>
 
-                <a href="group-details.html" class="link-no-color fw-semibold me-3">
-                    St. Joseph Montessori School
+                <a href="<?php echo $this->Url->build(['controller'=>'users','action'=>'quotingDetail',$RequestQuots->quotgroup->id]);?>" class="link-no-color fw-semibold me-3">
+                    <?php echo $RequestQuots->quotgroup->group_name;?>
                 </a>
 
                 <span style="font-size: 12px;" class="badge bg-warning">
@@ -29,15 +29,15 @@
 
 
 
-                <a href="edit-quote.html" class="btn btn-xs btn-danger btn-rounded">
+                <a href="<?php echo $this->Url->build(['controller'=>'users','action'=>'editquotingRequest',$RequestQuots->id]);?>" class="btn btn-xs btn-danger btn-rounded">
                     <i data-feather="edit-3" class="icon-sm"></i>
                     Edit & Resubmit
                 </a>
                 <!-- Quick Actions -->
-                <a href="add-note.html" class="btn btn-xs btn-success btn-rounded">
+                <!-- <a href="add-note.html" class="btn btn-xs btn-success btn-rounded">
                     <i data-feather="plus-square" class="icon-sm"></i>
                     Add Note
-                </a>
+                </a> -->
 
                 <button type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" class="btn btn-xs btn-primary btn-rounded dropdown-toggle"> <i data-feather="settings" class="icon-sm"></i>
 

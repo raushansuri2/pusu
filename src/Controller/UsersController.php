@@ -603,8 +603,8 @@ class UsersController extends AppController
         }
 
         $RequestQuotsTable = $this->fetchTable('RequestQuots');
-        $RequestQuots = $RequestQuotsTable->find()->where(['RequestQuots.id'=>$id])->contain(['Users','Groups'])->first();
-
+        $RequestQuots = $RequestQuotsTable->find()->where(['RequestQuots.id'=>$id])->contain(['Users','Quotgroups','Programs'])->first();
+        //pr($RequestQuots); die;
         $this->set(compact('RequestQuots', 'layoutTitle'));
         //return null; // Explicit return for non-redirect cases
     }
