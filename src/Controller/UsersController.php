@@ -28,7 +28,7 @@ use Psr\Http\Message\UploadedFileInterface;
 use Cake\Http\Cookie\Cookie;
 use Cake\Database\Expression\QueryExpression;
 
-
+require_once WWW_ROOT . 'simplexlsx-master/src/SimpleXLSX.php';
 class UsersController extends AppController
 {
     public function initialize(): void
@@ -335,14 +335,26 @@ class UsersController extends AppController
         $this->viewBuilder()->setLayout('login');
         $layoutTitle = 'Edit Request-ERISAQuote Pro';
 
-
         //session check for login
         $session = $this->request->getSession();
         if ($session->read('ERISAQuoteProSession.Users.role') != 'Member') {
             return $this->redirect(['controller' => 'Users', 'action' => 'logout']);
         }
+
         $RequestQuotsTable = $this->fetchTable('RequestQuots');
         $RequestQuots = $RequestQuotsTable->find()->where(['RequestQuots.id'=>$id])->first();
+
+        if (empty($RequestQuots)) {
+            $this->Flash->error(__('Quote request not found.'));
+            return $this->redirect(['controller' => 'Users', 'action' => 'quotingRequest']);
+        }
+
+        // Check if user owns this request
+        if ($RequestQuots->user_id != $session->read('ERISAQuoteProSession.Users.id')) {
+            $this->Flash->error(__('You do not have permission to edit this request.'));
+            return $this->redirect(['controller' => 'Users', 'action' => 'quotingRequest']);
+        }
+
         $programID = $RequestQuots->program_id;
         $censusTable = $this->fetchTable('Census');
         $groupsTable = $this->fetchTable('Quotgroups');
@@ -360,26 +372,27 @@ class UsersController extends AppController
         $feesTable = $this->fetchTable('Fees');
         $fees_list = $feesTable->find()->where(['Fees.status'=>1, 'FIND_IN_SET('.$programID.', Fees.program_id)'])->toArray();
 
-        //pr($benifit_plans_list); die;
-        // if ($this->request->is('post')) {
-        //     pr($this->request->getData());
-        //     die;
-
-        // }
-
-        $RequestQuots = $RequestQuotsTable->newEmptyEntity();
+        // Get existing census data
+        $existingCensus = $censusTable->find()->where(['Census.request_id' => $id])->first();
 
         if ($this->request->is('post')) {
-            // pr($this->request->getData());
-            // die;
             $filename2 = "";
             $Requesy_D = $this->request->getData();
+
+            // Validate census file - it cannot be blank for new requests
+            $censusFile = $this->request->getData('census_file');
+            $attach_file = $this->request->getData('attach_file');
+            if (empty($existingCensus) && (!$censusFile || $censusFile->getError() !== UPLOAD_ERR_OK)) {
+                $this->Flash->error(__('Census file is required and cannot be blank.'));
+                return $this->redirect(['controller' => 'Users', 'action' => 'editquotingRequest', $id]);
+            }
+
             $Requesy_D['user_id'] = $session->read('ERISAQuoteProSession.Users.id');
             $Requesy_D['status'] = 1;
             $Requesy_D['networking_id'] = ($this->request->getData('quote_request_networks')) ? implode(',', $this->request->getData('quote_request_networks')) : null;
             $Requesy_D['loss_plan'] = ($this->request->getData('loose')) ? implode(',', $this->request->getData('loose')) : null;
             $Requesy_D['benifit_plan'] = ($this->request->getData('benifit_plans')) ? implode(',', $this->request->getData('benifit_plans')) : null;
-            $Requesy_D['program_id'] = $this->request->getQuery('programid');
+            $Requesy_D['program_id'] = $RequestQuots->program_id; // Keep existing program_id
             $Requesy_D['Broke_Fee']= json_encode($this->request->getData('fees'));
 
             $file2 = $this->request->getData('attach_file');
@@ -388,7 +401,8 @@ class UsersController extends AppController
                 $targetPath2 = WWW_ROOT . 'img/uploads/request_quote/' . $filename2;
                 $Requesy_D['group_upload'] = $filename2;
             }
-            //pr($Requesy_D); die;
+
+            // Patch the existing entity instead of creating new one
             $RequestQuots = $RequestQuotsTable->patchEntity(
                 $RequestQuots,
                 $Requesy_D,
@@ -397,41 +411,78 @@ class UsersController extends AppController
 
             if ($RequestQuots = $RequestQuotsTable->save($RequestQuots)) {
 
-                $file = $this->request->getData('census_file');
-                if ($file && $file->getError() === UPLOAD_ERR_OK) {
-                    $filename = time().'_'.$file->getClientFilename();
+                // Handle census file upload
+                if ($censusFile && $censusFile->getError() === UPLOAD_ERR_OK) {
+                    $filename = time().'_'.$censusFile->getClientFilename();
                     $targetPath = WWW_ROOT . 'img/uploads/census/' . $filename;
 
-                    $census_data = [
-                        'request_id'=> $RequestQuots->id,
-                        'user_id' => $session->read('ERISAQuoteProSession.Users.id'),
-                        'xl_file' => $filename
-                    ];
-                    $census = $censusTable->newEmptyEntity();
-                    $census = $censusTable->patchEntity(
-                        $census,
-                        $census_data,
-                        ['validate' => false]);
-                    $censusTable->save($census);
-                    $file->moveTo($targetPath);
+                    if ($existingCensus) {
+                        // Update existing census record
+                        $existingCensus = $censusTable->patchEntity(
+                            $existingCensus,
+                            ['xl_file' => $filename],
+                            ['validate' => false]
+                        );
+                        $censusTable->save($existingCensus);
+                    } else {
+                        // Create new census record
+                        $census_data = [
+                            'request_id'=> $RequestQuots->id,
+                            'user_id' => $session->read('ERISAQuoteProSession.Users.id'),
+                            'xl_file' => $filename
+                        ];
+                        $census = $censusTable->newEmptyEntity();
+                        $census = $censusTable->patchEntity(
+                            $census,
+                            $census_data,
+                            ['validate' => false]
+                        );
+                        $censusTable->save($census);
+                    }
+                    $censusFile->moveTo($targetPath);
                 }
 
-                //upload files
-                if ($filename2 !="") {
-                    $file2->moveTo($targetPath2);
+                // Upload attachment file
+                if ($attach_file && $attach_file->getError() === UPLOAD_ERR_OK) {
+                    $filename = time().'_'.$attach_file->getClientFilename();
+                    $targetPath = WWW_ROOT . 'img/uploads/census/' . $filename;
+
+
+                    if ($existingCensus) {
+                        // Update existing census record
+                        $existingCensus = $censusTable->patchEntity(
+                            $existingCensus,
+                            ['xl_file' => $filename],
+                            ['validate' => false]
+                        );
+                        $censusTable->save($existingCensus);
+                    } else {
+                        // Create new census record
+                        $census_data = [
+                            'request_id'=> $RequestQuots->id,
+                            'user_id' => $session->read('ERISAQuoteProSession.Users.id'),
+                            'xl_file' => $filename
+                        ];
+                        $census = $censusTable->newEmptyEntity();
+                        $census = $censusTable->patchEntity(
+                            $census,
+                            $census_data,
+                            ['validate' => false]
+                        );
+                        $censusTable->save($census);
+                    }
+                    $attach_file->moveTo($targetPath);
                 }
 
-                $this->Flash->success(__('Quote requested successfully.'));
+                $this->Flash->success(__('Quote request updated successfully.'));
                 return $this->redirect(['controller' => 'Users', 'action' => 'quotingRequest']);
 
             } else {
-
                 $this->Flash->error(__('Please correct the errors below.'));
             }
         }
 
-        $this->set(compact('layoutTitle','group_list','network_list','loss_plans_list','benifit_plans_list', 'fees_list'));
-        //return null; // Explicit return for non-redirect cases
+        $this->set(compact('layoutTitle','group_list','network_list','loss_plans_list','benifit_plans_list', 'fees_list', 'RequestQuots', 'existingCensus'));
     }
 
     public function addquotingRequest()
@@ -487,12 +538,7 @@ class UsersController extends AppController
             $Requesy_D['program_id'] = $this->request->getQuery('programid');
             $Requesy_D['Broke_Fee']= json_encode($this->request->getData('fees'));
 
-            $file2 = $this->request->getData('attach_file');
-            if ($file2 && $file2->getError() === UPLOAD_ERR_OK) {
-                $filename2 = time().'_'.$file2->getClientFilename();
-                $targetPath2 = WWW_ROOT . 'img/uploads/census/' . $filename2;
-                $Requesy_D['group_upload'] = $filename2;
-            }
+
             //pr($Requesy_D); die;
             $RequestQuots = $RequestQuotsTable->patchEntity(
                 $RequestQuots,
@@ -510,7 +556,8 @@ class UsersController extends AppController
                     $census_data = [
                         'request_id'=> $RequestQuots->id,
                         'user_id' => $session->read('ERISAQuoteProSession.Users.id'),
-                        'xl_file' => $filename
+                        'xl_file' => $filename,
+                        'type'=> 'Census'
                     ];
                     $census = $censusTable->newEmptyEntity();
                     $census = $censusTable->patchEntity(
@@ -522,7 +569,23 @@ class UsersController extends AppController
                 }
 
                 //upload files
-                if ($filename2 !="") {
+                $file2 = $this->request->getData('attach_file');
+                if ($file2 && $file2->getError() === UPLOAD_ERR_OK) {
+                    $filename2 = time().'_'.$file2->getClientFilename();
+                    $targetPath2 = WWW_ROOT . 'img/uploads/census/' . $filename2;
+
+                     $census_data = [
+                        'request_id'=> $RequestQuots->id,
+                        'user_id' => $session->read('ERISAQuoteProSession.Users.id'),
+                        'xl_file' => $filename,
+                        'type'=> 'Attachment'
+                    ];
+                    $census = $censusTable->newEmptyEntity();
+                    $census = $censusTable->patchEntity(
+                        $census,
+                        $census_data,
+                        ['validate' => false]);
+                    $censusTable->save($census);
                     $file2->moveTo($targetPath2);
                 }
 
@@ -604,8 +667,70 @@ class UsersController extends AppController
 
         $RequestQuotsTable = $this->fetchTable('RequestQuots');
         $RequestQuots = $RequestQuotsTable->find()->where(['RequestQuots.id'=>$id])->contain(['Users','Quotgroups','Programs'])->first();
-        //pr($RequestQuots); die;
-        $this->set(compact('RequestQuots', 'layoutTitle'));
+
+        // Get census data for this request
+        $censusTable = $this->fetchTable('Census');
+        $censusData = $censusTable->find()->where(['Census.request_id' => $id])->toArray();
+
+        // Get network details
+        $networksDetails = [];
+        if (!empty($RequestQuots->networking_id)) {
+            $networksTable = $this->fetchTable('NetworksRepricing');
+            $networkIds = explode(',', $RequestQuots->networking_id);
+            $networksDetails = $networksTable->find()->where(['NetworksRepricing.id IN' => $networkIds])->toArray();
+        }
+
+        // Get loss plan details
+        $lossPlansDetails = [];
+        if (!empty($RequestQuots->loss_plan)) {
+            $lossPlansTable = $this->fetchTable('LoosePlans');
+            $lossPlanIds = explode(',', $RequestQuots->loss_plan);
+            $lossPlansDetails = $lossPlansTable->find()->where(['LoosePlans.id IN' => $lossPlanIds])->toArray();
+        }
+
+        // Get benefit plan details
+        $benefitPlansDetails = [];
+        if (!empty($RequestQuots->benifit_plan)) {
+            $benefitPlansTable = $this->fetchTable('BenifitPlans');
+            $benefitPlanIds = explode(',', $RequestQuots->benifit_plan);
+            $benefitPlansDetails = $benefitPlansTable->find()->where(['BenifitPlans.id IN' => $benefitPlanIds])->toArray();
+        }
+
+        // Get fees data
+        $feesData = [];
+        if (!empty($RequestQuots->Broke_Fee)) {
+            $feesData = json_decode($RequestQuots->Broke_Fee, true);
+        }
+
+        $file_name = '';
+        if(!empty($censusData)){
+            foreach($censusData as $census) {
+                if($census->type == 'Census') {
+                    $file_name = $census->xl_file;
+                }
+            }
+        }
+
+        $filePath = WWW_ROOT . 'img/uploads/census/'.$file_name; // your Excel file path
+        $file_counts = [];
+        if ($xlsx = \Shuchkin\SimpleXLSX::parse($filePath)) {
+            $rows = $xlsx->rows();
+
+            foreach ($rows as $i => $row) {
+                if ($i < 4) continue; // skip header
+
+                $val = $row[7] ?? null; // column G (index 6)
+                if ($val) {
+                    if (!isset($file_counts[$val])) {
+                        $file_counts[$val] = 0;
+                    }
+                    $file_counts[$val]++;
+                }
+            }
+        }
+        //pr($file_counts); die;
+
+        $this->set(compact('file_counts','RequestQuots', 'layoutTitle', 'censusData', 'networksDetails', 'lossPlansDetails', 'benefitPlansDetails', 'feesData'));
         //return null; // Explicit return for non-redirect cases
     }
 

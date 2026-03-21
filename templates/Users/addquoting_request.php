@@ -54,7 +54,7 @@
                         </div>
                         <div class="col-md-12">
                             <p style="font-size: 13px;margin-top: 7px;">
-                                <strong>Final Proposals Due</strong><spam id="FPD"> 7/4/25 </spam><strong> &nbsp;&nbsp;&nbsp; Plan Effective</strong> <spam id="PE">8/1/2025</spam> <strong>  &nbsp;&nbsp;&nbsp;Census Used</strong> Census St Joseph Motesorri.xlsx (71 members)
+                                <strong>Final Proposals Due</strong><spam id="FPD"> 7/4/25 </spam><strong> &nbsp;&nbsp;&nbsp; Plan Effective</strong> <spam id="PE">8/1/2025</spam> <strong>  &nbsp;&nbsp;&nbsp;Census Used</strong> <spam id="xl_files">Census St Joseph Motesorri.xlsx (71 members)</spam>
                             </p>
                         </div>
                     </div>
@@ -471,7 +471,7 @@
                                         <div class="col-md-3 text-right">
                                             <input type="file" name="attach_file" class="btn btn-rounded btn-secondary mr-1 d-print-none" />
                                             <!-- <a href="#" class="btn btn-rounded btn-secondary mr-1 d-print-none">Upload Files</a>  -->
-                                            <a href="#" class="btn btn-rounded btn-primary d-print-none" data-no-ajax="1">Download All</a>
+                                            <!-- <a href="#" class="btn btn-rounded btn-primary d-print-none" data-no-ajax="1">Download All</a> -->
                                         </div>
                                     </div>
                                 </div>
@@ -527,7 +527,7 @@
                                             <tbody>
                                                 <tr>
                                                     <td class="d-flex align-items-center gap-3">
-                                                        <img src="<?php echo $this->Url->build('/');?>images/logod.svg" style="max-height: 110px;width: 290px;border-radius: 0;" alt="Prodigy Health Insurance logo" class="img-fluid" style="max-height: 40px;">
+                                                        <img src="<?php echo $this->Url->build('/');?>img/admin/logo.png" style="max-height: 110px;width: 290px;border-radius: 0;" alt="Prodigy Health Insurance logo" class="img-fluid" style="max-height: 40px;">
                                                         <span>Prodigy Health Insurance</span>
                                                     </td>
 
@@ -591,16 +591,7 @@
                                                             </td>
                                                         </tr>
                                                         <?php } } ?>
-                                                        <tr>
-                                                            <td>Broker Fee</td>
-                                                            <td>PEPM</td>
-                                                            <td style="max-width: 200px;">
-                                                                <input type="text" class="form-control" name="fees_broker_fee" id="Broke_Fee" placeholder="35.00" value="35.00" aria-label="Fee amount">
-                                                            </td>
-                                                            <td>
-                                                                <small class="text-muted">This fee is editable</small>
-                                                            </td>
-                                                        </tr>
+
                                                     </tbody>
 
                                                 </table>
@@ -700,3 +691,56 @@
   display: inline-block;
   margin-top: 1rem;
 }</style>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    document.getElementById('actual-btn').addEventListener('change', function(e) {
+
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+
+            const sheetName = workbook.SheetNames[0];
+            const sheet = workbook.Sheets[sheetName];
+
+            const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+            let values = [];
+
+            // Column G (index 6)
+            for (let i = 1; i < jsonData.length; i++) {
+                let val = jsonData[i][6];
+                if (val) values.push(val);
+            }
+
+            // ✅ Count occurrences
+            let counts = {};
+            values.forEach(v => {
+                counts[v] = (counts[v] || 0) + 1;
+            });
+
+            // ✅ Distinct count
+            let distinctCount = Object.keys(counts).length;
+
+            console.log(counts);
+            $("#xl_files").html(file.name+' (' + values.length + ')');
+            document.getElementById('result').innerHTML = `
+                Total Rows: ${values.length} <br>
+                Distinct Count: ${distinctCount} <br>
+                Counts: ${JSON.stringify(counts)}
+            `;
+        };
+
+        reader.readAsArrayBuffer(file);
+    });
+
+});
+</script>

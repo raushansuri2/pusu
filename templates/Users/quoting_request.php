@@ -8,7 +8,7 @@
         <div class="d-flex align-items-center flex-wrap text-nowrap">
 
 
-            <a href="new-quote-request.html" class="btn btn-primary btn-icon-text mb-2 mb-md-0">
+            <a href="<?php echo $this->Url->build(['controller'=>'Users','action'=>'program-choose']);?>" class="btn btn-primary btn-icon-text mb-2 mb-md-0">
                 <i class="btn-icon-prepend" data-feather="plus-square"></i>
                 New Quote Request
             </a>

@@ -1,33 +1,51 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
-        $("#business-group-id").on('change', function() {
+        // Initialize header data with existing values
+        var selectedValue = "<?php echo $RequestQuots->group_id; ?>";
+        var selectedText = "<?php echo isset($group_list[$RequestQuots->group_id]) ? $group_list[$RequestQuots->group_id] : ''; ?>";
 
+        if (selectedValue) {
+            $("#group_ID").html('#' + selectedValue);
+        }
+        if (selectedText) {
+            $("#group_NAME").html(selectedText);
+        }
+
+        // Initialize dates
+        var policyDate = "<?php echo $RequestQuots->Policy_Effective_Date ? date('Y-m-d', strtotime($RequestQuots->Policy_Effective_Date)) : ''; ?>";
+        var proposalDate = "<?php echo $RequestQuots->Final_Proposals_Due ? date('Y-m-d', strtotime($RequestQuots->Final_Proposals_Due)) : ''; ?>";
+
+        if (policyDate) {
+            $("#PE").html(policyDate);
+        }
+        if (proposalDate) {
+            $("#FPD").html(proposalDate);
+        }
+
+        $("#business-group-id").on('change', function() {
             var selectedValue = $(this).val();
             var selectedText = $(this).find("option:selected").text();
-
             $("#group_ID").html('#'+selectedValue);
             $("#group_NAME").html(selectedText);
-
         });
 
         $("#date-policy-start, #final_proposal_date").on("input change", function () {
             headerset();
         });
-
     });
 
-        function headerset(){
-            $("#PE").html($("#date-policy-start").val());
-            $("#FPD").html($("#final_proposal_date").val());
-        }
+    function headerset(){
+        $("#PE").html($("#date-policy-start").val());
+        $("#FPD").html($("#final_proposal_date").val());
+    }
 </script>
 
 <div class="page-content">
     <nav class="page-breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="quote-request.html">Quote Requests</a></li>
-            <li class="breadcrumb-item active" aria-current="page">New Quote Request</li>
+            <li class="breadcrumb-item active" aria-current="page">Edit Quote Request</li>
         </ol>
     </nav>
 
@@ -70,7 +88,7 @@
                     <!-- Form -->
                     <!-- <form id="multiStepForm"> -->
                     <?php echo $this->Flash->render(); ?>
-                    <form method="post" action="<?php echo $this->Url->build(['controller' => 'Users', 'action' => 'addquotingRequest']); ?>?programid=<?php echo $this->request->getQuery('programid'); ?>" enctype="multipart/form-data" accept-charset="utf-8">
+                    <form method="post" action="<?php echo $this->Url->build(['controller' => 'Users', 'action' => 'editquotingRequest', $RequestQuots->id]); ?>" enctype="multipart/form-data" accept-charset="utf-8">
                         <div class="step active">
                             <div class="row">
                                 <div class="col-12">
@@ -87,7 +105,8 @@
                                                         <option value="">Select a group</option>
                                                         <?php
                                                         foreach ($group_list as $code => $name) {
-                                                            echo '<option value="' . $code . '">' . $name . '</option>';
+                                                            $selected = ($code == $RequestQuots->group_id) ? 'selected' : '';
+                                                            echo '<option value="' . $code . '" ' . $selected . '>' . $name . '</option>';
                                                         }
                                                         ?>
                                                         <!-- options preserved -->
@@ -162,21 +181,21 @@
                                                     <label for="date-policy-start" class="form-label">
                                                         Policy Effective Date
                                                     </label>
-                                                    <input type="date" class="form-control datepicker" onkeyup="headerset()" name="Policy_Effective_Date" id="date-policy-start" required>
+                                                    <input type="date" class="form-control datepicker" onkeyup="headerset()" name="Policy_Effective_Date" id="date-policy-start" value="<?php echo $RequestQuots->Policy_Effective_Date ? date('Y-m-d', strtotime($RequestQuots->Policy_Effective_Date)) : ''; ?>" required>
                                                 </div>
 
                                                 <div class="mb-3">
                                                     <label for="date-policy-end" class="form-label">
                                                         Policy Termination Date
                                                     </label>
-                                                    <input type="date" class="form-control datepicker" onkeyup="headerset()" name="Policy_Termination_Date" id="date-policy-end" required>
+                                                    <input type="date" class="form-control datepicker" onkeyup="headerset()" name="Policy_Termination_Date" id="date-policy-end" value="<?php echo $RequestQuots->Policy_Termination_Date ? date('Y-m-d', strtotime($RequestQuots->Policy_Termination_Date)) : ''; ?>" required>
                                                 </div>
 
                                                 <div class="mb-3">
                                                     <label for="quotes-due-by" class="form-label">
                                                         Final Proposals Due
                                                     </label>
-                                                    <input type="date" onkeyup="headerset()" name="Final_Proposals_Due" id="final_proposal_date" class="form-control datepicker" required>
+                                                    <input type="date" onkeyup="headerset()" name="Final_Proposals_Due" id="final_proposal_date" class="form-control datepicker" value="<?php echo $RequestQuots->Final_Proposals_Due ? date('Y-m-d', strtotime($RequestQuots->Final_Proposals_Due)) : ''; ?>" required>
                                                 </div>
                                             </div>
 
@@ -210,9 +229,12 @@
                                 <div class="col-12">
                                     <p>Please choose from the following networks or repricing:</p>
                                     <?php
-                                    foreach($network_list as $key=>$network){ ?>
+                                    $selectedNetworks = explode(',', $RequestQuots->networking_id);
+                                    foreach($network_list as $key=>$network){
+                                        $checked = in_array($key, $selectedNetworks) ? 'checked' : '';
+                                        ?>
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="quote_request_networks[<?php echo $key; ?>]" value="<?php echo $key;?>" id="network-<?php echo $key; ?>">
+                                            <input class="form-check-input" type="checkbox" name="quote_request_networks[<?php echo $key; ?>]" value="<?php echo $key;?>" id="network-<?php echo $key; ?>" <?php echo $checked; ?>>
                                             <label class="form-check-label" for="network-<?php echo $key; ?>">
                                                 <?php echo $network;?>
                                             </label>
@@ -277,10 +299,14 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <?php foreach($loss_plans_list as $loss_plans){ ?>
+                                                        <?php
+                                                        $selectedLossPlans = explode(',', $RequestQuots->loss_plan);
+                                                        foreach($loss_plans_list as $loss_plans){
+                                                            $checked = in_array($loss_plans->id, $selectedLossPlans) ? 'checked' : '';
+                                                            ?>
                                                             <tr>
                                                                 <td>
-                                                                    <input class="form-check-input" type="checkbox" name="loose[]" value="<?php echo $loss_plans->id;?>" checked>
+                                                                    <input class="form-check-input" type="checkbox" name="loose[]" value="<?php echo $loss_plans->id;?>" <?php echo $checked; ?>>
                                                                 </td>
                                                                 <td><strong><?php echo $loss_plans->plan_name;?></strong></td>
                                                                 <td>$<?php echo $loss_plans->Spec_Deductible;?></td>
@@ -322,17 +348,17 @@
                                                 <h5 class="mb-2">Stop Loss Coverage Type</h5>
                                                 <div class="form-group custom-controls-stacked">
                                                     <label class="custom-control custom-radio">
-                                                        <input type="radio" name="Stop_Loss_Coverage_Type" value="both" class="custom-control-input" checked>
+                                                        <input type="radio" name="Stop_Loss_Coverage_Type" value="both" class="custom-control-input" <?php echo ($RequestQuots->Stop_Loss_Coverage_Type == 'both' || !$RequestQuots->Stop_Loss_Coverage_Type) ? 'checked' : ''; ?>>
                                                         <span class="custom-control-label">Specific and aggregate stop loss</span> </label>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="custom-control custom-radio">
-                                                        <input type="radio" name="Stop_Loss_Coverage_Type" value="spec" class="custom-control-input">
+                                                        <input type="radio" name="Stop_Loss_Coverage_Type" value="spec" class="custom-control-input" <?php echo ($RequestQuots->Stop_Loss_Coverage_Type == 'spec') ? 'checked' : ''; ?>>
                                                         <span class="custom-control-label">Specific stop loss only</span> </label>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="custom-control custom-radio">
-                                                        <input type="radio" name="Stop_Loss_Coverage_Type" value="agg" class="custom-control-input">
+                                                        <input type="radio" name="Stop_Loss_Coverage_Type" value="agg" class="custom-control-input" <?php echo ($RequestQuots->Stop_Loss_Coverage_Type == 'agg') ? 'checked' : ''; ?>>
                                                         <span class="custom-control-label">Aggregate stop loss only</span> </label>
                                                 </div>
 
@@ -341,12 +367,12 @@
                                                 <div class="form-group custom-controls-stacked">
                                                     <label>Specific includes prescription drugs?</label><br>
                                                     <label class="custom-control custom-radio">
-                                                        <input type="radio" name="Specific_includes_PD" value="1" class="custom-control-input" checked>
+                                                        <input type="radio" name="Specific_includes_PD" value="1" class="custom-control-input" <?php echo ($RequestQuots->Specific_includes_PD == 1 || !$RequestQuots->Specific_includes_PD) ? 'checked' : ''; ?>>
                                                         <span class="custom-control-label">Yes</span> </label>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="custom-control custom-radio">
-                                                        <input type="radio" name="Specific_includes_PD" value="0" class="custom-control-input">
+                                                        <input type="radio" name="Specific_includes_PD" value="0" class="custom-control-input" <?php echo ($RequestQuots->Specific_includes_PD == 0) ? 'checked' : ''; ?>>
                                                         <span class="custom-control-label">No</span> </label>
                                                 </div>
                                                 <div class="form-group custom-controls-stacked">
@@ -354,12 +380,12 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="custom-control custom-radio">
-                                                        <input type="radio" name="Aggregate_includes_PD" value="1" class="custom-control-input" checked>
+                                                        <input type="radio" name="Aggregate_includes_PD" value="1" class="custom-control-input" <?php echo ($RequestQuots->Aggregate_includes_PD == 1 || !$RequestQuots->Aggregate_includes_PD) ? 'checked' : ''; ?>>
                                                         <span class="custom-control-label">Yes</span> </label>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="custom-control custom-radio">
-                                                        <input type="radio" name="Aggregate_includes_PD" value="0" class="custom-control-input">
+                                                        <input type="radio" name="Aggregate_includes_PD" value="0" class="custom-control-input" <?php echo ($RequestQuots->Aggregate_includes_PD == 0) ? 'checked' : ''; ?>>
                                                         <span class="custom-control-label">No</span> </label>
                                                 </div>
 
@@ -367,7 +393,7 @@
                                                 <h5 class="mb-2">Level Funded Stop Loss</h5>
                                                 <div class="form-group">
                                                     <label class="custom-control custom-checkbox">
-                                                        <input type="checkbox" name="Include_level_quote" value="1" class="custom-control-input">
+                                                        <input type="checkbox" name="Include_level_quote" value="1" class="custom-control-input" <?php echo ($RequestQuots->Include_level_quote == 1) ? 'checked' : ''; ?>>
                                                         <span class="custom-control-label">Include level quote if available?</span> </label>
                                                 </div>
                                                 <button class="btn btn-primary"> Review Stop Loss Options </button>
@@ -429,9 +455,13 @@
                                                     </thead>
 
                                                     <tbody>
-                                                        <?php foreach($benifit_plans_list as $benifit_plans){ ?>
+                                                        <?php
+                                                        $selectedBenefitPlans = explode(',', $RequestQuots->benifit_plan);
+                                                        foreach($benifit_plans_list as $benifit_plans){
+                                                            $checked = in_array($benifit_plans->id, $selectedBenefitPlans) ? 'checked' : '';
+                                                            ?>
                                                         <tr>
-                                                            <td><input class="form-check-input" type="checkbox" name="benifit_plans[]" value="<?php echo $benifit_plans->id;?>" checked></td>
+                                                            <td><input class="form-check-input" type="checkbox" name="benifit_plans[]" value="<?php echo $benifit_plans->id;?>" <?php echo $checked; ?>></td>
                                                             <td><strong><?php echo $benifit_plans->plan_name; ?></strong></td>
                                                             <td>In: $<?php echo $benifit_plans->deductible_in; ?><br>Out: $<?php echo $benifit_plans->deductible_out; ?></td>
                                                             <td>In: <?php echo $benifit_plans->coinsurance_in; ?>%<br>Out: <?php echo $benifit_plans->coinsurance_out; ?>%</td>
@@ -491,7 +521,7 @@
                                         Add any notes regarding the quote request below to provide the quote request recipient with additional information. </span>
                                 </div>
                                 <div class="panel-body">
-                                    <div class="form-group textarea "><label for="general-notes">General Notes</label><textarea class="form-control " name="notes" id="general-notes" rows="5" maxlength="100000"></textarea></div>
+                                    <div class="form-group textarea "><label for="general-notes">General Notes</label><textarea class="form-control " name="notes" id="general-notes" rows="5" maxlength="100000"><?php echo $RequestQuots->notes; ?></textarea></div>
                                 </div>
                             </div>
 
