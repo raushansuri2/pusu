@@ -49,7 +49,7 @@
         </div>
         <div class="col-md-12">
             <p style="font-size: 13px;margin-top: 7px;">
-                <strong>Final Proposals Due</strong> 7/4/25 <strong>Plan Effective</strong> 8/1/2025 <strong>Census Used</strong> Census St Joseph Motesorri.xlsx (71 members)
+                <strong>Final Proposals Due</strong> <?php echo $RequestQuots->Final_Proposals_Due ? date('m/d/y', strtotime($RequestQuots->Final_Proposals_Due)) : ''; ?> <strong>Plan Effective</strong> <?php echo $RequestQuots->Policy_Effective_Date ? date('m/d/Y', strtotime($RequestQuots->Policy_Effective_Date)) : ''; ?> <strong>Census Used</strong> <?php echo !empty($file_name) ? $file_name : ''; ?> (<?php echo array_sum($file_counts); ?> members)
             </p>
         </div>
     </div>
@@ -173,7 +173,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td class="fixed-left"><strong>Total Enrollment</strong></td>
-                                                        <td><?php echo ($file_counts['EE'] + $file_counts['ES'] + $file_counts['EC']+ $file_counts['EF']) ?? 0; ?></td>
+                                                        <td><?php echo (@$file_counts['EE'] + @$file_counts['ES'] + @$file_counts['EC']+ @$file_counts['EF']) ?? 0; ?></td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -194,6 +194,14 @@
                                                             </tr>
                                                         <?php endforeach; ?>
                                                     <?php else: ?>
+                                                    <?php if (!empty($feesData)): ?>
+                                                        <?php foreach ($feesData as $key=>$fee): ?>
+                                                            <tr>
+                                                                <td class="fixed-left"><?php echo htmlspecialchars(ucwords(strtolower(str_replace('_', ' ', $key)))); ?></td>
+                                                                <td>$<?php echo htmlspecialchars($fee ?? ''); ?> <?php echo htmlspecialchars($fee['value_type'] ?? 'PEPM'); ?></td>
+                                                            </tr>
+                                                        <?php endforeach; ?>
+                                                    <?php else: ?>
                                                         <tr>
                                                             <td class="fixed-left">TPA, PPO, PBM, Service Providers</td>
                                                             <td>$70.00 PEPM</td>
@@ -202,6 +210,7 @@
                                                             <td class="fixed-left">Broker Fee</td>
                                                             <td>$35.00 PEPM</td>
                                                         </tr>
+                                                    <?php endif; ?>
                                                     <?php endif; ?>
                                                 </tbody>
                                             </table>
@@ -992,11 +1001,7 @@
                                                                     </td>
                                                                 </tr>
                                                             <?php endforeach; ?>
-                                                        <?php endif; ?>
-
-
-
-                                                        <?php if (empty($censusData) ): ?>
+                                                        <?php else: ?>
                                                             <tr>
                                                                 <td colspan="4" class="text-center">No attachments found.</td>
                                                             </tr>

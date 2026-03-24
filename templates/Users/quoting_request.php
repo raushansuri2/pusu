@@ -1,3 +1,4 @@
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <div class="page-content">
 
     <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
@@ -22,7 +23,7 @@
 
                     <div class="col-md-12">
                         <div class="d-flex">
-                            <form method="get" action="" class="w-100">
+                            <form method="get" action="" class="w-100" id="search-form">
                                 <div class="row">
                                     <div class="col-md-4">
                                         <select name="status[]" id="qr-filter-status" class="form-control">
@@ -44,17 +45,18 @@
                                     </div>
                                     <div class="col-md-4">
                                         <?php $hideExpired = $this->request->getQuery('hide_expired') ?? 1; ?>
-                                        <input type="hidden" name="hide_expired" value="0">
+                                        <input type="hidden" id="hide-expired-hidden" name="hide_expired" value="0">
                                         <input
                                             type="checkbox"
                                             name="hide_expired"
                                             value="1"
                                             class="mt-2"
+                                            id="hide-expired-checkbox"
                                             <?= ($hideExpired == 1) ? 'checked' : '' ?>
                                         >
                                         Hide groups past effective date</div>
                                     <div class="col-md-4">
-                                        <input type="text" name="keyword" placeholder="Search by group..." style="float: left;width: 85%;" class="form-control">
+                                        <input type="text" name="keyword" placeholder="Search by group..." value="<?php echo $this->request->getQuery('keyword') ? $this->request->getQuery('keyword') : ''; ?>" style="float: left;width: 85%;" class="form-control">
                                         <button type="submit" class="btn btn-primary">Go</button>
                                     </div>
                                 </div>
@@ -126,3 +128,13 @@
     </div>
 
 </div>
+
+<script>
+
+$(document).ready(function() {
+    console.log('Document ready');
+    $('#hide-expired-checkbox').on('click', function() {
+        $('#search-form').submit();
+    });
+});
+</script>

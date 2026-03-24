@@ -574,16 +574,16 @@ class UsersController extends AppController
                     $filename2 = time().'_'.$file2->getClientFilename();
                     $targetPath2 = WWW_ROOT . 'img/uploads/census/' . $filename2;
 
-                     $census_data = [
+                     $census_data2 = [
                         'request_id'=> $RequestQuots->id,
                         'user_id' => $session->read('ERISAQuoteProSession.Users.id'),
-                        'xl_file' => $filename,
+                        'xl_file' => $filename2,
                         'type'=> 'Attachment'
                     ];
                     $census = $censusTable->newEmptyEntity();
                     $census = $censusTable->patchEntity(
                         $census,
-                        $census_data,
+                        $census_data2,
                         ['validate' => false]);
                     $censusTable->save($census);
                     $file2->moveTo($targetPath2);
@@ -713,24 +713,28 @@ class UsersController extends AppController
 
         $filePath = WWW_ROOT . 'img/uploads/census/'.$file_name; // your Excel file path
         $file_counts = [];
-        if ($xlsx = \Shuchkin\SimpleXLSX::parse($filePath)) {
-            $rows = $xlsx->rows();
 
-            foreach ($rows as $i => $row) {
-                if ($i < 4) continue; // skip header
+        // Only parse the file if it exists and $file_name is not empty
+        if (!empty($file_name) && file_exists($filePath)) {
+            if ($xlsx = \Shuchkin\SimpleXLSX::parse($filePath)) {
+                $rows = $xlsx->rows();
 
-                $val = $row[7] ?? null; // column G (index 6)
-                if ($val) {
-                    if (!isset($file_counts[$val])) {
-                        $file_counts[$val] = 0;
+                foreach ($rows as $i => $row) {
+                    if ($i < 4) continue; // skip header
+
+                    $val = $row[7] ?? null; // column G (index 6)
+                    if ($val) {
+                        if (!isset($file_counts[$val])) {
+                            $file_counts[$val] = 0;
+                        }
+                        $file_counts[$val]++;
                     }
-                    $file_counts[$val]++;
                 }
             }
         }
         //pr($file_counts); die;
 
-        $this->set(compact('file_counts','RequestQuots', 'layoutTitle', 'censusData', 'networksDetails', 'lossPlansDetails', 'benefitPlansDetails', 'feesData'));
+        $this->set(compact('file_name','file_counts','RequestQuots', 'layoutTitle', 'censusData', 'networksDetails', 'lossPlansDetails', 'benefitPlansDetails', 'feesData'));
         //return null; // Explicit return for non-redirect cases
     }
 
@@ -877,20 +881,50 @@ class UsersController extends AppController
     public function groupDetails($id)
     {
         $this->viewBuilder()->setLayout('login');
-        $layoutTitle = 'ERISAQuote Pro. - Quoting Details';
+        $layoutTitle = 'ERISAQuote Pro - Group Details';
+
         if($id == ""){
            return $this->redirect(['controller' => 'Users', 'action' => 'group']);
         }
+
         //session check for login
         $session = $this->request->getSession();
         if ($session->read('ERISAQuoteProSession.Users.role') != 'Member') {
             return $this->redirect(['controller' => 'Users', 'action' => 'logout']);
         }
 
+        // Get group details
         $groupsTable = $this->fetchTable('Quotgroups');
-        $group_data = $groupsTable->find()->where(['Quotgroups.id'=>$id])->first();
-        $this->set(compact('layoutTitle', 'group_data'));
+        $group = $groupsTable->find()
+            ->where(['Quotgroups.id' => $id, 'Quotgroups.user_id' => $session->read('ERISAQuoteProSession.Users.id')])
+            ->first();
 
+        if (empty($group)) {
+            $this->Flash->error(__('Group not found.'));
+            return $this->redirect(['controller' => 'Users', 'action' => 'group']);
+        }
+
+        // Get quote requests for this group
+        $requestQuotsTable = $this->fetchTable('RequestQuots');
+        $quoteRequests = $requestQuotsTable->find()
+            ->where(['RequestQuots.group_id' => $id])
+            ->contain(['Users', 'Quotgroups', 'Programs'])
+            ->order(['RequestQuots.id' => 'DESC'])
+            ->toArray();
+
+        // Get census data for all quote requests in this group
+        $censusTable = $this->fetchTable('Census');
+        $censusData = [];
+
+        if (!empty($quoteRequests)) {
+            $quoteRequestIds = array_column($quoteRequests, 'id');
+            $censusData = $censusTable->find()
+                ->where(['Census.request_id IN' => $quoteRequestIds])
+                ->order(['Census.request_id' => 'DESC', 'Census.id' => 'DESC'])
+                ->toArray();
+        }
+
+        $this->set(compact('layoutTitle', 'group', 'quoteRequests', 'censusData'));
     }
 
 
