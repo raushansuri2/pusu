@@ -33,12 +33,43 @@
         $("#date-policy-start, #final_proposal_date").on("input change", function () {
             headerset();
         });
+
+        // Update selected networks display when checkboxes change
+        $('input[name^="quote_request_networks"]').on('change', function() {
+            updateSelectedNetworksDisplay();
+        });
+
+        // Initial update after DOM is ready and checkboxes are rendered
+        setTimeout(function() {
+            updateSelectedNetworksDisplay();
+        }, 200);
+
     });
 
     function headerset(){
         $("#PE").html($("#date-policy-start").val());
         $("#FPD").html($("#final_proposal_date").val());
     }
+
+    function updateSelectedNetworksDisplay() {
+        var selectedNetworks = [];
+        $('input[name^="quote_request_networks"]:checked').each(function() {
+            var networkName = $(this).next('label').text().trim();
+            selectedNetworks.push(networkName);
+        });
+
+        var displayHtml = '';
+        if (selectedNetworks.length > 0) {
+            $.each(selectedNetworks, function(index, network) {
+                displayHtml += '<li>' + network + '</li>';
+            });
+        } else {
+            displayHtml = '<li>No networks selected</li>';
+        }
+
+        $('#selected-networks-display').html(displayHtml);
+    }
+
 </script>
 
 <div class="page-content">
@@ -557,13 +588,13 @@
                                             <tbody>
                                                 <tr>
                                                     <td class="d-flex align-items-center gap-3">
-                                                        <img src="<?php echo $this->Url->build('/');?>images/logod.svg" style="max-height: 110px;width: 290px;border-radius: 0;" alt="Prodigy Health Insurance logo" class="img-fluid" style="max-height: 40px;">
+                                                        <img src="<?php echo $this->Url->build('/');?>img/admin/logo.png" style="max-height: 110px;width: 290px;border-radius: 0;" alt="Prodigy Health Insurance logo" class="img-fluid" style="max-height: 40px;">
                                                         <span>Prodigy Health Insurance</span>
                                                     </td>
 
                                                     <td>
-                                                        <ul class="mb-0 ps-3">
-                                                            <li>First Choice Health Plans of Mississippi</li>
+                                                        <ul class="mb-0 ps-3" id="selected-networks-display">
+                                                            <li>No networks selected</li>
                                                         </ul>
                                                     </td>
                                                 </tr>
