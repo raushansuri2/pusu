@@ -15,11 +15,38 @@
             headerset();
         });
 
+        // Update selected networks display when checkboxes change
+        $('input[name^="quote_request_networks"]').on('change', function() {
+            updateSelectedNetworksDisplay();
+        });
+
+        // Initial update
+        updateSelectedNetworksDisplay();
+
     });
 
         function headerset(){
             $("#PE").html($("#date-policy-start").val());
             $("#FPD").html($("#final_proposal_date").val());
+        }
+
+        function updateSelectedNetworksDisplay() {
+            var selectedNetworks = [];
+            $('input[name^="quote_request_networks"]:checked').each(function() {
+                var networkName = $(this).next('label').text().trim();
+                selectedNetworks.push(networkName);
+            });
+
+            var displayHtml = '';
+            if (selectedNetworks.length > 0) {
+                $.each(selectedNetworks, function(index, network) {
+                    displayHtml += '<li>' + network + '</li>';
+                });
+            } else {
+                displayHtml = '<li>No networks selected</li>';
+            }
+
+            $('#selected-networks-display').html(displayHtml);
         }
 </script>
 
@@ -532,8 +559,8 @@
                                                     </td>
 
                                                     <td>
-                                                        <ul class="mb-0 ps-3">
-                                                            <li>First Choice Health Plans of Mississippi</li>
+                                                        <ul class="mb-0 ps-3" id="selected-networks-display">
+                                                            <li>No networks selected</li>
                                                         </ul>
                                                     </td>
                                                 </tr>

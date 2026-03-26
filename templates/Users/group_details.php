@@ -1,3 +1,10 @@
+<script>
+function changestatus(status, statusText, quoteId) {
+    alert('Changing status for quote to ' + statusText);
+    // TODO: Implement status change logic
+}
+</script>
+
 <div class="page-content">
 
         <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
@@ -50,13 +57,12 @@
                   <i class="link-icon icon-sm" data-feather="settings"></i> Update Status
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end">
-                  <li><button class="dropdown-item">Waiting on Carriers</button></li>
-                  <li><button class="dropdown-item">Pending Decision</button></li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><button class="dropdown-item">Sold</button></li>
-                  <li><button class="dropdown-item">Lost</button></li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><button class="dropdown-item text-danger">Cancel</button></li>
+                    <?php $statusOptions = \Cake\Core\Configure::read('keyFeatures.STATUS');
+                    foreach ($statusOptions as $key => $value) {
+                        echo '<li><button class="dropdown-item" onclick="changestatus('.$key.', \''.$value.'\', '.$quote->id.')">' . $value . '</button></li>';
+                    }
+                    ?>
+
                 </ul>
               </div>
             </td>

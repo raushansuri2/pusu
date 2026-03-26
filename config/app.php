@@ -86,6 +86,16 @@ return [
             "5" => "Free Stuff",
 			"6" => "Pet Store",
         ],
+        'STATUS' => [
+            "1" => "Active",
+            "2" => "Pending Decison",
+            "3" => "Sold",
+            "4" => "Lose",
+            "5" => "Cancelled",
+            "6" => "Illustrative Quote Ready",
+            "7" => "Waiting on Carriers",
+            "8" => "Terminated"
+        ],
     ],
 
     /*
