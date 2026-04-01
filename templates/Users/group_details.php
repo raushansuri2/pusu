@@ -52,19 +52,19 @@ function changestatus(status, statusText, quoteId) {
               <?php endif; ?>
             </td>
             <td class="text-end">
-              <div class="dropdown">
-                <button class="btn btn-sm btn-success dropdown-toggle" data-bs-toggle="dropdown">
-                  <i class="link-icon icon-sm" data-feather="settings"></i> Update Status
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <?php $statusOptions = \Cake\Core\Configure::read('keyFeatures.STATUS');
-                    foreach ($statusOptions as $key => $value) {
-                        echo '<li><button class="dropdown-item" onclick="changestatus('.$key.', \''.$value.'\', '.$quote->id.')">' . $value . '</button></li>';
-                    }
-                    ?>
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-success dropdown-toggle" data-bs-toggle="dropdown">
+                    <i class="link-icon icon-sm" data-feather="settings"></i> Update Status
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <?php $statusOptions = \Cake\Core\Configure::read('keyFeatures.STATUS');
+                        foreach ($statusOptions as $key => $value) {
+                            echo '<li><button class="dropdown-item" onclick="changestatus('.$key.', \''.$value.'\', '.$quote->id.')">' . $value . '</button></li>';
+                        }
+                        ?>
 
-                </ul>
-              </div>
+                    </ul>
+                </div>
             </td>
           </tr>
         <?php endforeach; ?>

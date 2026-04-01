@@ -652,16 +652,7 @@
                                                             </td>
                                                         </tr>
                                                         <?php } } ?>
-                                                        <tr>
-                                                            <td>Broker Fee</td>
-                                                            <td>PEPM</td>
-                                                            <td style="max-width: 200px;">
-                                                                <input type="text" class="form-control" name="fees_broker_fee" id="Broke_Fee" placeholder="35.00" value="35.00" aria-label="Fee amount">
-                                                            </td>
-                                                            <td>
-                                                                <small class="text-muted">This fee is editable</small>
-                                                            </td>
-                                                        </tr>
+
                                                     </tbody>
 
                                                 </table>

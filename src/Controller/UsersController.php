@@ -928,5 +928,9 @@ class UsersController extends AppController
     }
 
 
+    function update_ststus($id,$status){
+
+    }
+
 
 }

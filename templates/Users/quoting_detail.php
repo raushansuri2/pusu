@@ -1,3 +1,13 @@
+<script>
+function changestatus(status, statusText, quoteId) {
+    $(".status-class").html(statusText);
+    alert('Changing status for quote to ' + statusText);
+    // TODO: Implement status change logic
+}
+</script>
+<style>
+.status-class{ color: #d6ff06;  font-weight: bold;}
+</style>
 <div class="page-content">
     <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
         <div>
@@ -39,11 +49,19 @@
                     Add Note
                 </a> -->
 
-                <button type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" class="btn btn-xs btn-primary btn-rounded dropdown-toggle"> <i data-feather="settings" class="icon-sm"></i>
+                <div class="dropdown">
+                    <button class="btn btn-xs btn-primary btn-rounded dropdown-toggle" data-bs-toggle="dropdown">
+                    <i class="link-icon icon-sm" data-feather="settings"></i> Status - <spam class="status-class">active</spam>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <?php $statusOptions = \Cake\Core\Configure::read('keyFeatures.STATUS');
+                        foreach ($statusOptions as $key => $value) {
+                            echo '<li><button class="dropdown-item" onclick="changestatus('.$key.', \''.$value.'\', '.$RequestQuots->id.')">' . $value . '</button></li>';
+                        }
+                        ?>
 
-                    Update Quote Request Status
-                    <span class="icon-dropdown s7-angle-down"></span>
-                </button>
+                    </ul>
+                </div>
 
             </div>
         </div>
