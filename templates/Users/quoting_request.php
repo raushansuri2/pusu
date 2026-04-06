@@ -27,20 +27,11 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <select name="status[]" id="qr-filter-status" class="form-control">
-                                            <option value="Filter by Quote Request Status:" selected disabled>Filter by Quote Request Status:</option>
-                                            <option value="draft">Draft</option>
-                                            <option value="submitted">Waiting on Carriers</option>
-                                            <option value="illustrative">Illustrative Quote Ready</option>
-                                            <option value="underwritten-submitted">Underwritten Quote Requested</option>
-                                            <option value="ai-underwritten">AI Underwritten Quote Ready</option>
-                                            <option value="underwritten">Underwritten Quote Ready</option>
-                                            <option value="sold">Sold</option>
-                                            <option value="active">Active</option>
-                                            <option value="lost">Lost</option>
-                                            <option value="cancelled">Cancelled</option>
-                                            <option value="terminating">Terminating</option>
-                                            <option value="terminated">Terminated</option>
-                                            <option value="pending">Pending Decision</option>
+                                            <?php $statusOptions = \Cake\Core\Configure::read('keyFeatures.STATUS');
+                                                foreach ($statusOptions as $key => $value) { ?>
+                                                    <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
+                                            <?php } ?>
+
                                         </select>
                                     </div>
                                     <div class="col-md-4">

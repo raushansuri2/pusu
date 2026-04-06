@@ -928,8 +928,69 @@ class UsersController extends AppController
     }
 
 
-    function update_ststus($id,$status){
+    public function updateStatus($id = null, $status = null){
+        // Validate parameters
+        if ($id === null || $status === null) {
+            $this->Flash->error(__('Invalid request parameters.'));
+            return $this->redirect(['controller' => 'Users', 'action' => 'quotingRequest']);
+        }
 
+        $session = $this->getRequest()->getSession();
+
+        // Check if user is logged in
+        if (!$session->check('ERISAQuoteProSession.Users.id')) {
+            $this->Flash->error(__('Please login to continue.'));
+            return $this->redirect(['controller' => 'Users', 'action' => 'login']);
+        }
+
+        // Get the request quote
+        $RequestQuotsTable = $this->fetchTable('RequestQuots');
+        $RequestQuots = $RequestQuotsTable->find()->where(['RequestQuots.id'=>$id])->first();
+
+        if (empty($RequestQuots)) {
+            $this->Flash->error(__('Quote request not found.'));
+            return $this->redirect(['controller' => 'Users', 'action' => 'quotingRequest']);
+        }
+
+        // Check if user owns this request
+        if ($RequestQuots->user_id != $session->read('ERISAQuoteProSession.Users.id')) {
+            $this->Flash->error(__('You do not have permission to update this request.'));
+            return $this->redirect(['controller' => 'Users', 'action' => 'quotingRequest']);
+        }
+
+        // Update the status in request_quots table
+        $RequestQuots = $RequestQuotsTable->patchEntity($RequestQuots, ['status' => $status]);
+
+        if ($RequestQuotsTable->save($RequestQuots)) {
+            // Add new record to request_status table
+            try {
+                $RequestStatusTable = $this->fetchTable('RequestStatus');
+                $requestStatus = $RequestStatusTable->newEmptyEntity();
+
+                $statusData = [
+                    'request_id' => $id,
+                    'user_id' => $session->read('ERISAQuoteProSession.Users.id'),
+                    'status' => (int)$status,
+                    'message' => 'Status updated to ' . $status
+                ];
+
+                $requestStatus = $RequestStatusTable->patchEntity($requestStatus, $statusData, ['validate' => false]);
+
+                if ($RequestStatusTable->save($requestStatus)) {
+                    //$this->Flash->success(__('Status updated successfully.'));
+                } else {
+                    // Debug: Log the errors
+                    $errors = $requestStatus->getErrors();
+                    $this->Flash->error(__('Failed to save status history. Errors: ' . json_encode($errors)));
+                }
+            } catch (\Exception $e) {
+                $this->Flash->error(__('Database error: ' . $e->getMessage()));
+            }
+        } else {
+            $this->Flash->error(__('Failed to update status.'));
+        }
+
+        return $this->redirect(['controller' => 'Users', 'action' => 'quotingDetail', $id]);
     }
 
 

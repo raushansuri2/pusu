@@ -1,9 +1,46 @@
 <script>
 function changestatus(status, statusText, quoteId) {
-    $(".status-class").html(statusText);
-    alert('Changing status for quote to ' + statusText);
-    // TODO: Implement status change logic
+    $(this).html(statusText);
+
+    // Show loader
+    showLoader();
+
+    // Make AJAX call to update status
+    $.ajax({
+        url: '<?php echo $this->Url->build(['controller'=>'users','action'=>'updateStatus']);?>/' + quoteId + '/' + status,
+        type: 'GET',
+        success: function(response) {
+            // Optionally refresh the page or update UI
+            location.reload();
+        },
+        error: function(xhr, status, error) {
+            hideLoader();
+            alert('Error updating status: ' + error);
+        }
+    });
 }
+
+function showLoader() {
+    // Create loader if it doesn't exist
+    if ($('#statusLoader').length === 0) {
+        $('body').append('<div id="statusLoader" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; display: flex; justify-content: center; align-items: center;"><div style="background: white; padding: 20px; border-radius: 5px; text-align: center;"><div style="border: 3px solid #f3f3f3; border-top: 3px solid #3498db; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 10px;"></div><p>Updating status...</p></div></div>');
+
+        // Add CSS animation
+        if (!$('#loaderStyle').length) {
+            $('head').append('<style id="loaderStyle">@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>');
+        }
+    }
+    $('#statusLoader').fadeIn();
+}
+
+function hideLoader() {
+    $('#statusLoader').fadeOut();
+}
+
+// Show loader when page is reloading
+$(window).on('beforeunload', function() {
+    showLoader();
+});
 </script>
 <style>
 .status-class{ color: #d6ff06;  font-weight: bold;}
@@ -51,12 +88,19 @@ function changestatus(status, statusText, quoteId) {
 
                 <div class="dropdown">
                     <button class="btn btn-xs btn-primary btn-rounded dropdown-toggle" data-bs-toggle="dropdown">
-                    <i class="link-icon icon-sm" data-feather="settings"></i> Status - <spam class="status-class">active</spam>
+                    <i class="link-icon icon-sm" data-feather="settings"></i> Status - <span class="status-class"><?php
+                        $statusOptions = \Cake\Core\Configure::read('keyFeatures.STATUS');
+                        echo isset($statusOptions[$RequestQuots->status]) ? $statusOptions[$RequestQuots->status] : 'Unknown';
+                    ?></span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <?php $statusOptions = \Cake\Core\Configure::read('keyFeatures.STATUS');
                         foreach ($statusOptions as $key => $value) {
-                            echo '<li><button class="dropdown-item" onclick="changestatus('.$key.', \''.$value.'\', '.$RequestQuots->id.')">' . $value . '</button></li>';
+                            if ($key == $RequestQuots->status) {
+                                echo '<li><span class="dropdown-item active" style="cursor: default; pointer-events: none;">' . $value . ' ✓</span></li>';
+                            } else {
+                                echo '<li><button class="dropdown-item" onclick="changestatus('.$key.', \''.$value.'\', '.$RequestQuots->id.')">' . $value . '</button></li>';
+                            }
                         }
                         ?>
 

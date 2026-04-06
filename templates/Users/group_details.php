@@ -1,10 +1,50 @@
 <script>
 function changestatus(status, statusText, quoteId) {
-    alert('Changing status for quote to ' + statusText);
-    // TODO: Implement status change logic
-}
-</script>
+    $(this).html(statusText);
 
+    // Show loader
+    showLoader();
+
+    // Make AJAX call to update status
+    $.ajax({
+        url: '<?php echo $this->Url->build(['controller'=>'users','action'=>'updateStatus']);?>/' + quoteId + '/' + status,
+        type: 'GET',
+        success: function(response) {
+            // Optionally refresh the page or update UI
+            location.reload();
+        },
+        error: function(xhr, status, error) {
+            hideLoader();
+            alert('Error updating status: ' + error);
+        }
+    });
+}
+
+function showLoader() {
+    // Create loader if it doesn't exist
+    if ($('#statusLoader').length === 0) {
+        $('body').append('<div id="statusLoader" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; display: flex; justify-content: center; align-items: center;"><div style="background: white; padding: 20px; border-radius: 5px; text-align: center;"><div style="border: 3px solid #f3f3f3; border-top: 3px solid #3498db; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 10px;"></div><p>Updating status...</p></div></div>');
+
+        // Add CSS animation
+        if (!$('#loaderStyle').length) {
+            $('head').append('<style id="loaderStyle">@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>');
+        }
+    }
+    $('#statusLoader').fadeIn();
+}
+
+function hideLoader() {
+    $('#statusLoader').fadeOut();
+}
+
+// Show loader when page is reloading
+$(window).on('beforeunload', function() {
+    showLoader();
+});
+</script>
+<style>
+.status-class{ color: #d6ff06;  font-weight: bold;}
+</style>
 <div class="page-content">
 
         <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
@@ -27,7 +67,7 @@ function changestatus(status, statusText, quoteId) {
         <th>Quote Request #</th>
         <th>Effective</th>
         <th>Submitted</th>
-        <th>Status</th>
+        <!-- <th>Status</th> -->
         <th class="text-end"></th>
       </tr>
     </thead>
@@ -43,23 +83,30 @@ function changestatus(status, statusText, quoteId) {
             </td>
             <td><?php echo $quote->Policy_Effective_Date ? date('m/d/Y', strtotime($quote->Policy_Effective_Date)) : '—'; ?></td>
             <td><?php echo $quote->created ? date('m/d/Y', strtotime($quote->created)) : '—'; ?></td>
-            <td>
+            <!-- <td>
               <span class="badge <?php echo $quote->status == 1 ? 'bg-warning' : 'bg-danger'; ?>">
                 <?php echo $quote->status == 1 ? 'Illustrative Quote Ready' : 'Draft'; ?>
               </span>
               <?php if ($quote->status != 1): ?>
                 <a href="#" class="ms-2 text-danger small">Delete Draft</a>
               <?php endif; ?>
-            </td>
+            </td> -->
             <td class="text-end">
                 <div class="dropdown">
                     <button class="btn btn-sm btn-success dropdown-toggle" data-bs-toggle="dropdown">
-                    <i class="link-icon icon-sm" data-feather="settings"></i> Update Status
+                    <i class="link-icon icon-sm" data-feather="settings"></i> Status - <span class="status-class"><?php
+                        $statusOptions = \Cake\Core\Configure::read('keyFeatures.STATUS');
+                        echo isset($statusOptions[$quote->status]) ? $statusOptions[$quote->status] : 'Unknown';
+                    ?></span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <?php $statusOptions = \Cake\Core\Configure::read('keyFeatures.STATUS');
                         foreach ($statusOptions as $key => $value) {
-                            echo '<li><button class="dropdown-item" onclick="changestatus('.$key.', \''.$value.'\', '.$quote->id.')">' . $value . '</button></li>';
+                            if ($key == $quote->status) {
+                                echo '<li><span class="dropdown-item active" style="cursor: default; pointer-events: none;">' . $value . ' ✓</span></li>';
+                            } else {
+                                echo '<li><button class="dropdown-item" onclick="changestatus('.$key.', \''.$value.'\', '.$quote->id.')">' . $value . '</button></li>';
+                            }
                         }
                         ?>
 
@@ -111,11 +158,11 @@ function changestatus(status, statusText, quoteId) {
             <div class="panel-body">
                 <dl class="row">
                     <dt class="col-sm-3">Group Name</dt>
-                    <dd class="col-sm-9"><?php echo htmlspecialchars($group->group_name);?></dd>
+                    <dd class="col-sm-9"><?php echo htmlspecialchars($group->group_name ?? '');?></dd>
                     <dt class="col-sm-3">Address</dt>
-                    <dd class="col-sm-9"><address class="address-summary "><?php echo htmlspecialchars($group->address1);?><br><?php echo htmlspecialchars($group->address2);?><br><?php echo htmlspecialchars($group->city);?>, <?php echo htmlspecialchars($group->state_name);?> <?php echo htmlspecialchars($group->zip);?></address></dd>
+                    <dd class="col-sm-9"><address class="address-summary "><?php echo htmlspecialchars($group->address1 ?? '');?><br><?php echo htmlspecialchars($group->address2 ?? '');?><br><?php echo htmlspecialchars($group->city ?? '');?>, <?php echo htmlspecialchars($group->state_name ?? '');?> <?php echo htmlspecialchars($group->zip ?? '');?></address></dd>
                     <dt class="col-sm-3">Business Classification</dt>
-                    <dd class="col-sm-9"><?php echo htmlspecialchars($group->SIC_Code);?></dd>
+                    <dd class="col-sm-9"><?php echo htmlspecialchars($group->SIC_Code ?? '');?></dd>
                 </dl>
             </div>
         </div>
