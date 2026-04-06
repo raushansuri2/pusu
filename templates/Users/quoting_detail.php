@@ -610,154 +610,81 @@ $(window).on('beforeunload', function() {
                         </div>
                         <div class="tab-pane fade" id="disabled" role="tabpanel" aria-labelledby="disabled-tab">
                             <ul class="timeline">
-                                <li class="timeline-item" id="">
-                                    <div class="timeline-content timeline-type file">
-                                        <div class="timeline-icon"><i class="link-icon icon-md" data-feather="file-text"></i></div>
-                                        <div class="timeline-header"> <span class="timeline-author"> ERISAQuote Pro </span>
-                                            <p class="timeline-activity mr-1"> updated Quote Request #7802 </p>
-                                            <span class="timeline-time"> Jun 30, 2025 (5:52pm) </span>
-                                            <div class="timeline-summary">
-                                                <table class="table table-bordered table-sm font-size-sm">
-                                                    <tbody>
-                                                        <tr>
-                                                            <td colspan="2">
-                                                                <div class="diff"> <span class="old"><span class="old badge badge-secondary">Pending Decision</span></span> <span class="arrow">→</span> <span class="new"><span class="new badge badge-secondary">Illustrative Quote Ready</span></span> </div>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
+                                <?php if (!empty($timelineData)): ?>
+                                    <?php foreach ($timelineData as $timelineItem): ?>
+                                        <li class="timeline-item">
+                                            <div class="timeline-content timeline-type file">
+                                                <div class="timeline-icon">
+                                                    <i class="link-icon icon-md" data-feather="file-text"></i>
+                                                </div>
+                                                <div class="timeline-header">
+                                                    <span class="timeline-author">
+                                                        <?php echo htmlspecialchars($timelineItem->user->firstName ?? 'System') . ' ' . htmlspecialchars($timelineItem->user->lastName ?? 'User'); ?>
+                                                    </span>
+                                                    <p class="timeline-activity mr-1">
+                                                        updated Quote Request #<?php echo htmlspecialchars($RequestQuots->id); ?>
+                                                    </p>
+                                                    <span class="timeline-time">
+                                                        <?php echo $timelineItem->created ? $timelineItem->created->format('M d, Y (g:ia)') : ''; ?>
+                                                    </span>
+                                                    <div class="timeline-summary">
+                                                        <table class="table table-bordered table-sm font-size-sm">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td colspan="2">
+                                                                        <div class="diff">
+                                                                            <span class="new">
+                                                                                <span class="new badge badge-secondary">
+                                                                                    <?php
+                                                                                    $statusOptions = \Cake\Core\Configure::read('keyFeatures.STATUS');
+                                                                                    echo isset($statusOptions[$timelineItem->status]) ? $statusOptions[$timelineItem->status] : 'Unknown';
+                                                                                    ?>
+                                                                                </span>
+                                                                            </span>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                                <?php if (!empty($timelineItem->message)): ?>
+                                                                <tr>
+                                                                    <td width="100px">Note</td>
+                                                                    <td><?php echo htmlspecialchars($timelineItem->message); ?></td>
+                                                                </tr>
+                                                                <?php endif; ?>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <li class="timeline-item">
+                                        <div class="timeline-content timeline-type file">
+                                            <div class="timeline-icon">
+                                                <i class="link-icon icon-md" data-feather="info"></i>
+                                            </div>
+                                            <div class="timeline-header">
+                                                <span class="timeline-author">System</span>
+                                                <p class="timeline-activity mr-1">No timeline activity available</p>
+                                                <span class="timeline-time">
+                                                    <?php echo date('M d, Y (g:ia)'); ?>
+                                                </span>
+                                                <div class="timeline-summary">
+                                                    <table class="table table-bordered table-sm font-size-sm">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td colspan="2">
+                                                                    <em>No status updates have been recorded for this quote request yet.</em>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </li>
-                                <li class="timeline-item" id="">
-                                    <div class="timeline-content timeline-type file">
-                                        <div class="timeline-icon"><i class="link-icon icon-md" data-feather="share-2"></i></div>
-                                        <div class="timeline-header"> <span class="timeline-author"> ERISAQuote Pro </span>
-                                            <p class="timeline-activity mr-1"> updated Prodigy Health Insurance's submission </p>
-                                            <span class="timeline-time"> Jun 30, 2025 (5:52pm) </span>
-                                            <div class="timeline-summary">
-                                                <table class="table table-bordered table-sm font-size-sm">
-                                                    <tbody>
-                                                        <tr>
-                                                            <td colspan="2">
-                                                                <div class="diff"> <span class="old"><span class="old badge badge-secondary">Received</span></span> <span class="arrow">→</span> <span class="new"><span class="new badge badge-secondary">Illustrative Quote Ready</span></span> </div>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="timeline-item" id="">
-                                    <div class="timeline-content timeline-type file">
-                                        <div class="timeline-icon"><i class="link-icon icon-md" data-feather="sun"></i></div>
-                                        <div class="timeline-header"> <span class="timeline-author"> Prodigy Health Insurance </span>
-                                            <p class="timeline-activity mr-1"> added <a href="#">1 Illustrative quote(s)</a> </p>
-                                            <span class="timeline-time"> Jun 30, 2025 (5:49pm) </span>
-                                            <div class="timeline-summary"> </div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="timeline-item" id="">
-                                    <div class="timeline-content timeline-type file">
-                                        <div class="timeline-icon"><i class="link-icon icon-md" data-feather="file-text"></i></div>
-                                        <div class="timeline-header"> <span class="timeline-author"> ERISAQuote Pro </span>
-                                            <p class="timeline-activity mr-1"> updated Quote Request #7802 </p>
-                                            <span class="timeline-time"> Jun 30, 2025 (5:49pm) </span>
-                                            <div class="timeline-summary">
-                                                <table class="table table-bordered table-sm font-size-sm">
-                                                    <tbody>
-                                                        <tr>
-                                                            <td colspan="2">
-                                                                <div class="diff"> <span class="old"><span class="old badge badge-secondary">Draft</span></span> <span class="arrow">→</span> <span class="new"><span class="new badge badge-secondary">Pending Decision</span></span> </div>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="timeline-item" id="">
-                                    <div class="timeline-content timeline-type file">
-                                        <div class="timeline-icon"><i class="link-icon icon-md" data-feather="share-2"></i></div>
-                                        <div class="timeline-header"> <span class="timeline-author"> ERISAQuote Pro </span>
-                                            <p class="timeline-activity mr-1"> updated Prodigy Health Insurance's submission </p>
-                                            <span class="timeline-time"> Jun 30, 2025 (5:49pm) </span>
-                                            <div class="timeline-summary">
-                                                <table class="table table-bordered table-sm font-size-sm">
-                                                    <tbody>
-                                                        <tr>
-                                                            <td colspan="2">
-                                                                <div class="diff"> <span class="old"><span class="old badge badge-secondary">Submitted</span></span> <span class="arrow">→</span> <span class="new"><span class="new badge badge-secondary">Received</span></span> </div>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="timeline-item" id="">
-                                    <div class="timeline-content timeline-type file">
-                                        <div class="timeline-icon"><i class="link-icon icon-md" data-feather="sun"></i></div>
-                                        <div class="timeline-header"> <span class="timeline-author"> John Youngs </span>
-                                            <p class="timeline-activity mr-1"> submitted to Prodigy Health Insurance </p>
-                                            <span class="timeline-time"> Jun 30, 2025 (5:48pm) </span>
-                                            <div class="timeline-summary">
-                                                <table class="table table-bordered table-sm font-size-sm">
-                                                    <tbody>
-                                                        <tr>
-                                                            <td width="100px">Status</td>
-                                                            <td><span class="badge badge-secondary">Submitted</span></td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="timeline-item" id="">
-                                    <div class="timeline-content timeline-type file">
-                                        <div class="timeline-icon"><i class="link-icon icon-md" data-feather="file-text"></i></div>
-                                        <div class="timeline-header"> <span class="timeline-author"> John Youngs </span>
-                                            <p class="timeline-activity mr-1"> drafted Quote Request #7802 </p>
-                                            <span class="timeline-time"> Jun 30, 2025 (5:40pm) </span>
-                                            <div class="timeline-summary">
-                                                <table class="table table-bordered table-sm font-size-sm">
-                                                    <tbody>
-                                                        <tr>
-                                                            <td width="100px">Status</td>
-                                                            <td><span class="badge badge-secondary">Draft</span></td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="timeline-item" id="">
-                                    <div class="timeline-content timeline-type file">
-                                        <div class="timeline-icon"><i class="link-icon icon-md" data-feather="sun"></i></div>
-                                        <div class="timeline-header"> <span class="timeline-author"> John Youngs </span>
-                                            <p class="timeline-activity mr-1"> uploaded 1 document(s) </p>
-                                            <span class="timeline-time"> Jun 30, 2025 (5:40pm) </span>
-                                            <div class="timeline-summary">
-                                                <table class="table table-bordered table-sm font-size-sm">
-                                                    <tbody>
-                                                        <tr>
-                                                            <td><a href="#">Census St Joseph Motesorri.xlsx</a></td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
+                                    </li>
+                                <?php endif; ?>
                             </ul>
-
                         </div>
                         <div class="tab-pane fade" id="quotes" role="tabpanel" aria-labelledby="quotes-tab">
                             <div class="row">

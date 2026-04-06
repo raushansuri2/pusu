@@ -702,6 +702,14 @@ class UsersController extends AppController
             $feesData = json_decode($RequestQuots->Broke_Fee, true);
         }
 
+        // Get timeline data from request_status table
+        $RequestStatusTable = $this->fetchTable('RequestStatus');
+        $timelineData = $RequestStatusTable->find()
+            ->where(['RequestStatus.request_id' => $id])
+            ->contain(['Users'])
+            ->order(['RequestStatus.created' => 'DESC'])
+            ->toArray();
+
         $file_name = '';
         if(!empty($censusData)){
             foreach($censusData as $census) {
@@ -734,7 +742,7 @@ class UsersController extends AppController
         }
         //pr($file_counts); die;
 
-        $this->set(compact('file_name','file_counts','RequestQuots', 'layoutTitle', 'censusData', 'networksDetails', 'lossPlansDetails', 'benefitPlansDetails', 'feesData'));
+        $this->set(compact('file_name','file_counts','RequestQuots', 'layoutTitle', 'censusData', 'networksDetails', 'lossPlansDetails', 'benefitPlansDetails', 'feesData', 'timelineData'));
         //return null; // Explicit return for non-redirect cases
     }
 
