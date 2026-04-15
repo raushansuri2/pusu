@@ -324,9 +324,84 @@ class UsersController extends AppController
             return $this->redirect(['controller' => 'Users', 'action' => 'logout']);
         }
 
+        $userId = $session->read('ERISAQuoteProSession.Users.id');
 
+        // Get statistics for dashboard cards
+        $requestQuotsTable = $this->fetchTable('RequestQuots');
 
-        //return null; // Explicit return for non-redirect cases
+        // Instant Quotes Available - requests with status indicating quotes are ready
+        $instantQuotesCount = $requestQuotsTable->find()
+            ->where([
+                'RequestQuots.user_id' => $userId,
+                'RequestQuots.status IN' => [1, 6, 7] // Assuming 2=Illustrative Quote Ready, 3=Final Quote Ready, 4=Quote Ready
+            ])
+            ->count();
+
+        // Pending Decision - requests waiting for group decision
+        $pendingDecisionCount = $requestQuotsTable->find()
+            ->where([
+                'RequestQuots.user_id' => $userId,
+                'RequestQuots.status' => 2 // 2=pending Decison
+            ])
+            ->count();
+
+        // Sold - requests marked as sold
+        $soldCount = $requestQuotsTable->find()
+            ->where([
+                'RequestQuots.user_id' => $userId,
+                'RequestQuots.status' => 3 // 3=Sold
+            ])
+            ->count();
+
+        // Lost - requests marked as lost
+        $lostCount = $requestQuotsTable->find()
+            ->where([
+                'RequestQuots.user_id' => $userId,
+                'RequestQuots.status' => 4 // 4=Lost
+            ])
+            ->count();
+
+        // Get recent groups with activity (last 3 groups)
+        $recentGroups = $requestQuotsTable->find()
+            ->select(['Quotgroups.id', 'Quotgroups.group_name', 'Quotgroups.city', 'Quotgroups.state_name'])
+            ->distinct(['Quotgroups.id'])
+            ->contain(['Quotgroups'])
+            ->where(['RequestQuots.user_id' => $userId])
+            ->order(['RequestQuots.id' => 'DESC'])
+            ->limit(3)
+            ->toArray();
+
+        // Get quote requests for each recent group
+        $groupsWithRequests = [];
+        foreach ($recentGroups as $groupData) {
+            if (!empty($groupData->quotgroup)) {
+                $groupId = $groupData->quotgroup->id;
+
+                $quoteRequests = $requestQuotsTable->find()
+                    ->where([
+                        'RequestQuots.user_id' => $userId,
+                        'RequestQuots.group_id' => $groupId
+                    ])
+                    ->order(['RequestQuots.id' => 'DESC'])
+                    ->limit(5)
+                    ->toArray();
+
+                $groupsWithRequests[] = [
+                    'group' => $groupData->quotgroup,
+                    'requests' => $quoteRequests
+                ];
+            }
+        }
+
+        $this->set(compact(
+            'layoutTitle',
+            'breadcum',
+            'instantQuotesCount',
+            'pendingDecisionCount',
+            'soldCount',
+            'lostCount',
+            'groupsWithRequests'
+        ));
     }
 
 

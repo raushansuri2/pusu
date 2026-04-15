@@ -1,4 +1,27 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<?php
+// Helper function to convert status number to text
+function getStatusText($status) {
+    $statusMap = [
+        1 => "Active",
+        2 => "Pending Decison",
+        3 => "Sold",
+        4 => "Lose",
+        5 => "Cancelled",
+        6 => "Illustrative Quote Ready",
+        7 => "Waiting on Carriers",
+        8 => "Terminated"
+    ];
+    return $statusMap[$status] ?? 'Unknown';
+}
+
+// Helper function to get badge color class
+function getStatusBadgeClass($status) {
+    return in_array($status, [2, 3, 4]) ? 'warning' : (in_array($status, [1,6]) ? 'success' : (in_array($status, [7,8]) ? 'danger' : 'secondary'));
+}
+?>
+
 <div class="page-content">
 
     <div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
@@ -84,21 +107,11 @@
                                     <td><?php echo $request_quote->created_at; ?></td>
                                     <td><?php echo $request_quote->Final_Proposals_Due; ?></td>
                                     <td><?php echo $request_quote->Policy_Effective_Date; ?></td>
-                                    <td><?php if($request_quote->status == 1){?>
-                                        <span class="badge bg-success">Active</span>
-                                    <?php } elseif($request_quote->status == 2) { ?>
-                                        <span class="badge bg-warning">Illustrative Quote Ready</span>
-                                    <?php }elseif($request_quote->status == 3) { ?>
-                                        <span class="badge bg-danger">Closed</span>
-                                    <?php }elseif($request_quote->status == 0){?>
-                                        <span class="badge bg-secondary">Unknown</span>
-                                    <?php }elseif($request_quote->status == 4){?>
-                                        <span class="badge bg-info">Draft</span>
-                                    <?php }elseif($request_quote->status == 5){?>
-                                        <span class="badge bg-dark">Unknown</span>
-                                    <?php }else{?>
-                                        <span class="badge bg-light text-dark"> Unknown</span>
-                                    <?php }?>
+                                    <td>
+                                        <span class="badge bg-<?= getStatusBadgeClass($request_quote->status) ?>">
+                                            <?= getStatusText($request_quote->status) ?>
+                                        </span>
+
                                 </td>
 
                                 </tr>
