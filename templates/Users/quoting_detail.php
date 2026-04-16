@@ -171,7 +171,7 @@ $(window).on('beforeunload', function() {
                                                 <tr>
                                                     <td class="mgu-logo">
                                                         <img src="<?php echo $this->Url->build('/');?>img/admin/logo.png" style="width: 130px;border-radius: 0;" alt="Prodigy Health Insurance" class="mr-2 d-inline-block align-middle">
-                                                        Prodigy Health Insurance
+                                                        <!-- Prodigy Health Insurance -->
                                                     </td>
 
                                                     <td>

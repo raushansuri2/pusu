@@ -536,13 +536,13 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="panel-body">
+                                <!-- <div class="panel-body">
                                     <div class="alert alert-info alert-simple">
                                         <div class="icon"><span class="s7-info"></span></div>
                                         <div class="message">
                                             No attachments have been uploaded. </div>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
 
                             <div class="panel panel-default">
@@ -589,7 +589,7 @@
                                                 <tr>
                                                     <td class="d-flex align-items-center gap-3">
                                                         <img src="<?php echo $this->Url->build('/');?>img/admin/logo.png" style="max-height: 110px;width: 290px;border-radius: 0;" alt="Prodigy Health Insurance logo" class="img-fluid" style="max-height: 40px;">
-                                                        <span>Prodigy Health Insurance</span>
+                                                        <!-- <span>Prodigy Health Insurance</span> -->
                                                     </td>
 
                                                     <td>

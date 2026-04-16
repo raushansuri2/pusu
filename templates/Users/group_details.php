@@ -82,7 +82,7 @@ $(window).on('beforeunload', function() {
               </a>
             </td>
             <td><?php echo $quote->Policy_Effective_Date ? date('m/d/Y', strtotime($quote->Policy_Effective_Date)) : '—'; ?></td>
-            <td><?php echo $quote->created ? date('m/d/Y', strtotime($quote->created)) : '—'; ?></td>
+            <td><?php echo $quote->created_at ? date('m/d/Y', strtotime($quote->created_at)) : '—'; ?></td>
             <!-- <td>
               <span class="badge <?php echo $quote->status == 1 ? 'bg-warning' : 'bg-danger'; ?>">
                 <?php echo $quote->status == 1 ? 'Illustrative Quote Ready' : 'Draft'; ?>

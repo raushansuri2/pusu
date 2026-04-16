@@ -691,6 +691,7 @@ class UsersController extends AppController
 
         $keyword = $this->request->getQuery('keyword');
         $hideExpired = $this->request->getQuery('hide_expired');
+        $status = $this->request->getQuery('status');
 
         // Initialize conditions
         $conditions = [];
@@ -698,11 +699,24 @@ class UsersController extends AppController
         // User condition
         $conditions['RequestQuots.user_id'] = $session->read('ERISAQuoteProSession.Users.id');
 
+        // Status filter condition - handle both array and single values
+        if (!empty($status)) {
+            if (is_array($status)) {
+                // If status is an array, take the first non-empty value
+                $status = reset($status);
+            }
+            $conditions['RequestQuots.status'] = (int)$status;
+        }
+
         // Search condition
         if (!empty($keyword)) {
-            $conditions['OR'] = [
-                'Quotgroups.group_name LIKE' => '%' . trim($keyword) . '%'
-            ];
+            if (isset($conditions['OR'])) {
+                $conditions['OR'][] = ['Quotgroups.group_name LIKE' => '%' . trim($keyword) . '%'];
+            } else {
+                $conditions['OR'] = [
+                    ['Quotgroups.group_name LIKE' => '%' . trim($keyword) . '%']
+                ];
+            }
         }
 
         // Hide expired condition
@@ -720,11 +734,14 @@ class UsersController extends AppController
             ->where($conditions)
             ->contain(['Users', 'Quotgroups', 'Programs']);
 
-        // Pagination
-        $request_quote_list = $this->paginate($query, [
+        // Configure paginator
+        $this->paginate = [
             'limit' => 10,
             'order' => ['RequestQuots.id' => 'DESC']
-        ]);
+        ];
+
+        // Pagination
+        $request_quote_list = $this->paginate($query);
 
         $this->set(compact('request_quote_list', 'layoutTitle'));
     }

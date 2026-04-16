@@ -81,7 +81,7 @@
                         </div>
                         <div class="col-md-12">
                             <p style="font-size: 13px;margin-top: 7px;">
-                                <strong>Final Proposals Due</strong><spam id="FPD"> 7/4/25 </spam><strong> &nbsp;&nbsp;&nbsp; Plan Effective</strong> <spam id="PE">8/1/2025</spam> <strong>  &nbsp;&nbsp;&nbsp;Census Used</strong> <spam id="xl_files">Census St Joseph Motesorri.xlsx (71 members)</spam>
+                                <strong>Final Proposals Due</strong><spam id="FPD"> &nbsp;&nbsp;&nbsp;&nbsp; </spam><strong> &nbsp;&nbsp;&nbsp; Plan Effective</strong> <spam id="PE">&nbsp;&nbsp;&nbsp;&nbsp;</spam> <strong>  &nbsp;&nbsp;&nbsp;Census Used</strong> <spam id="xl_files">&nbsp;&nbsp;&nbsp;&nbsp;</spam>
                             </p>
                         </div>
                     </div>
@@ -173,7 +173,7 @@
                                                     A census is required for all quote requests. The uploaded census must follow
                                                     the required format.
                                                 </p>
-                                                <a href="#" class="btn btn-sm btn-primary" download>
+                                                <a href="<?php echo $this->Url->build('/example.xlsx'); ?>" class="btn btn-sm btn-primary" download>
                                                     Download Census Template
                                                 </a>
                                             </div>
@@ -502,13 +502,13 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="panel-body">
+                                <!-- <div class="panel-body">
                                     <div class="alert alert-info alert-simple">
                                         <div class="icon"><span class="s7-info"></span></div>
                                         <div class="message">
                                             No attachments have been uploaded. </div>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
 
                             <div class="panel panel-default">
@@ -555,7 +555,7 @@
                                                 <tr>
                                                     <td class="d-flex align-items-center gap-3">
                                                         <img src="<?php echo $this->Url->build('/');?>img/admin/logo.png" style="max-height: 110px;width: 290px;border-radius: 0;" alt="Prodigy Health Insurance logo" class="img-fluid" style="max-height: 40px;">
-                                                        <span>Prodigy Health Insurance</span>
+                                                        <!-- <span>Prodigy Health Insurance</span> -->
                                                     </td>
 
                                                     <td>
