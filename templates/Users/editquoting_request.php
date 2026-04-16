@@ -634,14 +634,26 @@
                                                     </thead>
 
                                                     <tbody>
-                                                        <?php if($fees_list){
+                                                        <?php
+                                                        // Debug: Show the feesData structure
+                                                        //echo "<!-- feesData: " . json_encode($feesData) . " -->";
+
+                                                        if($fees_list){
                                                             foreach($fees_list as $key=>$fees){
+                                                                // Get the fee name in the format used for the form field
+                                                                $feeFieldName = strtoupper(str_replace(' ', '_', trim($fees->name)));
+                                                                // Use saved value from $feesData if available, otherwise use default value
+                                                                // The JSON keys are stored as uppercase with underscores, same as our field name format
+                                                                $savedValue = isset($feesData[$feeFieldName]) ? $feesData[$feeFieldName] : $fees->value;
+
+                                                                // Debug: Show the conversion process
+                                                                echo "<!-- Original: '" . $fees->name . "' -> Converted: '" . $feeFieldName . "' -> Found: " . (isset($feesData[$feeFieldName]) ? 'YES (' . $feesData[$feeFieldName] . ')' : 'NO') . " -->";
                                                         ?>
                                                         <tr>
                                                             <td><?php echo $fees->name; ?></td>
                                                             <td><?php echo $fees->value_type;?></td>
                                                             <td style="max-width: 200px;">
-                                                                <input type="text" class="form-control" name="fees[<?php echo strtoupper(str_replace(' ', '_', trim($fees->name))); ?>]" id="TPA_PPO_<?php echo $key;?>" placeholder="70.00" value="<?php echo $fees->value;?>" aria-label="Fee amount" <?php echo ($fees->is_editable != 1) ? "readonly" :"";?>>
+                                                                <input type="text" class="form-control" name="fees[<?php echo $feeFieldName; ?>]" id="TPA_PPO_<?php echo $key;?>" placeholder="70.00" value="<?php echo $savedValue; ?>" aria-label="Fee amount" <?php echo ($fees->is_editable != 1) ? "readonly" :"";?>>
                                                             </td>
                                                             <td>
                                                                 <?php if($fees->is_editable == 1){ ?>

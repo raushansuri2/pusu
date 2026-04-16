@@ -55,7 +55,7 @@ $(window).on('beforeunload', function() {
         <!-- Left: Title -->
         <div class="col-md-6">
             <h4 class="mb-0 d-flex align-items-center flex-wrap">
-                <span class="me-2">#7802:</span>
+                <span class="me-2">#<?php echo $RequestQuots->quotgroup->id ?>:</span>
 
                 <a href="<?php echo $this->Url->build(['controller'=>'users','action'=>'quotingDetail',$RequestQuots->quotgroup->id]);?>" class="link-no-color fw-semibold me-3">
                     <?php echo $RequestQuots->quotgroup->group_name;?>
@@ -701,7 +701,7 @@ $(window).on('beforeunload', function() {
                                                     </address>
                                                 </dd>
                                                 <dt class="col-sm-4 text-right">Business Classification</dt>
-                                                <dd class="col-sm-8"><?php echo htmlspecialchars($RequestQuots->quotgroup->business_classification ?? ''); ?></dd>
+                                                <dd class="col-sm-8"><?php echo htmlspecialchars($RequestQuots->quotgroup->SIC_Code ?? ''); ?></dd>
                                             </dl>
                                         </div>
                                     </div>

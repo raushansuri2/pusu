@@ -447,6 +447,12 @@ class UsersController extends AppController
         $feesTable = $this->fetchTable('Fees');
         $fees_list = $feesTable->find()->where(['Fees.status'=>1, 'FIND_IN_SET('.$programID.', Fees.program_id)'])->toArray();
 
+        // Get fees data from database
+        $feesData = [];
+        if (!empty($RequestQuots->Broke_Fee)) {
+            $feesData = json_decode($RequestQuots->Broke_Fee, true);
+        }
+
         // Get existing census data
         $existingCensus = $censusTable->find()->where(['Census.request_id' => $id])->first();
 
@@ -557,7 +563,7 @@ class UsersController extends AppController
             }
         }
 
-        $this->set(compact('layoutTitle','group_list','network_list','loss_plans_list','benifit_plans_list', 'fees_list', 'RequestQuots', 'existingCensus'));
+        $this->set(compact('layoutTitle','group_list','network_list','loss_plans_list','benifit_plans_list', 'fees_list', 'RequestQuots', 'existingCensus', 'feesData'));
     }
 
     public function addquotingRequest()
@@ -793,7 +799,6 @@ class UsersController extends AppController
         if (!empty($RequestQuots->Broke_Fee)) {
             $feesData = json_decode($RequestQuots->Broke_Fee, true);
         }
-
         // Get timeline data from request_status table
         $RequestStatusTable = $this->fetchTable('RequestStatus');
         $timelineData = $RequestStatusTable->find()
