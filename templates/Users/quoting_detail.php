@@ -55,14 +55,33 @@ $(window).on('beforeunload', function() {
         <!-- Left: Title -->
         <div class="col-md-6">
             <h4 class="mb-0 d-flex align-items-center flex-wrap">
-                <span class="me-2">#<?php echo $RequestQuots->quotgroup->id ?>:</span>
+                <span class="me-2">#<?php echo $RequestQuots->id ?>:</span>
 
                 <a href="<?php echo $this->Url->build(['controller'=>'users','action'=>'quotingDetail',$RequestQuots->quotgroup->id]);?>" class="link-no-color fw-semibold me-3">
                     <?php echo $RequestQuots->quotgroup->group_name;?>
                 </a>
 
-                <span style="font-size: 12px;" class="badge bg-warning">
-                    Illustrative Quote Ready
+                <?php
+                $statusOptions = \Cake\Core\Configure::read('keyFeatures.STATUS');
+                $currentStatus = $RequestQuots->status;
+                $statusText = isset($statusOptions[$currentStatus]) ? $statusOptions[$currentStatus] : 'Unknown';
+
+                // Define badge colors based on status
+                $badgeColors = [
+                    1 => 'bg-success',    // Active
+                    2 => 'bg-warning',    // Pending Decision
+                    3 => 'bg-primary',    // Sold
+                    4 => 'bg-danger',     // Lose
+                    5 => 'bg-secondary',  // Cancelled
+                    6 => 'bg-info',       // Illustrative Quote Ready
+                    7 => 'bg-warning',    // Waiting on Carriers
+                    8 => 'bg-dark'        // Terminated
+                ];
+
+                $badgeColor = isset($badgeColors[$currentStatus]) ? $badgeColors[$currentStatus] : 'bg-secondary';
+                ?>
+                <span style="font-size: 12px;" class="badge <?php echo $badgeColor; ?>">
+                    <?php echo $statusText; ?>
                 </span>
             </h4>
         </div>
