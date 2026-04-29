@@ -222,7 +222,7 @@ $(window).on('beforeunload', function() {
                             <div class="panel panel-default sticky-panel">
                                 <div class="panel-heading panel-heading-divider panel-heading-full-width">
                                     <div class="row">
-                                        <div class="col-9"> <span class="panel-title"> <i data-feather="sun" class="icon-sm"></i> Illustrative Quotes </span> <span class="panel-subtitle">#7802: St. Joseph Montessori School</span> </div>
+                                        <div class="col-9"> <span class="panel-title"> <i data-feather="sun" class="icon-sm"></i> Illustrative Quotes </span> <span class="panel-subtitle">#<?php echo $RequestQuots->id;?> : <?php echo $RequestQuots->quotgroup->group_name;?></span> </div>
                                         <div class="col-3"> <a href="#" target="_blank" class="float-right ml-1 btn btn-primary btn-rounded btn-sm"><i class="s7-expand1"></i> View full sized</a> <a href="#" class="float-right ml-1 btn btn-secondary btn-rounded btn-sm">Print All</a> </div>
                                     </div>
                                 </div>
@@ -302,45 +302,74 @@ $(window).on('beforeunload', function() {
                                             <thead>
                                                 <tr class="table-light">
                                                     <th><strong>Employee Benefit Plan</strong></th>
-                                                    <th colspan="1" class="plan-name">Plan 5</th>
+                                                    <th colspan="1" class="plan-name">
+                                                        <?php
+                                                        if (!empty($benefitPlansDetails)) {
+                                                            $planNames = [];
+                                                            foreach ($benefitPlansDetails as $planss) {
+                                                                $planNames[] = htmlspecialchars($planss->plan_name);
+                                                            }
+                                                            echo implode(', ', $planNames);
+                                                        } else {
+                                                            echo 'No benefit plans selected';
+                                                        }
+                                                        ?>
+                                                    </th>
                                                 </tr>
                                                 <tr class="table-light">
                                                     <th><strong>Network or Repricing</strong></th>
-                                                    <th colspan="1" class="network-name">Cigna PPO</th>
+                                                    <th colspan="1" class="network-name">
+                                                        <?php
+                                                        if (!empty($networksDetails)) {
+                                                            $networkNames = [];
+                                                            foreach ($networksDetails as $network) {
+                                                                $networkNames[] = htmlspecialchars($network->name);
+                                                            }
+                                                            echo implode(', ', $networkNames);
+                                                        } else {
+                                                            echo 'No networks selected';
+                                                        }
+                                                        ?>
+                                                    </th>
                                                 </tr>
+
                                                 <tr>
                                                     <th></th>
-                                                    <th class="text-center"><a href="view-quote.html" class="btn btn-primary btn-sm btn-rounded">Print Quote</a></th>
+                                                    <!-- <th class="text-center"><a href="view-quote.html" class="btn btn-primary btn-sm btn-rounded">Print Quote</a></th> -->
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr class="table-light">
-                                                    <td colspan="2 table-light">Stop Loss Plan</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="fixed-left font-weight-bold">Specific Deductible</td>
-                                                    <td class="text-center">$35,000</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="fixed-left font-weight-bold">Specific Contract</td>
-                                                    <td class="text-center">12/18</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="fixed-left font-weight-bold">Aggregate Contract</td>
-                                                    <td class="text-center">12/18</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="fixed-left font-weight-bold">Aggregate Corridor</td>
-                                                    <td class="text-center">1.25</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="fixed-left font-weight-bold">Aggregating Specific Deductible</td>
-                                                    <td class="text-center">$0</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="fixed-left font-weight-bold">Commission</td>
-                                                    <td class="text-center">0.00%</td>
-                                                </tr>
+                                                <?php if($lossPlansDetails){
+                                                    foreach($lossPlansDetails as $lossPlan){?>
+                                                        <tr class="table-light">
+                                                            <td colspan="2 table-light">Stop Loss Plan:- <strong><?php echo $lossPlan->plan_name; ?></strong></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="fixed-left font-weight-bold">Specific Deductible</td>
+                                                            <td class="text-center">$<?php echo $lossPlan->Spec_Deductible; ?></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="fixed-left font-weight-bold">Specific Contract</td>
+                                                            <td class="text-center"><?php echo $lossPlan->Spec_Contract; ?></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="fixed-left font-weight-bold">Aggregate Contract</td>
+                                                            <td class="text-center"><?php echo $lossPlan->Agg_Contract; ?></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="fixed-left font-weight-bold">Aggregate Corridor</td>
+                                                            <td class="text-center"><?php echo $lossPlan->Agg_Corridor; ?></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="fixed-left font-weight-bold">Aggregating Specific Deductible</td>
+                                                            <td class="text-center">$<?php echo $lossPlan->Aggregating_Spec_Deductible; ?></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="fixed-left font-weight-bold">Commission</td>
+                                                            <td class="text-center"><?php echo $lossPlan->Commission; ?>%</td>
+                                                        </tr>
+                                                    <?php }
+                                                } ?>
 
 
 
