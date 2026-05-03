@@ -254,7 +254,7 @@ $(window).on('beforeunload', function() {
                                                     </tr>
                                                     <tr>
                                                         <td class="fixed-left"><strong>Total Enrollment</strong></td>
-                                                        <td><?php echo (@$file_counts['EE'] + @$file_counts['ES'] + @$file_counts['EC']+ @$file_counts['EF']) ?? 0; ?></td>
+                                                        <td><?php echo $total_EMP = (@$file_counts['EE'] + @$file_counts['ES'] + @$file_counts['EC']+ @$file_counts['EF']) ?? 0; ?></td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -339,8 +339,12 @@ $(window).on('beforeunload', function() {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <?php if($lossPlansDetails){
-                                                    foreach($lossPlansDetails as $lossPlan){?>
+                                                <?php $T_ANNUAL = 0;
+                                                     $AG_CORRIDOR;
+                                                    if($lossPlansDetails){
+                                                    foreach($lossPlansDetails as $lossPlan){
+                                                        $T_ANNUAL = $lossPlan->Spec_Deductible;
+                                                        $AG_CORRIDOR = $lossPlan->Agg_Corridor;?>
                                                         <tr class="table-light">
                                                             <td colspan="2 table-light">Stop Loss Plan:- <strong><?php echo $lossPlan->plan_name; ?></strong></td>
                                                         </tr>
@@ -373,6 +377,8 @@ $(window).on('beforeunload', function() {
 
 
 
+
+                                                <?php $C = ($T_ANNUAL /12) / $total_EMP; ?>
                                                 <tr>
                                                     <td colspan="2" class="table-light">Tier 1: Employee Only (EE)</td>
                                                 </tr>
@@ -382,7 +388,7 @@ $(window).on('beforeunload', function() {
                                                 </tr>
                                                 <tr>
                                                     <td class="fixed-left">Aggregate Rate</td>
-                                                    <td class="text-center">$42.48</td>
+                                                    <td class="text-center">$<?php echo ($C * $$AG_CORRIDOR);?> </td>
                                                 </tr>
                                                 <tr>
                                                     <td class="fixed-left">Aggregate Factor</td>
