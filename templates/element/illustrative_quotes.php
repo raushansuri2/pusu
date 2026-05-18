@@ -46,6 +46,7 @@
                   </tr>
                </thead>
                <tbody>
+                <?php $TOTAL_FEE = 0 ;?>
                   <?php if (!empty($feesData)): ?>
                   <?php foreach ($feesData as $key=>$fee): ?>
                   <tr>
@@ -59,17 +60,11 @@
                   <tr>
                      <td class="fixed-left"><?php echo htmlspecialchars(ucwords(strtolower(str_replace('_', ' ', $key)))); ?></td>
                      <td>$<?php echo htmlspecialchars($fee ?? ''); ?> <?php echo htmlspecialchars($fee['value_type'] ?? 'PEPM'); ?></td>
+                     <?php $TOTAL_FEE +=$fee;?>
                   </tr>
                   <?php endforeach; ?>
                   <?php else: ?>
-                  <tr>
-                     <td class="fixed-left">TPA, PPO, PBM, Service Providers</td>
-                     <td>$70.00 PEPM</td>
-                  </tr>
-                  <tr>
-                     <td class="fixed-left">Broker Fee</td>
-                     <td>$35.00 PEPM</td>
-                  </tr>
+                  
                   <?php endif; ?>
                   <?php endif; ?>
                </tbody>
@@ -421,6 +416,70 @@ $allCalculations = generateQuoteCalculations($benefitPlansDetails, $lossPlansDet
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+<?php 
+
+    $T_ANNUAL = 0; //$lossPlan->Spec_Deductible;
+    $AG_CORRIDOR = 0;  //$lossPlan->Agg_Corridor;
+    // Define specific rates for each tier (can be made dynamic later)
+    $specificRate_EE = 284.88; // Employee Only
+    $specificRate_ES = 468.36; // Employee + Spouse
+    $specificRate_EC = 443.70; // Employee + Child(ren)
+    $specificRate_EF = 739.52; // Employee + Family
+
+    $T_ANNUAL = isset($T_ANNUAL) && $T_ANNUAL > 0 ? $T_ANNUAL : 75000;
+
+    // Ensure AG_CORRIDOR is set and valid
+    $AG_CORRIDOR = isset($AG_CORRIDOR) && $AG_CORRIDOR > 0 ? $AG_CORRIDOR : 1.25;
+
+    // Calculate Expected Claims (C) - Specific Deductible annual divided by 12 months, then per employee
+    $C = 0;
+    if ($total_EMP > 0 && $T_ANNUAL > 0) {
+        $C = ($T_ANNUAL / 12) / $total_EMP;
+    }
+
+
+     // Calculate aggregate rates using the formula: Aggregate Rate = Expected Claims × Aggregate Factor
+    $aggregateRate_EE = $C * $AG_CORRIDOR;
+    $aggregateRate_ES = $C * $AG_CORRIDOR * 1.9; // ES multiplier
+    $aggregateRate_EC = $C * $AG_CORRIDOR * 1.8; // EC multiplier
+    $aggregateRate_EF = $C * $AG_CORRIDOR * 2.6; // EF multiplier
+
+    // Calculate aggregate accommodation: Aggregate Accommodation = Aggregate Rate – Expected Claims
+    $aggregateAccommodation_EE = $aggregateRate_EE - $C;
+    $aggregateAccommodation_ES = $aggregateRate_ES - ($C * 1.9);
+    $aggregateAccommodation_EC = $aggregateRate_EC - ($C * 1.8);
+    $aggregateAccommodation_EF = $aggregateRate_EF - ($C * 2.6);
+
+    $totalFees = 105; // $70 TPA + $35 Broker default
+
+
+    // Calculate Total PEPM: Total PEPM = Specific Rate + Aggregate Rate + Fees
+    $totalPEPM_EE = $specificRate_EE + $aggregateRate_EE + $totalFees;
+    $totalPEPM_ES = $specificRate_ES + $aggregateRate_ES + $totalFees;
+    $totalPEPM_EC = $specificRate_EC + $aggregateRate_EC + $totalFees;
+    $totalPEPM_EF = $specificRate_EF + $aggregateRate_EF + $totalFees;
+
+
+    // Calculate monthly totals by multiplying PEPM rates by enrollment counts
+    $monthlyTotal_EE_Specific = $specificRate_EE * ($file_counts['EE'] ?? 0);
+    $monthlyTotal_EE_Aggregate = $aggregateRate_EE * ($file_counts['EE'] ?? 0);
+    $monthlyTotal_EE_Factor = ($AG_CORRIDOR * $C) * ($file_counts['EE'] ?? 0);
+    $monthlyTotal_EE_Accommodation = $aggregateAccommodation_EE * ($file_counts['EE'] ?? 0);
+
+
+?>
 <div class="panel-table p-0 mt-3" style="width: 100%;overflow: scroll; max-height:700px;">
   <table class="table table-hover table-sm table-bordered table-illustrative-quote">
     <thead>
@@ -541,60 +600,63 @@ $allCalculations = generateQuoteCalculations($benefitPlansDetails, $lossPlansDet
       </tr>
       <tr>
         <td class="fixed-left">Specific Rate</td>
-        <td class="text-center">$418.80</td>
-        <td class="text-center">$284.88</td>
-        <td class="text-center">$583.11</td>
-        <td class="text-center">$491.08</td>
-        <td class="text-center">$519.45</td>
-        <td class="text-center">$437.57</td>
-        <td class="text-center">$355.14</td>
-        <td class="text-center">$335.71</td>
-        <td class="text-center">$338.30</td>
-        <td class="text-center">$422.18</td>
-        <td class="text-center">$287.07</td>
-        <td class="text-center">$358.01</td>
-        <td class="text-center">$523.93</td>
-        <td class="text-center">$588.46</td>
-        <td class="text-center">$441.34</td>
-        <td class="text-center">$495.57</td>
+        <?php if (!empty($benefitPlansDetails)) {
+            foreach ($benefitPlansDetails as $planss) {
+                if($lossPlansDetails){
+                    foreach($lossPlansDetails as $lossPlan){ 
+                        if($lossPlan->Spec_Deductible < 50000){
+                            $ExpectedLargeClaims = (50000-$lossPlan->Spec_Deductible);
+                        }else{
+                            $ExpectedLargeClaims = (100000-$lossPlan->Spec_Deductible);
+                        }
+                        $riskMargin = round(($ExpectedLargeClaims * $lossPlan->Commission) / 100 , 2);
+                        ?>
+                    <td class="text-center"><?php echo round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EE'],2);?></td>
+                <?php } } ?>
+        <?php } } ?>
       </tr>
       <tr>
         <td class="fixed-left">Aggregate Rate</td>
-        <td class="text-center">$128.48</td>
-        <td class="text-center">$160.03</td>
-        <td class="text-center">$76.92</td>
-        <td class="text-center">$70.44</td>
-        <td class="text-center">$98.88</td>
-        <td class="text-center">$91.64</td>
-        <td class="text-center">$121.18</td>
-        <td class="text-center">$167.40</td>
-        <td class="text-center">$170.34</td>
-        <td class="text-center">$130.79</td>
-        <td class="text-center">$162.93</td>
-        <td class="text-center">$123.42</td>
-        <td class="text-center">$100.64</td>
-        <td class="text-center">$78.29</td>
-        <td class="text-center">$93.34</td>
-        <td class="text-center">$71.76</td>
+        <?php if (!empty($benefitPlansDetails)) {
+            foreach ($benefitPlansDetails as $planss) {
+                if($lossPlansDetails){
+                    foreach($lossPlansDetails as $lossPlan){ 
+                        $EE = $file_counts['EE'] * 1;
+                        $ES = $file_counts['ES'] * 2;
+                        $EC = $file_counts['EC'] * 2.5;
+                        $EF = $file_counts['EF'] * 4;
+                        $total_memnber = $EE + $ES + $EC + $EF;
+                        $MemberMonths = $total_memnber * 12;
+                        if($lossPlan->Spec_Deductible < 50000){
+                            $Expected_Aggregate_Claims = 50000;
+                        }else{
+                            $Expected_Aggregate_Claims = 100000;
+                        }
+                        $Aggregate_Risk_Margin = $Expected_Aggregate_Claims * (($lossPlan->Agg_Corridor + $lossPlan->Commission)/100);
+                        $Aggregate_Rate_PMPM = ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths;
+                        ?>
+                    <td class="text-center"><?php echo round($Aggregate_Rate_PMPM,2);?></td>
+                <?php } } ?>
+        <?php } } ?>
       </tr>
       <tr>
         <td class="fixed-left">Aggregate Factor</td>
-        <td class="text-center">$1,019.25</td>
-        <td class="text-center">$1,024.25</td>
-        <td class="text-center">$745.35</td>
-        <td class="text-center">$639.94</td>
-        <td class="text-center">$872.95</td>
-        <td class="text-center">$749.50</td>
-        <td class="text-center">$875.10</td>
-        <td class="text-center">$1,192.95</td>
-        <td class="text-center">$1,218.64</td>
-        <td class="text-center">$1,043.24</td>
-        <td class="text-center">$1,046.30</td>
-        <td class="text-center">$895.71</td>
-        <td class="text-center">$895.23</td>
-        <td class="text-center">$765.87</td>
-        <td class="text-center">$768.63</td>
-        <td class="text-center">$657.56</td>
+        <?php if (!empty($benefitPlansDetails)) {
+            foreach ($benefitPlansDetails as $planss) {
+                if($lossPlansDetails){
+                    foreach($lossPlansDetails as $lossPlan){ 
+                        $Aggregate_Factor = 1+(($lossPlan->Aggregating_Spec_Deductible)/100);
+                        // if($lossPlan->Spec_Deductible < 50000){
+                        //     $ExpectedLargeClaims = (50000-$lossPlan->Spec_Deductible);
+                        // }else{
+                        //     $ExpectedLargeClaims = (100000-$lossPlan->Spec_Deductible);
+                        // }
+                        // $Attachment_Point = $ExpectedLargeClaims * $Aggregate_Factor;
+                        ?>
+                    <td class="text-center"><?php echo round($Aggregate_Factor,2);?></td>
+                <?php } } ?>
+        <?php } } ?>
+        
       </tr>
       <tr>
         <td class="fixed-left">Aggregate Accommodation</td>
