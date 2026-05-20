@@ -939,22 +939,23 @@
       </tr>
       <tr>
         <td class="fixed-left">Aggregate Accommodation</td>
-        <td class="text-center">$0.00</td>
-        <td class="text-center">$0.00</td>
-        <td class="text-center">$0.00</td>
-        <td class="text-center">$0.00</td>
-        <td class="text-center">$0.00</td>
-        <td class="text-center">$0.00</td>
-        <td class="text-center">$0.00</td>
-        <td class="text-center">$0.00</td>
-        <td class="text-center">$0.00</td>
-        <td class="text-center">$0.00</td>
-        <td class="text-center">$0.00</td>
-        <td class="text-center">$0.00</td>
-        <td class="text-center">$0.00</td>
-        <td class="text-center">$0.00</td>
-        <td class="text-center">$0.00</td>
-        <td class="text-center">$0.00</td>
+        <?php if (!empty($benefitPlansDetails)) {
+            foreach ($benefitPlansDetails as $planss) {
+                if($lossPlansDetails){
+                    foreach($lossPlansDetails as $lossPlan){ 
+                        if($lossPlan->Spec_Deductible < 50000){
+                            $Expected_Total_Claims = 50000;
+                            $Expected_Specific_Claims = (50000-$lossPlan->Spec_Deductible);
+                        }else{
+                            $Expected_Total_Claims = 100000;
+                            $Expected_Specific_Claims = (100000-$lossPlan->Spec_Deductible);
+                        }
+                        $Aggregate_Accommodation = $Expected_Total_Claims / $Expected_Specific_Claims;
+                        $Monthly_Aggregate_Accommodation = $Aggregate_Accommodation * $file_counts['ES'];
+                        ?>
+                    <td class="text-center">$<?php echo number_format($Monthly_Aggregate_Accommodation, 2);?></td>
+                <?php } } ?>
+        <?php } } ?>
       </tr>
       <tr>
         <td class="fixed-left">Broker Fee</td>
@@ -1041,22 +1042,22 @@
       </tr>
       <tr>
         <td class="fixed-left">Specific Rate</td>
-        <td class="text-center">$0.00</td>
-        <td class="text-center">$0.00</td>
-        <td class="text-center">$0.00</td>
-        <td class="text-center">$0.00</td>
-        <td class="text-center">$0.00</td>
-        <td class="text-center">$0.00</td>
-        <td class="text-center">$0.00</td>
-        <td class="text-center">$0.00</td>
-        <td class="text-center">$0.00</td>
-        <td class="text-center">$0.00</td>
-        <td class="text-center">$0.00</td>
-        <td class="text-center">$0.00</td>
-        <td class="text-center">$0.00</td>
-        <td class="text-center">$0.00</td>
-        <td class="text-center">$0.00</td>
-        <td class="text-center">$0.00</td>
+        <?php if (!empty($benefitPlansDetails)) {
+            foreach ($benefitPlansDetails as $planss) {
+                if($lossPlansDetails){
+                    foreach($lossPlansDetails as $lossPlan){ 
+                        if($lossPlan->Spec_Deductible < 50000){
+                            $ExpectedLargeClaims = (50000-$lossPlan->Spec_Deductible);
+                        }else{
+                            $ExpectedLargeClaims = (100000-$lossPlan->Spec_Deductible);
+                        }
+                        $riskMargin = round(($ExpectedLargeClaims * $lossPlan->Commission) / 100 , 2);
+                        $Specific_Rate = round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EC'],2);
+                        $Monthly_Specific_Rate = $Specific_Rate * $file_counts['EC'];
+                        ?>
+                    <td class="text-center">$<?php echo number_format($Monthly_Specific_Rate, 2);?></td>
+                <?php } } ?>
+        <?php } } ?>
       </tr>
       <tr>
         <td class="fixed-left">Aggregate Rate</td>
