@@ -273,7 +273,7 @@
                         }
                         $riskMargin = round(($ExpectedLargeClaims * $lossPlan->Commission) / 100 , 2);
                         ?>
-                    <td class="text-center"><?php echo round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EE'],2);?></td>
+                    <td class="text-center"><?php echo (is_array($file_counts) && ($file_counts['EE'] ?? 0) > 0 ? round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EE'], 2) : 0);?></td>
                 <?php } } ?>
         <?php } } ?>
       </tr>
@@ -283,10 +283,10 @@
             foreach ($benefitPlansDetails as $planss) {
                 if($lossPlansDetails){
                     foreach($lossPlansDetails as $lossPlan){
-                        $EE = $file_counts['EE'] * 1;
-                        $ES = $file_counts['ES'] * 2;
-                        $EC = $file_counts['EC'] * 2.5;
-                        $EF = $file_counts['EF'] * 4;
+                        $EE = @$file_counts['EE'] * 1;
+                        $ES = @$file_counts['ES'] * 2;
+                        $EC = @$file_counts['EC'] * 2.5;
+                        $EF = @$file_counts['EF'] * 4;
                         $total_memnber = $EE + $ES + $EC + $EF;
                         $MemberMonths = $total_memnber * 12;
                         if($lossPlan->Spec_Deductible < 50000){
@@ -295,7 +295,7 @@
                             $Expected_Aggregate_Claims = 100000;
                         }
                         $Aggregate_Risk_Margin = $Expected_Aggregate_Claims * (($lossPlan->Agg_Corridor + $lossPlan->Commission)/100);
-                        $Aggregate_Rate_PMPM = ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths;
+                        $Aggregate_Rate_PMPM = ($MemberMonths > 0) ? ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths : 0;
                         ?>
                     <td class="text-center"><?php echo round($Aggregate_Rate_PMPM,2);?></td>
                 <?php } } ?>
@@ -333,7 +333,7 @@
                             $Expected_Total_Claims = 100000;
                             $Expected_Specific_Claims = (100000-$lossPlan->Spec_Deductible);
                         }
-                        $Aggregate_Accommodation = $Expected_Total_Claims / $Expected_Specific_Claims;
+                        $Aggregate_Accommodation = ($Expected_Specific_Claims > 0) ? $Expected_Total_Claims / $Expected_Specific_Claims : 0;
                         ?>
                     <td class="text-center">$<?php echo number_format($Aggregate_Accommodation, 2);?></td>
                 <?php } } ?>
@@ -351,12 +351,12 @@
                             $ExpectedLargeClaims = (100000-$lossPlan->Spec_Deductible);
                         }
                         $riskMargin = round(($ExpectedLargeClaims * $lossPlan->Commission) / 100 , 2);
-                        $Specific_Rate = round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EE'],2);
+                        $Specific_Rate = (is_array($file_counts) && ($file_counts['EE'] ?? 0) > 0 ? round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EE'], 2) : 0);
 
-                        $EE = $file_counts['EE'] * 1;
-                        $ES = $file_counts['ES'] * 2;
-                        $EC = $file_counts['EC'] * 2.5;
-                        $EF = $file_counts['EF'] * 4;
+                        $EE = @$file_counts['EE'] * 1;
+                        $ES = @$file_counts['ES'] * 2;
+                        $EC = @$file_counts['EC'] * 2.5;
+                        $EF = @$file_counts['EF'] * 4;
                         $total_memnber = $EE + $ES + $EC + $EF;
                         $MemberMonths = $total_memnber * 12;
                         if($lossPlan->Spec_Deductible < 50000){
@@ -365,7 +365,7 @@
                             $Expected_Aggregate_Claims = 100000;
                         }
                         $Aggregate_Risk_Margin = $Expected_Aggregate_Claims * (($lossPlan->Agg_Corridor + $lossPlan->Commission)/100);
-                        $Aggregate_Rate_PMPM = ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths;
+                        $Aggregate_Rate_PMPM = ($MemberMonths > 0) ? ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths : 0;
 
                         $Aggregate_Factor = 1+(($lossPlan->Aggregating_Spec_Deductible)/100);
                         $Aggregate_Accommodation = 0;
@@ -396,7 +396,7 @@
                         }
                         $riskMargin = round(($ExpectedLargeClaims * $lossPlan->Commission) / 100 , 2);
                         ?>
-                    <td class="text-center"><?php echo round(($ExpectedLargeClaims + $riskMargin) / $file_counts['ES'],2);?></td>
+                    <td class="text-center"><?php echo (is_array($file_counts) && ($file_counts['ES'] ?? 0) > 0 ? round(($ExpectedLargeClaims + $riskMargin) / $file_counts['ES'], 2) : 0);?></td>
                 <?php } } ?>
         <?php } } ?>
       </tr>
@@ -406,10 +406,10 @@
             foreach ($benefitPlansDetails as $planss) {
                 if($lossPlansDetails){
                     foreach($lossPlansDetails as $lossPlan){
-                        $EE = $file_counts['EE'] * 1;
-                        $ES = $file_counts['ES'] * 2;
-                        $EC = $file_counts['EC'] * 2.5;
-                        $EF = $file_counts['EF'] * 4;
+                        $EE = @$file_counts['EE'] * 1;
+                        $ES = @$file_counts['ES'] * 2;
+                        $EC = @$file_counts['EC'] * 2.5;
+                        $EF = @$file_counts['EF'] * 4;
                         $total_memnber = $EE + $ES + $EC + $EF;
                         $MemberMonths = $total_memnber * 12;
                         if($lossPlan->Spec_Deductible < 50000){
@@ -418,7 +418,7 @@
                             $Expected_Aggregate_Claims = 100000;
                         }
                         $Aggregate_Risk_Margin = $Expected_Aggregate_Claims * (($lossPlan->Agg_Corridor + $lossPlan->Commission)/100);
-                        $Aggregate_Rate_PMPM = ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths;
+                        $Aggregate_Rate_PMPM = ($MemberMonths > 0) ? ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths : 0;
                         ?>
                     <td class="text-center"><?php echo round($Aggregate_Rate_PMPM,2);?></td>
                 <?php } } ?>
@@ -449,7 +449,7 @@
                             $Expected_Total_Claims = 100000;
                             $Expected_Specific_Claims = (100000-$lossPlan->Spec_Deductible);
                         }
-                        $Aggregate_Accommodation = $Expected_Total_Claims / $Expected_Specific_Claims;
+                        $Aggregate_Accommodation = ($Expected_Specific_Claims > 0) ? $Expected_Total_Claims / $Expected_Specific_Claims : 0;
                         ?>
                     <td class="text-center">$<?php echo number_format($Aggregate_Accommodation, 2);?></td>
                 <?php } } ?>
@@ -467,12 +467,12 @@
                             $ExpectedLargeClaims = (100000-$lossPlan->Spec_Deductible);
                         }
                         $riskMargin = round(($ExpectedLargeClaims * $lossPlan->Commission) / 100 , 2);
-                        $Specific_Rate = round(($ExpectedLargeClaims + $riskMargin) / $file_counts['ES'],2);
+                        $Specific_Rate = (is_array($file_counts) && ($file_counts['ES'] ?? 0) > 0 ? round(($ExpectedLargeClaims + $riskMargin) / $file_counts['ES'], 2) : 0);
 
-                        $EE = $file_counts['EE'] * 1;
-                        $ES = $file_counts['ES'] * 2;
-                        $EC = $file_counts['EC'] * 2.5;
-                        $EF = $file_counts['EF'] * 4;
+                        $EE = @$file_counts['EE'] * 1;
+                        $ES = @$file_counts['ES'] * 2;
+                        $EC = @$file_counts['EC'] * 2.5;
+                        $EF = @$file_counts['EF'] * 4;
                         $total_memnber = $EE + $ES + $EC + $EF;
                         $MemberMonths = $total_memnber * 12;
                         if($lossPlan->Spec_Deductible < 50000){
@@ -481,7 +481,7 @@
                             $Expected_Aggregate_Claims = 100000;
                         }
                         $Aggregate_Risk_Margin = $Expected_Aggregate_Claims * (($lossPlan->Agg_Corridor + $lossPlan->Commission)/100);
-                        $Aggregate_Rate_PMPM = ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths;
+                        $Aggregate_Rate_PMPM = ($MemberMonths > 0) ? ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths : 0;
 
                         $Aggregate_Factor = 1+(($lossPlan->Aggregating_Spec_Deductible)/100);
                         $Aggregate_Accommodation = 0;
@@ -512,7 +512,7 @@
                         }
                         $riskMargin = round(($ExpectedLargeClaims * $lossPlan->Commission) / 100 , 2);
                         ?>
-                    <td class="text-center"><?php echo round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EC'],2);?></td>
+                    <td class="text-center"><?php echo (is_array($file_counts) && ($file_counts['EC'] ?? 0) > 0 ? round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EC'], 2) : 0);?></td>
                 <?php } } ?>
         <?php } } ?>
       </tr>
@@ -522,10 +522,10 @@
             foreach ($benefitPlansDetails as $planss) {
                 if($lossPlansDetails){
                     foreach($lossPlansDetails as $lossPlan){
-                        $EE = $file_counts['EE'] * 1;
-                        $ES = $file_counts['ES'] * 2;
-                        $EC = $file_counts['EC'] * 2.5;
-                        $EF = $file_counts['EF'] * 4;
+                        $EE = @$file_counts['EE'] * 1;
+                        $ES = @$file_counts['ES'] * 2;
+                        $EC = @$file_counts['EC'] * 2.5;
+                        $EF = @$file_counts['EF'] * 4;
                         $total_memnber = $EE + $ES + $EC + $EF;
                         $MemberMonths = $total_memnber * 12;
                         if($lossPlan->Spec_Deductible < 50000){
@@ -534,7 +534,7 @@
                             $Expected_Aggregate_Claims = 100000;
                         }
                         $Aggregate_Risk_Margin = $Expected_Aggregate_Claims * (($lossPlan->Agg_Corridor + $lossPlan->Commission)/100);
-                        $Aggregate_Rate_PMPM = ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths;
+                        $Aggregate_Rate_PMPM = ($MemberMonths > 0) ? ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths : 0;
                         ?>
                     <td class="text-center"><?php echo round($Aggregate_Rate_PMPM,2);?></td>
                 <?php } } ?>
@@ -565,7 +565,7 @@
                             $Expected_Total_Claims = 100000;
                             $Expected_Specific_Claims = (100000-$lossPlan->Spec_Deductible);
                         }
-                        $Aggregate_Accommodation = $Expected_Total_Claims / $Expected_Specific_Claims;
+                        $Aggregate_Accommodation = ($Expected_Specific_Claims > 0) ? $Expected_Total_Claims / $Expected_Specific_Claims : 0;
                         ?>
                     <td class="text-center">$<?php echo number_format($Aggregate_Accommodation, 2);?></td>
                 <?php } } ?>
@@ -583,12 +583,12 @@
                             $ExpectedLargeClaims = (100000-$lossPlan->Spec_Deductible);
                         }
                         $riskMargin = round(($ExpectedLargeClaims * $lossPlan->Commission) / 100 , 2);
-                        $Specific_Rate = round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EC'],2);
+                        $Specific_Rate = (is_array($file_counts) && ($file_counts['EC'] ?? 0) > 0 ? round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EC'], 2) : 0);
 
-                        $EE = $file_counts['EE'] * 1;
-                        $ES = $file_counts['ES'] * 2;
-                        $EC = $file_counts['EC'] * 2.5;
-                        $EF = $file_counts['EF'] * 4;
+                        $EE = @$file_counts['EE'] * 1;
+                        $ES = @$file_counts['ES'] * 2;
+                        $EC = @$file_counts['EC'] * 2.5;
+                        $EF = @$file_counts['EF'] * 4;
                         $total_memnber = $EE + $ES + $EC + $EF;
                         $MemberMonths = $total_memnber * 12;
                         if($lossPlan->Spec_Deductible < 50000){
@@ -597,7 +597,7 @@
                             $Expected_Aggregate_Claims = 100000;
                         }
                         $Aggregate_Risk_Margin = $Expected_Aggregate_Claims * (($lossPlan->Agg_Corridor + $lossPlan->Commission)/100);
-                        $Aggregate_Rate_PMPM = ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths;
+                        $Aggregate_Rate_PMPM = ($MemberMonths > 0) ? ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths : 0;
 
                         $Aggregate_Factor = 1+(($lossPlan->Aggregating_Spec_Deductible)/100);
                         $Aggregate_Accommodation = 0;
@@ -628,7 +628,7 @@
                         }
                         $riskMargin = round(($ExpectedLargeClaims * $lossPlan->Commission) / 100 , 2);
                         ?>
-                    <td class="text-center"><?php echo round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EF'],2);?></td>
+                    <td class="text-center"><?php echo (is_array($file_counts) && ($file_counts['EF'] ?? 0) > 0 ? round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EF'], 2) : 0);?></td>
                 <?php } } ?>
         <?php } } ?>
       </tr>
@@ -638,10 +638,10 @@
             foreach ($benefitPlansDetails as $planss) {
                 if($lossPlansDetails){
                     foreach($lossPlansDetails as $lossPlan){
-                        $EE = $file_counts['EE'] * 1;
-                        $ES = $file_counts['ES'] * 2;
-                        $EC = $file_counts['EC'] * 2.5;
-                        $EF = $file_counts['EF'] * 4;
+                        $EE = @$file_counts['EE'] * 1;
+                        $ES = @$file_counts['ES'] * 2;
+                        $EC = @$file_counts['EC'] * 2.5;
+                        $EF = @$file_counts['EF'] * 4;
                         $total_memnber = $EE + $ES + $EC + $EF;
                         $MemberMonths = $total_memnber * 12;
                         if($lossPlan->Spec_Deductible < 50000){
@@ -650,7 +650,7 @@
                             $Expected_Aggregate_Claims = 100000;
                         }
                         $Aggregate_Risk_Margin = $Expected_Aggregate_Claims * (($lossPlan->Agg_Corridor + $lossPlan->Commission)/100);
-                        $Aggregate_Rate_PMPM = ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths;
+                        $Aggregate_Rate_PMPM = ($MemberMonths > 0) ? ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths : 0;
                         ?>
                     <td class="text-center"><?php echo round($Aggregate_Rate_PMPM,2);?></td>
                 <?php } } ?>
@@ -681,7 +681,7 @@
                             $Expected_Total_Claims = 100000;
                             $Expected_Specific_Claims = (100000-$lossPlan->Spec_Deductible);
                         }
-                        $Aggregate_Accommodation = $Expected_Total_Claims / $Expected_Specific_Claims;
+                        $Aggregate_Accommodation = ($Expected_Specific_Claims > 0) ? $Expected_Total_Claims / $Expected_Specific_Claims : 0;
                         ?>
                     <td class="text-center">$<?php echo number_format($Aggregate_Accommodation, 2);?></td>
                 <?php } } ?>
@@ -699,12 +699,12 @@
                             $ExpectedLargeClaims = (100000-$lossPlan->Spec_Deductible);
                         }
                         $riskMargin = round(($ExpectedLargeClaims * $lossPlan->Commission) / 100 , 2);
-                        $Specific_Rate = round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EF'],2);
+                        $Specific_Rate = (is_array($file_counts) && ($file_counts['EF'] ?? 0) > 0 ? round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EF'], 2) : 0);
 
-                        $EE = $file_counts['EE'] * 1;
-                        $ES = $file_counts['ES'] * 2;
-                        $EC = $file_counts['EC'] * 2.5;
-                        $EF = $file_counts['EF'] * 4;
+                        $EE = @$file_counts['EE'] * 1;
+                        $ES = @$file_counts['ES'] * 2;
+                        $EC = @$file_counts['EC'] * 2.5;
+                        $EF = @$file_counts['EF'] * 4;
                         $total_memnber = $EE + $ES + $EC + $EF;
                         $MemberMonths = $total_memnber * 12;
                         if($lossPlan->Spec_Deductible < 50000){
@@ -713,7 +713,7 @@
                             $Expected_Aggregate_Claims = 100000;
                         }
                         $Aggregate_Risk_Margin = $Expected_Aggregate_Claims * (($lossPlan->Agg_Corridor + $lossPlan->Commission)/100);
-                        $Aggregate_Rate_PMPM = ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths;
+                        $Aggregate_Rate_PMPM = ($MemberMonths > 0) ? ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths : 0;
 
                         $Aggregate_Factor = 1+(($lossPlan->Aggregating_Spec_Deductible)/100);
                         $Aggregate_Accommodation = 0;
@@ -750,8 +750,8 @@
                             $ExpectedLargeClaims = (100000-$lossPlan->Spec_Deductible);
                         }
                         $riskMargin = round(($ExpectedLargeClaims * $lossPlan->Commission) / 100 , 2);
-                        $Specific_Rate = round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EE'],2);
-                        $Monthly_Specific_Rate = $Specific_Rate * $file_counts['EE'];
+                        $Specific_Rate = (is_array($file_counts) && ($file_counts['EE'] ?? 0) > 0 ? round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EE'], 2) : 0);
+                        $Monthly_Specific_Rate = $Specific_Rate * @$file_counts['EE'];
                         ?>
                     <td class="text-center">$<?php echo number_format($Monthly_Specific_Rate, 2);?></td>
                 <?php } } ?>
@@ -763,10 +763,10 @@
             foreach ($benefitPlansDetails as $planss) {
                 if($lossPlansDetails){
                     foreach($lossPlansDetails as $lossPlan){
-                        $EE = $file_counts['EE'] * 1;
-                        $ES = $file_counts['ES'] * 2;
-                        $EC = $file_counts['EC'] * 2.5;
-                        $EF = $file_counts['EF'] * 4;
+                        $EE = @$file_counts['EE'] * 1;
+                        $ES = @$file_counts['ES'] * 2;
+                        $EC = @$file_counts['EC'] * 2.5;
+                        $EF = @$file_counts['EF'] * 4;
                         $total_memnber = $EE + $ES + $EC + $EF;
                         $MemberMonths = $total_memnber * 12;
                         if($lossPlan->Spec_Deductible < 50000){
@@ -775,8 +775,8 @@
                             $Expected_Aggregate_Claims = 100000;
                         }
                         $Aggregate_Risk_Margin = $Expected_Aggregate_Claims * (($lossPlan->Agg_Corridor + $lossPlan->Commission)/100);
-                        $Aggregate_Rate_PMPM = ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths;
-                        $Monthly_Aggregate_Rate = $Aggregate_Rate_PMPM * $file_counts['EE'];
+                        $Aggregate_Rate_PMPM = ($MemberMonths > 0) ? ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths : 0;
+                        $Monthly_Aggregate_Rate = $Aggregate_Rate_PMPM * @$file_counts['EE'];
                         ?>
                     <td class="text-center">$<?php echo number_format($Monthly_Aggregate_Rate, 2);?></td>
                 <?php } } ?>
@@ -789,7 +789,7 @@
                 if($lossPlansDetails){
                     foreach($lossPlansDetails as $lossPlan){
                         $Aggregate_Factor = 1+(($lossPlan->Aggregating_Spec_Deductible)/100);
-                        $Monthly_Aggregate_Factor = $Aggregate_Factor * $file_counts['EE'];
+                        $Monthly_Aggregate_Factor = $Aggregate_Factor * @$file_counts['EE'];
                         ?>
                     <td class="text-center">$<?php echo number_format($Monthly_Aggregate_Factor, 2);?></td>
                 <?php } } ?>
@@ -808,8 +808,8 @@
                             $Expected_Total_Claims = 100000;
                             $Expected_Specific_Claims = (100000-$lossPlan->Spec_Deductible);
                         }
-                        $Aggregate_Accommodation = $Expected_Total_Claims / $Expected_Specific_Claims;
-                        $Monthly_Aggregate_Accommodation = $Aggregate_Accommodation * $file_counts['EE'];
+                        $Aggregate_Accommodation = ($Expected_Specific_Claims > 0) ? $Expected_Total_Claims / $Expected_Specific_Claims : 0;
+                        $Monthly_Aggregate_Accommodation = $Aggregate_Accommodation * @$file_counts['EE'];
                         ?>
                     <td class="text-center">$<?php echo number_format($Monthly_Aggregate_Accommodation, 2);?></td>
                 <?php } } ?>
@@ -821,7 +821,7 @@
             foreach ($benefitPlansDetails as $planss) {
                 if($lossPlansDetails){
                     foreach($lossPlansDetails as $lossPlan){
-                        $Broker_Fee = ($feesData['broker_fee'] ?? 0) * $file_counts['EE'];
+                        $Broker_Fee = ($feesData['broker_fee'] ?? 0) * @$file_counts['EE'];
                         ?>
                     <td class="text-center">$<?php echo number_format($Broker_Fee, 2);?></td>
                 <?php } } ?>
@@ -833,7 +833,7 @@
             foreach ($benefitPlansDetails as $planss) {
                 if($lossPlansDetails){
                     foreach($lossPlansDetails as $lossPlan){
-                        $TPA_RBP_Fee = ($feesData['tpa_rbp_pbm_service_providers'] ?? 0) * $file_counts['EE'];
+                        $TPA_RBP_Fee = ($feesData['tpa_rbp_pbm_service_providers'] ?? 0) * @$file_counts['EE'];
                         ?>
                     <td class="text-center">$<?php echo number_format($TPA_RBP_Fee, 2);?></td>
                 <?php } } ?>
@@ -845,7 +845,7 @@
             foreach ($benefitPlansDetails as $planss) {
                 if($lossPlansDetails){
                     foreach($lossPlansDetails as $lossPlan){
-                        $TPA_PPO_Fee = ($feesData['tpa_ppo_pbm_service_providers'] ?? 0) * $file_counts['EE'];
+                        $TPA_PPO_Fee = ($feesData['tpa_ppo_pbm_service_providers'] ?? 0) * @$file_counts['EE'];
                         ?>
                     <td class="text-center">$<?php echo number_format($TPA_PPO_Fee, 2);?></td>
                 <?php } } ?>
@@ -863,13 +863,13 @@
                             $ExpectedLargeClaims = (100000-$lossPlan->Spec_Deductible);
                         }
                         $riskMargin = round(($ExpectedLargeClaims * $lossPlan->Commission) / 100 , 2);
-                        $Specific_Rate = round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EE'],2);
-                        $Monthly_Specific_Rate = $Specific_Rate * $file_counts['EE'];
+                        $Specific_Rate = (is_array($file_counts) && ($file_counts['EE'] ?? 0) > 0 ? round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EE'], 2) : 0);
+                        $Monthly_Specific_Rate = $Specific_Rate * @$file_counts['EE'];
 
-                        $EE = $file_counts['EE'] * 1;
-                        $ES = $file_counts['ES'] * 2;
-                        $EC = $file_counts['EC'] * 2.5;
-                        $EF = $file_counts['EF'] * 4;
+                        $EE = @$file_counts['EE'] * 1;
+                        $ES = @$file_counts['ES'] * 2;
+                        $EC = @$file_counts['EC'] * 2.5;
+                        $EF = @$file_counts['EF'] * 4;
                         $total_memnber = $EE + $ES + $EC + $EF;
                         $MemberMonths = $total_memnber * 12;
                         if($lossPlan->Spec_Deductible < 50000){
@@ -878,11 +878,11 @@
                             $Expected_Aggregate_Claims = 100000;
                         }
                         $Aggregate_Risk_Margin = $Expected_Aggregate_Claims * (($lossPlan->Agg_Corridor + $lossPlan->Commission)/100);
-                        $Aggregate_Rate_PMPM = ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths;
-                        $Monthly_Aggregate_Rate = $Aggregate_Rate_PMPM * $file_counts['EE'];
+                        $Aggregate_Rate_PMPM = ($MemberMonths > 0) ? ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths : 0;
+                        $Monthly_Aggregate_Rate = $Aggregate_Rate_PMPM * @$file_counts['EE'];
 
                         $Aggregate_Factor = 1+(($lossPlan->Aggregating_Spec_Deductible)/100);
-                        $Monthly_Aggregate_Factor = $Aggregate_Factor * $file_counts['EE'];
+                        $Monthly_Aggregate_Factor = $Aggregate_Factor * @$file_counts['EE'];
 
                         if($lossPlan->Spec_Deductible < 50000){
                             $Expected_Total_Claims = 50000;
@@ -891,12 +891,12 @@
                             $Expected_Total_Claims = 100000;
                             $Expected_Specific_Claims = (100000-$lossPlan->Spec_Deductible);
                         }
-                        $Aggregate_Accommodation = $Expected_Total_Claims / $Expected_Specific_Claims;
-                        $Monthly_Aggregate_Accommodation = $Aggregate_Accommodation * $file_counts['EE'];
+                        $Aggregate_Accommodation = ($Expected_Specific_Claims > 0) ? $Expected_Total_Claims / $Expected_Specific_Claims : 0;
+                        $Monthly_Aggregate_Accommodation = $Aggregate_Accommodation * @$file_counts['EE'];
 
-                        $Broker_Fee = ($feesData['broker_fee'] ?? 0) * $file_counts['EE'];
-                        $TPA_RBP_Fee = ($feesData['tpa_rbp_pbm_service_providers'] ?? 0) * $file_counts['EE'];
-                        $TPA_PPO_Fee = ($feesData['tpa_ppo_pbm_service_providers'] ?? 0) * $file_counts['EE'];
+                        $Broker_Fee = ($feesData['broker_fee'] ?? 0) * @$file_counts['EE'];
+                        $TPA_RBP_Fee = ($feesData['tpa_rbp_pbm_service_providers'] ?? 0) * @$file_counts['EE'];
+                        $TPA_PPO_Fee = ($feesData['tpa_ppo_pbm_service_providers'] ?? 0) * @$file_counts['EE'];
 
                         $Monthly_Total = $Monthly_Specific_Rate + $Monthly_Aggregate_Rate + $Monthly_Aggregate_Factor + $Monthly_Aggregate_Accommodation + $Broker_Fee + $TPA_RBP_Fee + $TPA_PPO_Fee;
                         ?>
@@ -923,8 +923,8 @@
                             $ExpectedLargeClaims = (100000-$lossPlan->Spec_Deductible);
                         }
                         $riskMargin = round(($ExpectedLargeClaims * $lossPlan->Commission) / 100 , 2);
-                        $Specific_Rate = round(($ExpectedLargeClaims + $riskMargin) / $file_counts['ES'],2);
-                        $Monthly_Specific_Rate = $Specific_Rate * $file_counts['ES'];
+                        $Specific_Rate = (is_array($file_counts) && ($file_counts['ES'] ?? 0) > 0 ? round(($ExpectedLargeClaims + $riskMargin) / $file_counts['ES'], 2) : 0);
+                        $Monthly_Specific_Rate = $Specific_Rate * @$file_counts['ES'];
                         ?>
                     <td class="text-center">$<?php echo number_format($Monthly_Specific_Rate, 2);?></td>
                 <?php } } ?>
@@ -936,10 +936,10 @@
             foreach ($benefitPlansDetails as $planss) {
                 if($lossPlansDetails){
                     foreach($lossPlansDetails as $lossPlan){
-                        $EE = $file_counts['EE'] * 1;
-                        $ES = $file_counts['ES'] * 2;
-                        $EC = $file_counts['EC'] * 2.5;
-                        $EF = $file_counts['EF'] * 4;
+                        $EE = @$file_counts['EE'] * 1;
+                        $ES = @$file_counts['ES'] * 2;
+                        $EC = @$file_counts['EC'] * 2.5;
+                        $EF = @$file_counts['EF'] * 4;
                         $total_memnber = $EE + $ES + $EC + $EF;
                         $MemberMonths = $total_memnber * 12;
                         if($lossPlan->Spec_Deductible < 50000){
@@ -948,8 +948,8 @@
                             $Expected_Aggregate_Claims = 100000;
                         }
                         $Aggregate_Risk_Margin = $Expected_Aggregate_Claims * (($lossPlan->Agg_Corridor + $lossPlan->Commission)/100);
-                        $Aggregate_Rate_PMPM = ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths;
-                        $Monthly_Aggregate_Rate = $Aggregate_Rate_PMPM * $file_counts['ES'];
+                        $Aggregate_Rate_PMPM = ($MemberMonths > 0) ? ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths : 0;
+                        $Monthly_Aggregate_Rate = $Aggregate_Rate_PMPM * @$file_counts['ES'];
                         ?>
                     <td class="text-center">$<?php echo number_format($Monthly_Aggregate_Rate, 2);?></td>
                 <?php } } ?>
@@ -962,7 +962,7 @@
                 if($lossPlansDetails){
                     foreach($lossPlansDetails as $lossPlan){
                         $Aggregate_Factor = 1+(($lossPlan->Aggregating_Spec_Deductible)/100);
-                        $Monthly_Aggregate_Factor = $Aggregate_Factor * $file_counts['ES'];
+                        $Monthly_Aggregate_Factor = $Aggregate_Factor * @$file_counts['ES'];
                         ?>
                     <td class="text-center">$<?php echo number_format($Monthly_Aggregate_Factor, 2);?></td>
                 <?php } } ?>
@@ -981,8 +981,8 @@
                             $Expected_Total_Claims = 100000;
                             $Expected_Specific_Claims = (100000-$lossPlan->Spec_Deductible);
                         }
-                        $Aggregate_Accommodation = $Expected_Total_Claims / $Expected_Specific_Claims;
-                        $Monthly_Aggregate_Accommodation = $Aggregate_Accommodation * $file_counts['ES'];
+                        $Aggregate_Accommodation = ($Expected_Specific_Claims > 0) ? $Expected_Total_Claims / $Expected_Specific_Claims : 0;
+                        $Monthly_Aggregate_Accommodation = $Aggregate_Accommodation * @$file_counts['ES'];
                         ?>
                     <td class="text-center">$<?php echo number_format($Monthly_Aggregate_Accommodation, 2);?></td>
                 <?php } } ?>
@@ -994,7 +994,7 @@
             foreach ($benefitPlansDetails as $planss) {
                 if($lossPlansDetails){
                     foreach($lossPlansDetails as $lossPlan){
-                        $Broker_Fee = ($feesData['broker_fee'] ?? 0) * $file_counts['ES'];
+                        $Broker_Fee = ($feesData['broker_fee'] ?? 0) * @$file_counts['ES'];
                         ?>
                     <td class="text-center">$<?php echo number_format($Broker_Fee, 2);?></td>
                 <?php } } ?>
@@ -1006,7 +1006,7 @@
             foreach ($benefitPlansDetails as $planss) {
                 if($lossPlansDetails){
                     foreach($lossPlansDetails as $lossPlan){
-                        $TPA_RBP_Fee = ($feesData['tpa_rbp_pbm_service_providers'] ?? 0) * $file_counts['ES'];
+                        $TPA_RBP_Fee = ($feesData['tpa_rbp_pbm_service_providers'] ?? 0) * @$file_counts['ES'];
                         ?>
                     <td class="text-center">$<?php echo number_format($TPA_RBP_Fee, 2);?></td>
                 <?php } } ?>
@@ -1018,7 +1018,7 @@
             foreach ($benefitPlansDetails as $planss) {
                 if($lossPlansDetails){
                     foreach($lossPlansDetails as $lossPlan){
-                        $TPA_PPO_Fee = ($feesData['tpa_ppo_pbm_service_providers'] ?? 0) * $file_counts['ES'];
+                        $TPA_PPO_Fee = ($feesData['tpa_ppo_pbm_service_providers'] ?? 0) * @$file_counts['ES'];
                         ?>
                     <td class="text-center">$<?php echo number_format($TPA_PPO_Fee, 2);?></td>
                 <?php } } ?>
@@ -1036,13 +1036,13 @@
                             $ExpectedLargeClaims = (100000-$lossPlan->Spec_Deductible);
                         }
                         $riskMargin = round(($ExpectedLargeClaims * $lossPlan->Commission) / 100 , 2);
-                        $Specific_Rate = round(($ExpectedLargeClaims + $riskMargin) / $file_counts['ES'],2);
-                        $Monthly_Specific_Rate = $Specific_Rate * $file_counts['ES'];
+                        $Specific_Rate = (is_array($file_counts) && ($file_counts['ES'] ?? 0) > 0 ? round(($ExpectedLargeClaims + $riskMargin) / $file_counts['ES'], 2) : 0);
+                        $Monthly_Specific_Rate = $Specific_Rate * @$file_counts['ES'];
 
-                        $EE = $file_counts['EE'] * 1;
-                        $ES = $file_counts['ES'] * 2;
-                        $EC = $file_counts['EC'] * 2.5;
-                        $EF = $file_counts['EF'] * 4;
+                        $EE = @$file_counts['EE'] * 1;
+                        $ES = @$file_counts['ES'] * 2;
+                        $EC = @$file_counts['EC'] * 2.5;
+                        $EF = @$file_counts['EF'] * 4;
                         $total_memnber = $EE + $ES + $EC + $EF;
                         $MemberMonths = $total_memnber * 12;
                         if($lossPlan->Spec_Deductible < 50000){
@@ -1051,11 +1051,11 @@
                             $Expected_Aggregate_Claims = 100000;
                         }
                         $Aggregate_Risk_Margin = $Expected_Aggregate_Claims * (($lossPlan->Agg_Corridor + $lossPlan->Commission)/100);
-                        $Aggregate_Rate_PMPM = ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths;
-                        $Monthly_Aggregate_Rate = $Aggregate_Rate_PMPM * $file_counts['ES'];
+                        $Aggregate_Rate_PMPM = ($MemberMonths > 0) ? ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths : 0;
+                        $Monthly_Aggregate_Rate = $Aggregate_Rate_PMPM * @$file_counts['ES'];
 
                         $Aggregate_Factor = 1+(($lossPlan->Aggregating_Spec_Deductible)/100);
-                        $Monthly_Aggregate_Factor = $Aggregate_Factor * $file_counts['ES'];
+                        $Monthly_Aggregate_Factor = $Aggregate_Factor * @$file_counts['ES'];
 
                         if($lossPlan->Spec_Deductible < 50000){
                             $Expected_Total_Claims = 50000;
@@ -1064,12 +1064,12 @@
                             $Expected_Total_Claims = 100000;
                             $Expected_Specific_Claims = (100000-$lossPlan->Spec_Deductible);
                         }
-                        $Aggregate_Accommodation = $Expected_Total_Claims / $Expected_Specific_Claims;
-                        $Monthly_Aggregate_Accommodation = $Aggregate_Accommodation * $file_counts['ES'];
+                        $Aggregate_Accommodation = ($Expected_Specific_Claims > 0) ? $Expected_Total_Claims / $Expected_Specific_Claims : 0;
+                        $Monthly_Aggregate_Accommodation = $Aggregate_Accommodation * @$file_counts['ES'];
 
-                        $Broker_Fee = ($feesData['broker_fee'] ?? 0) * $file_counts['ES'];
-                        $TPA_RBP_Fee = ($feesData['tpa_rbp_pbm_service_providers'] ?? 0) * $file_counts['ES'];
-                        $TPA_PPO_Fee = ($feesData['tpa_ppo_pbm_service_providers'] ?? 0) * $file_counts['ES'];
+                        $Broker_Fee = ($feesData['broker_fee'] ?? 0) * @$file_counts['ES'];
+                        $TPA_RBP_Fee = ($feesData['tpa_rbp_pbm_service_providers'] ?? 0) * @$file_counts['ES'];
+                        $TPA_PPO_Fee = ($feesData['tpa_ppo_pbm_service_providers'] ?? 0) * @$file_counts['ES'];
 
                         $Monthly_Total = $Monthly_Specific_Rate + $Monthly_Aggregate_Rate + $Monthly_Aggregate_Factor + $Monthly_Aggregate_Accommodation + $Broker_Fee + $TPA_RBP_Fee + $TPA_PPO_Fee;
                         ?>
@@ -1096,8 +1096,8 @@
                             $ExpectedLargeClaims = (100000-$lossPlan->Spec_Deductible);
                         }
                         $riskMargin = round(($ExpectedLargeClaims * $lossPlan->Commission) / 100 , 2);
-                        $Specific_Rate = round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EC'],2);
-                        $Monthly_Specific_Rate = $Specific_Rate * $file_counts['EC'];
+                        $Specific_Rate = (is_array($file_counts) && ($file_counts['EC'] ?? 0) > 0 ? round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EC'], 2) : 0);
+                        $Monthly_Specific_Rate = $Specific_Rate * @$file_counts['EC'];
                         ?>
                     <td class="text-center">$<?php echo number_format($Monthly_Specific_Rate, 2);?></td>
                 <?php } } ?>
@@ -1109,10 +1109,10 @@
             foreach ($benefitPlansDetails as $planss) {
                 if($lossPlansDetails){
                     foreach($lossPlansDetails as $lossPlan){
-                        $EE = $file_counts['EE'] * 1;
-                        $ES = $file_counts['ES'] * 2;
-                        $EC = $file_counts['EC'] * 2.5;
-                        $EF = $file_counts['EF'] * 4;
+                        $EE = @$file_counts['EE'] * 1;
+                        $ES = @$file_counts['ES'] * 2;
+                        $EC = @$file_counts['EC'] * 2.5;
+                        $EF = @$file_counts['EF'] * 4;
                         $total_memnber = $EE + $ES + $EC + $EF;
                         $MemberMonths = $total_memnber * 12;
                         if($lossPlan->Spec_Deductible < 50000){
@@ -1121,8 +1121,8 @@
                             $Expected_Aggregate_Claims = 100000;
                         }
                         $Aggregate_Risk_Margin = $Expected_Aggregate_Claims * (($lossPlan->Agg_Corridor + $lossPlan->Commission)/100);
-                        $Aggregate_Rate_PMPM = ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths;
-                        $Monthly_Aggregate_Rate = $Aggregate_Rate_PMPM * $file_counts['EC'];
+                        $Aggregate_Rate_PMPM = ($MemberMonths > 0) ? ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths : 0;
+                        $Monthly_Aggregate_Rate = $Aggregate_Rate_PMPM * @$file_counts['EC'];
                         ?>
                     <td class="text-center">$<?php echo number_format($Monthly_Aggregate_Rate, 2);?></td>
                 <?php } } ?>
@@ -1135,7 +1135,7 @@
                 if($lossPlansDetails){
                     foreach($lossPlansDetails as $lossPlan){
                         $Aggregate_Factor = 1+(($lossPlan->Aggregating_Spec_Deductible)/100);
-                        $Monthly_Aggregate_Factor = $Aggregate_Factor * $file_counts['EC'];
+                        $Monthly_Aggregate_Factor = $Aggregate_Factor * @$file_counts['EC'];
                         ?>
                     <td class="text-center">$<?php echo number_format($Monthly_Aggregate_Factor, 2);?></td>
                 <?php } } ?>
@@ -1154,8 +1154,8 @@
                             $Expected_Total_Claims = 100000;
                             $Expected_Specific_Claims = (100000-$lossPlan->Spec_Deductible);
                         }
-                        $Aggregate_Accommodation = $Expected_Total_Claims / $Expected_Specific_Claims;
-                        $Monthly_Aggregate_Accommodation = $Aggregate_Accommodation * $file_counts['EC'];
+                        $Aggregate_Accommodation = ($Expected_Specific_Claims > 0) ? $Expected_Total_Claims / $Expected_Specific_Claims : 0;
+                        $Monthly_Aggregate_Accommodation = $Aggregate_Accommodation * @$file_counts['EC'];
                         ?>
                     <td class="text-center">$<?php echo number_format($Monthly_Aggregate_Accommodation, 2);?></td>
                 <?php } } ?>
@@ -1167,7 +1167,7 @@
             foreach ($benefitPlansDetails as $planss) {
                 if($lossPlansDetails){
                     foreach($lossPlansDetails as $lossPlan){
-                        $Broker_Fee = ($feesData['broker_fee'] ?? 0) * $file_counts['EC'];
+                        $Broker_Fee = ($feesData['broker_fee'] ?? 0) * @$file_counts['EC'];
                         ?>
                     <td class="text-center">$<?php echo number_format($Broker_Fee, 2);?></td>
                 <?php } } ?>
@@ -1179,7 +1179,7 @@
             foreach ($benefitPlansDetails as $planss) {
                 if($lossPlansDetails){
                     foreach($lossPlansDetails as $lossPlan){
-                        $TPA_RBP_Fee = ($feesData['tpa_rbp_pbm_service_providers'] ?? 0) * $file_counts['EC'];
+                        $TPA_RBP_Fee = ($feesData['tpa_rbp_pbm_service_providers'] ?? 0) * @$file_counts['EC'];
                         ?>
                     <td class="text-center">$<?php echo number_format($TPA_RBP_Fee, 2);?></td>
                 <?php } } ?>
@@ -1191,7 +1191,7 @@
             foreach ($benefitPlansDetails as $planss) {
                 if($lossPlansDetails){
                     foreach($lossPlansDetails as $lossPlan){
-                        $TPA_PPO_Fee = ($feesData['tpa_ppo_pbm_service_providers'] ?? 0) * $file_counts['EC'];
+                        $TPA_PPO_Fee = ($feesData['tpa_ppo_pbm_service_providers'] ?? 0) * @$file_counts['EC'];
                         ?>
                     <td class="text-center">$<?php echo number_format($TPA_PPO_Fee, 2);?></td>
                 <?php } } ?>
@@ -1209,13 +1209,13 @@
                             $ExpectedLargeClaims = (100000-$lossPlan->Spec_Deductible);
                         }
                         $riskMargin = round(($ExpectedLargeClaims * $lossPlan->Commission) / 100 , 2);
-                        $Specific_Rate = round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EC'],2);
-                        $Monthly_Specific_Rate = $Specific_Rate * $file_counts['EC'];
+                        $Specific_Rate = (is_array($file_counts) && ($file_counts['EC'] ?? 0) > 0 ? round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EC'], 2) : 0);
+                        $Monthly_Specific_Rate = $Specific_Rate * @$file_counts['EC'];
 
-                        $EE = $file_counts['EE'] * 1;
-                        $ES = $file_counts['ES'] * 2;
-                        $EC = $file_counts['EC'] * 2.5;
-                        $EF = $file_counts['EF'] * 4;
+                        $EE = @$file_counts['EE'] * 1;
+                        $ES = @$file_counts['ES'] * 2;
+                        $EC = @$file_counts['EC'] * 2.5;
+                        $EF = @$file_counts['EF'] * 4;
                         $total_memnber = $EE + $ES + $EC + $EF;
                         $MemberMonths = $total_memnber * 12;
                         if($lossPlan->Spec_Deductible < 50000){
@@ -1224,11 +1224,11 @@
                             $Expected_Aggregate_Claims = 100000;
                         }
                         $Aggregate_Risk_Margin = $Expected_Aggregate_Claims * (($lossPlan->Agg_Corridor + $lossPlan->Commission)/100);
-                        $Aggregate_Rate_PMPM = ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths;
-                        $Monthly_Aggregate_Rate = $Aggregate_Rate_PMPM * $file_counts['EC'];
+                        $Aggregate_Rate_PMPM = ($MemberMonths > 0) ? ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths : 0;
+                        $Monthly_Aggregate_Rate = $Aggregate_Rate_PMPM * @$file_counts['EC'];
 
                         $Aggregate_Factor = 1+(($lossPlan->Aggregating_Spec_Deductible)/100);
-                        $Monthly_Aggregate_Factor = $Aggregate_Factor * $file_counts['EC'];
+                        $Monthly_Aggregate_Factor = $Aggregate_Factor * @$file_counts['EC'];
 
                         if($lossPlan->Spec_Deductible < 50000){
                             $Expected_Total_Claims = 50000;
@@ -1237,12 +1237,12 @@
                             $Expected_Total_Claims = 100000;
                             $Expected_Specific_Claims = (100000-$lossPlan->Spec_Deductible);
                         }
-                        $Aggregate_Accommodation = $Expected_Total_Claims / $Expected_Specific_Claims;
-                        $Monthly_Aggregate_Accommodation = $Aggregate_Accommodation * $file_counts['EC'];
+                        $Aggregate_Accommodation = ($Expected_Specific_Claims > 0) ? $Expected_Total_Claims / $Expected_Specific_Claims : 0;
+                        $Monthly_Aggregate_Accommodation = $Aggregate_Accommodation * @$file_counts['EC'];
 
-                        $Broker_Fee = ($feesData['broker_fee'] ?? 0) * $file_counts['EC'];
-                        $TPA_RBP_Fee = ($feesData['tpa_rbp_pbm_service_providers'] ?? 0) * $file_counts['EC'];
-                        $TPA_PPO_Fee = ($feesData['tpa_ppo_pbm_service_providers'] ?? 0) * $file_counts['EC'];
+                        $Broker_Fee = ($feesData['broker_fee'] ?? 0) * @$file_counts['EC'];
+                        $TPA_RBP_Fee = ($feesData['tpa_rbp_pbm_service_providers'] ?? 0) * @$file_counts['EC'];
+                        $TPA_PPO_Fee = ($feesData['tpa_ppo_pbm_service_providers'] ?? 0) * @$file_counts['EC'];
 
                         $Monthly_Total = $Monthly_Specific_Rate + $Monthly_Aggregate_Rate + $Monthly_Aggregate_Factor + $Monthly_Aggregate_Accommodation + $Broker_Fee + $TPA_RBP_Fee + $TPA_PPO_Fee;
                         ?>
@@ -1269,8 +1269,8 @@
                             $ExpectedLargeClaims = (100000-$lossPlan->Spec_Deductible);
                         }
                         $riskMargin = round(($ExpectedLargeClaims * $lossPlan->Commission) / 100 , 2);
-                        $Specific_Rate = round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EF'],2);
-                        $Monthly_Specific_Rate = $Specific_Rate * $file_counts['EF'];
+                        $Specific_Rate = (is_array($file_counts) && ($file_counts['EF'] ?? 0) > 0 ? round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EF'], 2) : 0);
+                        $Monthly_Specific_Rate = $Specific_Rate * @$file_counts['EF'];
                         ?>
                     <td class="text-center">$<?php echo number_format($Monthly_Specific_Rate, 2);?></td>
                 <?php } } ?>
@@ -1282,10 +1282,10 @@
             foreach ($benefitPlansDetails as $planss) {
                 if($lossPlansDetails){
                     foreach($lossPlansDetails as $lossPlan){
-                        $EE = $file_counts['EE'] * 1;
-                        $ES = $file_counts['ES'] * 2;
-                        $EC = $file_counts['EC'] * 2.5;
-                        $EF = $file_counts['EF'] * 4;
+                        $EE = @$file_counts['EE'] * 1;
+                        $ES = @$file_counts['ES'] * 2;
+                        $EC = @$file_counts['EC'] * 2.5;
+                        $EF = @$file_counts['EF'] * 4;
                         $total_memnber = $EE + $ES + $EC + $EF;
                         $MemberMonths = $total_memnber * 12;
                         if($lossPlan->Spec_Deductible < 50000){
@@ -1294,8 +1294,8 @@
                             $Expected_Aggregate_Claims = 100000;
                         }
                         $Aggregate_Risk_Margin = $Expected_Aggregate_Claims * (($lossPlan->Agg_Corridor + $lossPlan->Commission)/100);
-                        $Aggregate_Rate_PMPM = ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths;
-                        $Monthly_Aggregate_Rate = $Aggregate_Rate_PMPM * $file_counts['EF'];
+                        $Aggregate_Rate_PMPM = ($MemberMonths > 0) ? ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths : 0;
+                        $Monthly_Aggregate_Rate = $Aggregate_Rate_PMPM * @$file_counts['EF'];
                         ?>
                     <td class="text-center">$<?php echo number_format($Monthly_Aggregate_Rate, 2);?></td>
                 <?php } } ?>
@@ -1308,7 +1308,7 @@
                 if($lossPlansDetails){
                     foreach($lossPlansDetails as $lossPlan){
                         $Aggregate_Factor = 1+(($lossPlan->Aggregating_Spec_Deductible)/100);
-                        $Monthly_Aggregate_Factor = $Aggregate_Factor * $file_counts['EF'];
+                        $Monthly_Aggregate_Factor = $Aggregate_Factor * @$file_counts['EF'];
                         ?>
                     <td class="text-center">$<?php echo number_format($Monthly_Aggregate_Factor, 2);?></td>
                 <?php } } ?>
@@ -1327,8 +1327,8 @@
                             $Expected_Total_Claims = 100000;
                             $Expected_Specific_Claims = (100000-$lossPlan->Spec_Deductible);
                         }
-                        $Aggregate_Accommodation = $Expected_Total_Claims / $Expected_Specific_Claims;
-                        $Monthly_Aggregate_Accommodation = $Aggregate_Accommodation * $file_counts['EF'];
+                        $Aggregate_Accommodation = ($Expected_Specific_Claims > 0) ? $Expected_Total_Claims / $Expected_Specific_Claims : 0;
+                        $Monthly_Aggregate_Accommodation = $Aggregate_Accommodation * @$file_counts['EF'];
                         ?>
                     <td class="text-center">$<?php echo number_format($Monthly_Aggregate_Accommodation, 2);?></td>
                 <?php } } ?>
@@ -1340,7 +1340,7 @@
             foreach ($benefitPlansDetails as $planss) {
                 if($lossPlansDetails){
                     foreach($lossPlansDetails as $lossPlan){
-                        $Broker_Fee = ($feesData['broker_fee'] ?? 0) * $file_counts['EF'];
+                        $Broker_Fee = ($feesData['broker_fee'] ?? 0) * @$file_counts['EF'];
                         ?>
                     <td class="text-center">$<?php echo number_format($Broker_Fee, 2);?></td>
                 <?php } } ?>
@@ -1352,7 +1352,7 @@
             foreach ($benefitPlansDetails as $planss) {
                 if($lossPlansDetails){
                     foreach($lossPlansDetails as $lossPlan){
-                        $TPA_RBP_Fee = ($feesData['tpa_rbp_pbm_service_providers'] ?? 0) * $file_counts['EF'];
+                        $TPA_RBP_Fee = ($feesData['tpa_rbp_pbm_service_providers'] ?? 0) * @$file_counts['EF'];
                         ?>
                     <td class="text-center">$<?php echo number_format($TPA_RBP_Fee, 2);?></td>
                 <?php } } ?>
@@ -1364,7 +1364,7 @@
             foreach ($benefitPlansDetails as $planss) {
                 if($lossPlansDetails){
                     foreach($lossPlansDetails as $lossPlan){
-                        $TPA_PPO_Fee = ($feesData['tpa_ppo_pbm_service_providers'] ?? 0) * $file_counts['EF'];
+                        $TPA_PPO_Fee = ($feesData['tpa_ppo_pbm_service_providers'] ?? 0) * @$file_counts['EF'];
                         ?>
                     <td class="text-center">$<?php echo number_format($TPA_PPO_Fee, 2);?></td>
                 <?php } } ?>
@@ -1382,13 +1382,13 @@
                             $ExpectedLargeClaims = (100000-$lossPlan->Spec_Deductible);
                         }
                         $riskMargin = round(($ExpectedLargeClaims * $lossPlan->Commission) / 100 , 2);
-                        $Specific_Rate = round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EF'],2);
-                        $Monthly_Specific_Rate = $Specific_Rate * $file_counts['EF'];
+                        $Specific_Rate = (is_array($file_counts) && ($file_counts['EF'] ?? 0) > 0 ? round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EF'], 2) : 0);
+                        $Monthly_Specific_Rate = $Specific_Rate * @$file_counts['EF'];
 
-                        $EE = $file_counts['EE'] * 1;
-                        $ES = $file_counts['ES'] * 2;
-                        $EC = $file_counts['EC'] * 2.5;
-                        $EF = $file_counts['EF'] * 4;
+                        $EE = @$file_counts['EE'] * 1;
+                        $ES = @$file_counts['ES'] * 2;
+                        $EC = @$file_counts['EC'] * 2.5;
+                        $EF = @$file_counts['EF'] * 4;
                         $total_memnber = $EE + $ES + $EC + $EF;
                         $MemberMonths = $total_memnber * 12;
                         if($lossPlan->Spec_Deductible < 50000){
@@ -1397,11 +1397,11 @@
                             $Expected_Aggregate_Claims = 100000;
                         }
                         $Aggregate_Risk_Margin = $Expected_Aggregate_Claims * (($lossPlan->Agg_Corridor + $lossPlan->Commission)/100);
-                        $Aggregate_Rate_PMPM = ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths;
-                        $Monthly_Aggregate_Rate = $Aggregate_Rate_PMPM * $file_counts['EF'];
+                        $Aggregate_Rate_PMPM = ($MemberMonths > 0) ? ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths : 0;
+                        $Monthly_Aggregate_Rate = $Aggregate_Rate_PMPM * @$file_counts['EF'];
 
                         $Aggregate_Factor = 1+(($lossPlan->Aggregating_Spec_Deductible)/100);
-                        $Monthly_Aggregate_Factor = $Aggregate_Factor * $file_counts['EF'];
+                        $Monthly_Aggregate_Factor = $Aggregate_Factor * @$file_counts['EF'];
 
                         if($lossPlan->Spec_Deductible < 50000){
                             $Expected_Total_Claims = 50000;
@@ -1410,12 +1410,12 @@
                             $Expected_Total_Claims = 100000;
                             $Expected_Specific_Claims = (100000-$lossPlan->Spec_Deductible);
                         }
-                        $Aggregate_Accommodation = $Expected_Total_Claims / $Expected_Specific_Claims;
-                        $Monthly_Aggregate_Accommodation = $Aggregate_Accommodation * $file_counts['EF'];
+                        $Aggregate_Accommodation = ($Expected_Specific_Claims > 0) ? $Expected_Total_Claims / $Expected_Specific_Claims : 0;
+                        $Monthly_Aggregate_Accommodation = $Aggregate_Accommodation * @$file_counts['EF'];
 
-                        $Broker_Fee = ($feesData['broker_fee'] ?? 0) * $file_counts['EF'];
-                        $TPA_RBP_Fee = ($feesData['tpa_rbp_pbm_service_providers'] ?? 0) * $file_counts['EF'];
-                        $TPA_PPO_Fee = ($feesData['tpa_ppo_pbm_service_providers'] ?? 0) * $file_counts['EF'];
+                        $Broker_Fee = ($feesData['broker_fee'] ?? 0) * @$file_counts['EF'];
+                        $TPA_RBP_Fee = ($feesData['tpa_rbp_pbm_service_providers'] ?? 0) * @$file_counts['EF'];
+                        $TPA_PPO_Fee = ($feesData['tpa_ppo_pbm_service_providers'] ?? 0) * @$file_counts['EF'];
 
                         $Monthly_Total = $Monthly_Specific_Rate + $Monthly_Aggregate_Rate + $Monthly_Aggregate_Factor + $Monthly_Aggregate_Accommodation + $Broker_Fee + $TPA_RBP_Fee + $TPA_PPO_Fee;
                         ?>
@@ -1432,10 +1432,10 @@
             foreach ($benefitPlansDetails as $planss) {
                 if($lossPlansDetails){
                     foreach($lossPlansDetails as $lossPlan){
-                        $EE = $file_counts['EE'] * 1;
-                        $ES = $file_counts['ES'] * 2;
-                        $EC = $file_counts['EC'] * 2.5;
-                        $EF = $file_counts['EF'] * 4;
+                        $EE = @$file_counts['EE'] * 1;
+                        $ES = @$file_counts['ES'] * 2;
+                        $EC = @$file_counts['EC'] * 2.5;
+                        $EF = @$file_counts['EF'] * 4;
                         $total_memnber = $EE + $ES + $EC + $EF;
                         $MemberMonths = $total_memnber * 12;
                         if($lossPlan->Spec_Deductible < 50000){
@@ -1444,7 +1444,7 @@
                             $Expected_Aggregate_Claims = 100000;
                         }
                         $Aggregate_Risk_Margin = $Expected_Aggregate_Claims * (($lossPlan->Agg_Corridor + $lossPlan->Commission)/100);
-                        $Aggregate_Rate_PMPM = ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths;
+                        $Aggregate_Rate_PMPM = ($MemberMonths > 0) ? ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths : 0;
                         ?>
                     <td class="text-center">$<?php echo number_format($Aggregate_Rate_PMPM, 2);?></td>
                 <?php } } ?>
@@ -1469,11 +1469,11 @@
                             $ExpectedLargeClaims = (100000-$lossPlan->Spec_Deductible);
                         }
                         $riskMargin = round(($ExpectedLargeClaims * $lossPlan->Commission) / 100 , 2);
-                        $Specific_Rate_EE = round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EE'],2);
-                        $Specific_Rate_ES = round(($ExpectedLargeClaims + $riskMargin) / $file_counts['ES'],2);
-                        $Specific_Rate_EC = round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EC'],2);
-                        $Specific_Rate_EF = round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EF'],2);
-                        $Estimated_Spec_Premium = ($Specific_Rate_EE * $file_counts['EE'] + $Specific_Rate_ES * $file_counts['ES'] + $Specific_Rate_EC * $file_counts['EC'] + $Specific_Rate_EF * $file_counts['EF']) * 12;
+                        $Specific_Rate_EE = (($file_counts['EE'] ?? 0) > 0 ? round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EE'], 2) : 0);
+                        $Specific_Rate_ES = (($file_counts['ES'] ?? 0) > 0 ? round(($ExpectedLargeClaims + $riskMargin) / $file_counts['ES'], 2) : 0);
+                        $Specific_Rate_EC = (($file_counts['EC'] ?? 0) > 0 ? round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EC'], 2) : 0);
+                        $Specific_Rate_EF = (($file_counts['EF'] ?? 0) > 0 ? round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EF'], 2) : 0);
+                        $Estimated_Spec_Premium = ($Specific_Rate_EE * @$file_counts['EE'] + $Specific_Rate_ES * @$file_counts['ES'] + $Specific_Rate_EC * @$file_counts['EC'] + $Specific_Rate_EF * @$file_counts['EF']) * 12;
                         ?>
                     <td class="text-center">$<?php echo number_format($Estimated_Spec_Premium, 2);?></td>
                 <?php } } ?>
@@ -1485,10 +1485,10 @@
             foreach ($benefitPlansDetails as $planss) {
                 if($lossPlansDetails){
                     foreach($lossPlansDetails as $lossPlan){
-                        $EE = $file_counts['EE'] * 1;
-                        $ES = $file_counts['ES'] * 2;
-                        $EC = $file_counts['EC'] * 2.5;
-                        $EF = $file_counts['EF'] * 4;
+                        $EE = @$file_counts['EE'] * 1;
+                        $ES = @$file_counts['ES'] * 2;
+                        $EC = @$file_counts['EC'] * 2.5;
+                        $EF = @$file_counts['EF'] * 4;
                         $total_memnber = $EE + $ES + $EC + $EF;
                         $MemberMonths = $total_memnber * 12;
                         if($lossPlan->Spec_Deductible < 50000){
@@ -1497,7 +1497,7 @@
                             $Expected_Aggregate_Claims = 100000;
                         }
                         $Aggregate_Risk_Margin = $Expected_Aggregate_Claims * (($lossPlan->Agg_Corridor + $lossPlan->Commission)/100);
-                        $Aggregate_Rate_PMPM = ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths;
+                        $Aggregate_Rate_PMPM = ($MemberMonths > 0) ? ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths : 0;
                         $Estimated_Aggregate_Premium = $Aggregate_Rate_PMPM * $MemberMonths;
                         ?>
                     <td class="text-center">$<?php echo number_format($Estimated_Aggregate_Premium, 2);?></td>
@@ -1518,20 +1518,20 @@
                             $Expected_Aggregate_Claims = 100000;
                         }
                         $riskMargin = round(($ExpectedLargeClaims * $lossPlan->Commission) / 100 , 2);
-                        $Specific_Rate_EE = round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EE'],2);
-                        $Specific_Rate_ES = round(($ExpectedLargeClaims + $riskMargin) / $file_counts['ES'],2);
-                        $Specific_Rate_EC = round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EC'],2);
-                        $Specific_Rate_EF = round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EF'],2);
-                        $Estimated_Spec_Premium = ($Specific_Rate_EE * $file_counts['EE'] + $Specific_Rate_ES * $file_counts['ES'] + $Specific_Rate_EC * $file_counts['EC'] + $Specific_Rate_EF * $file_counts['EF']) * 12;
+                        $Specific_Rate_EE = (($file_counts['EE'] ?? 0) > 0 ? round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EE'], 2) : 0);
+                        $Specific_Rate_ES = (($file_counts['ES'] ?? 0) > 0 ? round(($ExpectedLargeClaims + $riskMargin) / $file_counts['ES'], 2) : 0);
+                        $Specific_Rate_EC = (($file_counts['EC'] ?? 0) > 0 ? round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EC'], 2) : 0);
+                        $Specific_Rate_EF = (($file_counts['EF'] ?? 0) > 0 ? round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EF'], 2) : 0);
+                        $Estimated_Spec_Premium = ($Specific_Rate_EE * @$file_counts['EE'] + $Specific_Rate_ES * @$file_counts['ES'] + $Specific_Rate_EC * @$file_counts['EC'] + $Specific_Rate_EF * @$file_counts['EF']) * 12;
 
-                        $EE = $file_counts['EE'] * 1;
-                        $ES = $file_counts['ES'] * 2;
-                        $EC = $file_counts['EC'] * 2.5;
-                        $EF = $file_counts['EF'] * 4;
+                        $EE = @$file_counts['EE'] * 1;
+                        $ES = @$file_counts['ES'] * 2;
+                        $EC = @$file_counts['EC'] * 2.5;
+                        $EF = @$file_counts['EF'] * 4;
                         $total_memnber = $EE + $ES + $EC + $EF;
                         $MemberMonths = $total_memnber * 12;
                         $Aggregate_Risk_Margin = $Expected_Aggregate_Claims * (($lossPlan->Agg_Corridor + $lossPlan->Commission)/100);
-                        $Aggregate_Rate_PMPM = ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths;
+                        $Aggregate_Rate_PMPM = ($MemberMonths > 0) ? ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths : 0;
                         $Estimated_Aggregate_Premium = $Aggregate_Rate_PMPM * $MemberMonths;
 
                         $Aggregate_Factor = 1+(($lossPlan->Aggregating_Spec_Deductible)/100);
@@ -1555,20 +1555,20 @@
                             $Expected_Aggregate_Claims = 100000;
                         }
                         $riskMargin = round(($ExpectedLargeClaims * $lossPlan->Commission) / 100 , 2);
-                        $Specific_Rate_EE = round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EE'],2);
-                        $Specific_Rate_ES = round(($ExpectedLargeClaims + $riskMargin) / $file_counts['ES'],2);
-                        $Specific_Rate_EC = round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EC'],2);
-                        $Specific_Rate_EF = round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EF'],2);
-                        $Estimated_Spec_Premium = ($Specific_Rate_EE * $file_counts['EE'] + $Specific_Rate_ES * $file_counts['ES'] + $Specific_Rate_EC * $file_counts['EC'] + $Specific_Rate_EF * $file_counts['EF']) * 12;
+                        $Specific_Rate_EE = (($file_counts['EE'] ?? 0) > 0 ? round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EE'], 2) : 0);
+                        $Specific_Rate_ES = (($file_counts['ES'] ?? 0) > 0 ? round(($ExpectedLargeClaims + $riskMargin) / $file_counts['ES'], 2) : 0);
+                        $Specific_Rate_EC = (($file_counts['EC'] ?? 0) > 0 ? round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EC'], 2) : 0);
+                        $Specific_Rate_EF = (($file_counts['EF'] ?? 0) > 0 ? round(($ExpectedLargeClaims + $riskMargin) / $file_counts['EF'], 2) : 0);
+                        $Estimated_Spec_Premium = ($Specific_Rate_EE * @$file_counts['EE'] + $Specific_Rate_ES * @$file_counts['ES'] + $Specific_Rate_EC * @$file_counts['EC'] + $Specific_Rate_EF * @$file_counts['EF']) * 12;
 
-                        $EE = $file_counts['EE'] * 1;
-                        $ES = $file_counts['ES'] * 2;
-                        $EC = $file_counts['EC'] * 2.5;
-                        $EF = $file_counts['EF'] * 4;
+                        $EE = @$file_counts['EE'] * 1;
+                        $ES = @$file_counts['ES'] * 2;
+                        $EC = @$file_counts['EC'] * 2.5;
+                        $EF = @$file_counts['EF'] * 4;
                         $total_memnber = $EE + $ES + $EC + $EF;
                         $MemberMonths = $total_memnber * 12;
                         $Aggregate_Risk_Margin = $Expected_Aggregate_Claims * (($lossPlan->Agg_Corridor + $lossPlan->Commission)/100);
-                        $Aggregate_Rate_PMPM = ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths;
+                        $Aggregate_Rate_PMPM = ($MemberMonths > 0) ? ($Expected_Aggregate_Claims + $Aggregate_Risk_Margin) / $MemberMonths : 0;
                         $Estimated_Aggregate_Premium = $Aggregate_Rate_PMPM * $MemberMonths;
 
                         $Estimated_Total_Premium = $Estimated_Spec_Premium + $Estimated_Aggregate_Premium;
