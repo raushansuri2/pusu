@@ -31,8 +31,8 @@
 		</div><!-- pageheader -->
 
 		<div class="contentpanel">
-        
-        <p style="font-size: 16px;color: #000;margin-bottom: 20px;line-height: 34px;">Welcome to the <strong>ERISA Quote Pro Tool </strong>Admin Panel<br>  
+
+        <p style="font-size: 16px;color: #000;margin-bottom: 20px;line-height: 34px;">Welcome to the <strong>ERISA Quote Pro Tool </strong>Admin Panel<br>
 Access all quote requests, manage pricing, and monitor performance in one place. Stay organized and respond quickly to keep your sales pipeline moving.
 
  </p>
@@ -74,17 +74,17 @@ Access all quote requests, manage pricing, and monitor performance in one place.
                 <div class="col-md-4">
                     <div class="panel panel-warning-alt noborder">
                         <div class="panel-heading panel-heading-dashboard noborder" style="padding:20px 10px;border-radius: 17px;">
-                            <div class="panel-icon" style="color: #000; font-size: 25px;  padding-top: 15px; word-wrap: break-word;  text-align: center; margin-right:5px;font-weight: bold;">65</div>
+                            <div class="panel-icon" style="color: #000; font-size: 25px;  padding-top: 15px; word-wrap: break-word;  text-align: center; margin-right:5px;font-weight: bold;"><?php echo $totalRequestedQuotes; ?></div>
                             <div class="media-body" style="overflow: initial;width:68%">
                                 <h5 style="padding-top:0px;font-weight: bold;font-size: 17px;margin: 21px 10px;">Total Requested Quotes</h5>
                             </div>
                         </div>
                     </div>
-                </div> 
+                </div>
                   <div class="col-md-4">
                     <div class="panel panel-success-alt noborder">
                         <div class="panel-heading panel-heading-dashboard noborder" style="padding:20px 10px;border-radius: 17px;">
-                            <div class="panel-icon" style="color: #000; font-size: 25px;  padding-top: 15px; word-wrap: break-word;  text-align: center; margin-right:5px;font-weight: bold;">76</div>
+                            <div class="panel-icon" style="color: #000; font-size: 25px;  padding-top: 15px; word-wrap: break-word;  text-align: center; margin-right:5px;font-weight: bold;"><?php echo $pendingQuotes; ?></div>
                             <div class="media-body" style="overflow: initial;width:80%">
                                 <h5 style="padding-top:0px;font-weight: bold;font-size: 17px;margin: 21px 10px;">Total Number of Pending Quotes</h5>
                             </div>
@@ -94,19 +94,19 @@ Access all quote requests, manage pricing, and monitor performance in one place.
                 <div class="col-md-4">
                     <div class="panel panel-primary noborder">
                         <div class="panel-heading panel-heading-dashboard noborder" style="padding:20px 10px;border-radius: 17px;">
-                            <div class="panel-icon" style="color: #000; font-size: 25px;  padding-top: 15px; word-wrap: break-word;  text-align: center; margin-right:5px;font-weight: bold;">43</div>
+                            <div class="panel-icon" style="color: #000; font-size: 25px;  padding-top: 15px; word-wrap: break-word;  text-align: center; margin-right:5px;font-weight: bold;"><?php echo $illustrativeQuotesReady; ?></div>
                             <div class="media-body" style="overflow: initial;width:78%">
                                 <h5 style="padding-top:0px;font-weight: bold;font-size: 17px;margin: 21px 10px;">Total illustrative Quotes Ready</h5>
                             </div>
                         </div>
                     </div>
-                </div>  
+                </div>
             </div>
             <div class="row row-stat">
                 <div class="col-md-4">
                     <div class="panel panel-primary noborder">
                         <div class="panel-heading panel-heading-dashboard noborder" style="padding:20px 10px; border-radius: 17px;">
-                            <div class="panel-icon" style="color: #000; font-size: 25px;  padding-top: 15px; word-wrap: break-word;  text-align: center; margin-right:5px;font-weight: bold;">59</div>
+                            <div class="panel-icon" style="color: #000; font-size: 25px;  padding-top: 15px; word-wrap: break-word;  text-align: center; margin-right:5px;font-weight: bold;"><?php echo $cancelledQuotes; ?></div>
                             <div class="media-body" style="overflow: initial; width:78%" >
                                 <h5 style="padding-top:0px;font-weight: bold;font-size: 17px;margin: 21px 10px;">Total Number of Cancelled Quotes</h5>
                             </div>
@@ -116,7 +116,7 @@ Access all quote requests, manage pricing, and monitor performance in one place.
                 <div class="col-md-4">
                     <div class="panel panel-warning-alt noborder">
                         <div class="panel-heading panel-heading-dashboard noborder" style="padding:20px 10px; border-radius: 17px;">
-                            <div class="panel-icon" style="color: #000; font-size: 25px;  padding-top: 15px; word-wrap: break-word;  text-align: center; margin-right:5px;font-weight: bold;">78</div>
+                            <div class="panel-icon" style="color: #000; font-size: 25px;  padding-top: 15px; word-wrap: break-word;  text-align: center; margin-right:5px;font-weight: bold;"><?php echo $soldQuotes; ?></div>
                             <div class="media-body" style="overflow: initial;width:68%">
                                 <h5 style="padding-top:0px;font-weight: bold;font-size: 17px;margin: 21px 10px;">Total Number of Sold Quotes</h5>
                             </div>
@@ -126,7 +126,7 @@ Access all quote requests, manage pricing, and monitor performance in one place.
                 <div class="col-md-4">
                     <div class="panel panel-success-alt noborder">
                         <div class="panel-heading panel-heading-dashboard noborder" style="padding:20px 10px; border-radius: 17px;">
-                            <div class="panel-icon" style="color: #000; font-size: 25px;  padding-top: 15px; word-wrap: break-word;  text-align: center; margin-right:5px;font-weight: bold;">59</div>
+                            <div class="panel-icon" style="color: #000; font-size: 25px;  padding-top: 15px; word-wrap: break-word;  text-align: center; margin-right:5px;font-weight: bold;"><?php echo $totalUsers; ?></div>
                             <div class="media-body" style="overflow: initial; width:68%" >
                                 <h5 style="padding-top:0px;font-weight: bold;font-size: 17px;margin: 21px 10px;">Total Number of Users</h5>
                             </div>

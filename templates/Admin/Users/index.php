@@ -7,9 +7,9 @@ echo $this->Html->script(['admin/jquery.fancybox.pack'], ['block' => true]);
 
 <div class="mainwrapper">
     <div class="leftpanel">
-        <?= $this->element('admin/sidebar') ?>             
+        <?= $this->element('admin/sidebar') ?>
     </div><!-- leftpanel -->
-    
+
     <div class="mainpanel">
         <div class="pageheader">
             <div class="media">
@@ -28,8 +28,8 @@ echo $this->Html->script(['admin/jquery.fancybox.pack'], ['block' => true]);
                     <h4>Manage Member</h4>
                 </div>
                 <div class="search-body" style="width: 39%;">
-                    <!-- <a href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'add']) ?>" 
-                       class="btn btn-primary mr5 ml10" style="float: right;">Add</a> -->
+                    <a href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'add']) ?>"
+                       class="btn btn-primary mr5 ml10" style="float: right;">Add</a>
                     <?= $this->Form->create(null, ['type' => 'get', 'valueSources' => ['query']]) ?>
                     <?= $this->Form->control('keyword', [
                         'class' => 'form-control width200',
@@ -43,10 +43,10 @@ echo $this->Html->script(['admin/jquery.fancybox.pack'], ['block' => true]);
                 </div>
             </div><!-- media -->
         </div><!-- pageheader -->
-        
-        <div class="contentpanel">      
+
+        <div class="contentpanel">
             <?= $this->Flash->render() ?>
-            <div class="panel panel-primary-head"> 
+            <div class="panel panel-primary-head">
                 <table id="basicTable" class="table table-striped table-bordered responsive">
                     <thead class="table-heading">
                         <tr>
@@ -78,8 +78,8 @@ echo $this->Html->script(['admin/jquery.fancybox.pack'], ['block' => true]);
                             </th>
                             <th class="table-action" style="width: 10%">Action</th>
                         </tr>
-                    </thead>                         
-                    <tbody>									
+                    </thead>
+                    <tbody>
                         <?php
                         $page = $this->Paginator->param('page') ?: 1;
                         $limit = $this->Paginator->param('perPage');
@@ -96,24 +96,27 @@ echo $this->Html->script(['admin/jquery.fancybox.pack'], ['block' => true]);
                                     <td><?= wordwrap(h($user->contactNumber), 35, "<br>", true) ?></td>
                                     <td style="text-align: center;">
                                         <?php if ($user->status == '1'): ?>
-                                            <a href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'status', $user->id]) ?>" 
+                                            <a href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'status', $user->id]) ?>"
                                                onclick="return confirm('Are you sure want to inactivate this employee?')">
                                                 Active<br>
                                                 <img style="width: 40px;" src="<?= $this->Url->build('/img/admin/green.png') ?>" />
                                             </a>
                                         <?php else: ?>
-                                            <a href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'status', $user->id]) ?>" 
+                                            <a href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'status', $user->id]) ?>"
                                                onclick="return confirm('Are you sure want to activate this employee?')">
                                                 Inactive<br>
                                                 <img style="width: 40px;" src="<?= $this->Url->build('/img/admin/red.png') ?>" />
                                             </a>
                                         <?php endif; ?>
-                                    </td>                                    
+                                    </td>
                                     <td class="table-action" style="width: 10%;">
-                                        <a target="_blank" href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'userdetails', $user->id]) ?>" 
+                                        <a target="_blank" href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'userdetails', $user->id]) ?>"
                                            data-toggle=" tooltip" title="Details" class="tooltips"><i class="fa fa-eye"></i></a>
-                                        <!-- <a target="_blank" href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'edit', $user->id]) ?>" 
-                                           data-toggle="tooltip" title="Edit" class="tooltips"><i class="fa fa-pencil"></i></a> -->
+                                        <a target="_blank" href="<?= $this->Url->build(['controller' => 'Users', 'action' => 'edit', $user->id]) ?>"
+                                           data-toggle="tooltip" title="Edit" class="tooltips"><i class="fa fa-pencil"></i></a>
+                                        <?= $this->Form->postLink('<i class="fa fa-trash"></i>',
+                                            ['controller' => 'Users', 'action' => 'delete', $user->id],
+                                            ['escape' => false, 'confirm' => __('Are you sure you want to delete this member?'), 'class' => 'tooltips', 'data-toggle' => 'tooltip', 'title' => 'Delete']) ?>
                                     </td>
                                 </tr>
                                 <?php
@@ -122,10 +125,10 @@ echo $this->Html->script(['admin/jquery.fancybox.pack'], ['block' => true]);
                         else:
                             echo "<tr><td colspan='8' class='error'>No Record Found...</td></tr>";
                         endif;
-                        ?> 
+                        ?>
                     </tbody>
                 </table>
-            </div><!-- panel -->                  
+            </div><!-- panel -->
             <div class="paging-container">
                 <?php if ($this->Paginator->param('count') > 0): ?>
                     <p>
@@ -138,7 +141,7 @@ echo $this->Html->script(['admin/jquery.fancybox.pack'], ['block' => true]);
                             <?= $this->Paginator->next(__('Next'), ['tag' => 'li', 'escape' => false], null, ['tag' => 'li', 'class' => 'disabled', 'disabledTag' => 'a', 'escape' => false]) ?>
                         </ul>
                     <?php endif; ?>
-                    <div class="cl"></div>	
+                    <div class="cl"></div>
                 <?php endif; ?>
             </div>
         </div><!-- contentpanel -->

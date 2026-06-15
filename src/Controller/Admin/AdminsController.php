@@ -94,14 +94,20 @@ class AdminsController extends AppController
             return $this->redirect(['controller' => 'Admins', 'action' => 'login', 'prefix' => 'Admin']);
         }
 
-        // Fetch tables instead of loading models
+        // Fetch tables
         $usersTable = $this->fetchTable('Users');
+        $requestQuotsTable = $this->fetchTable('RequestQuots');
 
         // Fetch counts
-        $memberCount = $usersTable->find('all')->where(['Users.role' => 'Member'])->count();
+        $totalRequestedQuotes = $requestQuotsTable->find()->count();
+        $pendingQuotes = $requestQuotsTable->find()->where(['status' => 2])->count();
+        $illustrativeQuotesReady = $requestQuotsTable->find()->where(['status IN' => [1, 6, 7]])->count();
+        $cancelledQuotes = $requestQuotsTable->find()->where(['status' => 4])->count();
+        $soldQuotes = $requestQuotsTable->find()->where(['status' => 3])->count();
+        $totalUsers = $usersTable->find()->where(['role' => 'Member'])->count();
 
         // Set variables for the view
-        $this->set(compact('memberCount'));
+        $this->set(compact('totalRequestedQuotes', 'pendingQuotes', 'illustrativeQuotesReady', 'cancelledQuotes', 'soldQuotes', 'totalUsers'));
     }
 
     public function edit()

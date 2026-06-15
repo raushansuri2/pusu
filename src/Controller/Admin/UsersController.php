@@ -24,7 +24,7 @@ class UsersController extends AppController
 	    $layoutTitle = 'Admin::Employee';
 	    $this->set(compact('layoutTitle'));
 	    $this->viewBuilder()->setLayout('Admin/admin');
-	    
+
 	    $limit = 10;
 	    $this->paginate = [
 	        'limit' => $limit,
@@ -32,7 +32,7 @@ class UsersController extends AppController
 	            'Users.created' => 'desc'
 	        ],
 	    ];
-	    
+
 	    $keyword = $this->request->getQuery('keyword');
 	    $condition = ['Users.role !=' => 'Admin'];
 
@@ -47,23 +47,23 @@ class UsersController extends AppController
 	            ]
 	        ];
 	    }
-	    
+
 	    $query = $this->Users->find('all')->where($condition);
 	    $users = $this->paginate($query);
-	    
+
 	    $this->set(compact('users', 'limit'));
 	}
-   
+
     public function userdetails($id)
 	{
 	    $layoutTitle = 'Admin::Employee Details';
 	    $this->set(compact('layoutTitle'));
-	    $this->viewBuilder()->setLayout('Admin/admin'); 
+	    $this->viewBuilder()->setLayout('Admin/admin');
 
 	    try {
 	        // Fetch the user with related data using named arguments
 	        $user = $this->Users->get($id, contain: []);
-	        
+
 	        // Set the user data to the view
 	        $this->set(compact('user'));
 	    } catch (\Cake\Datasource\Exception\RecordNotFoundException $e) {
@@ -89,7 +89,7 @@ class UsersController extends AppController
 
 	        if ($this->Users->save($users)) {
 	            $this->Flash->success(__('Faq added successfully.'));
-	            return $this->redirect(['action' => 'index']);	
+	            return $this->redirect(['action' => 'index']);
 	        } else {
 				//pr($users); die;
 	            $this->Flash->error(__('Unable to add new user, please fill all fields.'));
@@ -98,7 +98,7 @@ class UsersController extends AppController
 
 	    $this->set(compact('users'));
 	}
-    
+
     public function edit($id)
 	{
 	    $layoutTitle = 'Admin::Edit Employee';
@@ -106,7 +106,7 @@ class UsersController extends AppController
 	    $this->viewBuilder()->setLayout('Admin/admin');
 	    $users = $this->fetchTable('Users')->get($id);
 	    if ($this->request->is(['patch', 'post', 'put'])) {
-	        $users = $this->fetchTable('Users')->patchEntity($users, $this->request->getData(), ['validate' => 'user']); 
+	        $users = $this->fetchTable('Users')->patchEntity($users, $this->request->getData(), ['validate' => 'user']);
 	        if ($this->fetchTable('Users')->save($users)) {
 	            $this->Flash->success(__('The faq updated successfully.'));
 	            return $this->redirect(['action' => 'index']);
@@ -117,8 +117,8 @@ class UsersController extends AppController
 
 	    $this->set(compact('users'));
 	}
-	
-    
+
+
     public function status($id)
 	{
 	    // Fetch the Users table
@@ -126,7 +126,7 @@ class UsersController extends AppController
 
 	    // Retrieve the user by ID
 	    $user = $usersTable->get($id);
-	    
+
 	    // Toggle the status
 	    $user->status = $user->status == '1' ? '0' : '1';
 	    $msg = $user->status == '1' ? 'activated' : 'deactivated';
@@ -140,22 +140,45 @@ class UsersController extends AppController
 
 	    return $this->redirect(['controller' => 'Users', 'action' => 'index']);
 	}
-	
+
+	public function delete($id = null)
+	{
+	    $this->request->allowMethod(['post', 'delete']);
+
+	    // Check session for admin role
+	    $session = $this->request->getSession();
+	    if ($session->read('AnnuityAdmin.role') !== 'Admin') {
+	        $session->destroy();
+	        return $this->redirect(['controller' => 'Admins', 'action' => 'login', 'prefix' => 'Admin']);
+	    }
+
+	    $usersTable = $this->fetchTable('Users');
+	    $user = $usersTable->get($id);
+
+	    if ($usersTable->delete($user)) {
+	        $this->Flash->success(__('Member deleted successfully.'));
+	    } else {
+	        $this->Flash->error(__('Unable to delete member. Please, try again.'));
+	    }
+
+	    return $this->redirect(['action' => 'index']);
+	}
+
     public function adminVerify($id)
     {
         // Use fetchTable instead of loadModel
         $usersInfoTable = $this->fetchTable('Usersinformations');
         $usersTable = $this->fetchTable('Users');
-        
+
         $user = $usersInfoTable->get($id);
-        
+
         $status = '1';
         $msg = 'activated';
         if ($user->verifyAdmin == '1') {
             $status = '0';
             $msg = 'deactivated';
         }
-        
+
         // Modern update approach
         $usersInfoTable->updateAll(
             ['verifyAdmin' => $status],
@@ -166,10 +189,10 @@ class UsersController extends AppController
             $userData = $usersTable->find()
                 ->where(['Users.id' => $user->userId])
                 ->first();
-            
+
             $to = $userData->email;
             $subject = "Welcome to our Platform: Unlock Your Global Potential!";
-            
+
             if ($user->UTYPE == 2) {
                 $message = "Dear " . ucfirst($userData->firstName) . ", the review process is complete. Welcome to RiteVet! We are thrilled to have you on board as a new member of our vibrant and global community. This email serves as a warm welcome, introducing you to our platform and its incredible opportunities to connect with a diverse client base worldwide.";
                 $message .= "<br><br>At RiteVet our mission is to empower individuals like you to unlock their true potential and reach new heights of success. Our platform offers you a unique avenue to showcase your skills and expertise on a global scale. We believe in the power of connection and collaboration, and our services are designed to help you tap into a vast network of clients from the USA and around the world.";
@@ -184,12 +207,12 @@ class UsersController extends AppController
                 $message .= "<br><br>Once again, welcome to RiteVet. We can't wait to see you thrive in our global community!";
                 $message .= "<br><br>Best regards, <br><br>RiteVet Management Team.";
             }
-            
+
             $this->phpemail($to, $subject, $message);
         }
-        
+
         $this->Flash->success(__('Data has been ' . $msg . ' successfully.'));
-        
+
         // Modern redirect approach without query string
         if ($user->UTYPE == '2') {
             return $this->redirect([
@@ -203,7 +226,7 @@ class UsersController extends AppController
             ]);
         }
     }
-	
-    
+
+
 
 }
