@@ -81,13 +81,6 @@ $action_name = $this->request->getParam('action');
         </a>
     </li>
 
-    <!-- Quoting Groups -->
-    <li class="<?= ($module_name == 'Quotgroups') ? 'active' : '' ?>">
-        <a href="<?= $this->Url->build(['controller' => 'Quotgroups', 'action' => 'index', 'prefix' => 'Admin']) ?>">
-            <i class="fa fa-users"></i> <span>Quoting Groups</span>
-        </a>
-    </li>
-
     <!-- Request Quotes -->
     <li class="<?= ($module_name == 'RequestQuotes') ? 'active' : '' ?>">
         <a href="<?= $this->Url->build(['controller' => 'RequestQuotes', 'action' => 'index', 'prefix' => 'Admin']) ?>">

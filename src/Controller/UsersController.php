@@ -177,7 +177,7 @@ class UsersController extends AppController
                             ));
                         }
 
-                        $this->Flash->success(__('You have been logged in successfully.'));
+                        //$this->Flash->success(__('You have been logged in successfully.'));
                         return $this->redirect(['controller' => 'Users', 'action' => 'dashboard']);
                     } else {
                         $resendLink = Router::url(['controller' => 'Users', 'action' => 'resendVerificationEmail'], true);
