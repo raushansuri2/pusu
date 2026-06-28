@@ -76,13 +76,14 @@
                                         'placeholder' => '',
                                         'div' => false,
                                         'label' => false,
-                                        'maxlength' => 200
+                                        'maxlength' => 200,
+                                        'value'=>''
                                     ]); ?>
                                 </div>
                             </div><!-- form-group -->
                             
                             <div class="form-group">
-                                <label class="col-sm-3 control-label">Member Password <span class="asterisk">*</span></label>
+                                <label class="col-sm-3 control-label">Member Confirm Password <span class="asterisk">*</span></label>
                                 <div class="col-sm-9">
                                     <?php echo $this->Form->control('confirm_password', [
                                         'error' => ['minLength' => __('You can submit up to ')],

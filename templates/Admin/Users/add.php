@@ -1,9 +1,9 @@
 <?php echo $this->Html->script('ckeditor/ckeditor'); ?>
 <div class="mainwrapper">
     <div class="leftpanel">
-        <?php echo $this->element('admin/sidebar'); ?>                
+        <?php echo $this->element('admin/sidebar'); ?>
     </div><!-- leftpanel -->
-    
+
     <div class="mainpanel">
         <div class="pageheader">
             <div class="media">
@@ -20,14 +20,14 @@
                 </div>
             </div><!-- media -->
         </div><!-- pageheader -->
-        
+
         <div class="contentpanel">
             <div class="row">
                 <?php echo $this->Flash->render(); ?>
                 <?php echo $this->Form->create($users, ['type' => 'file', 'novalidate' => 'novalidate']); ?>
-                
+
                 <div class="panel panel-default">
-                    <div class="panel-heading">  
+                    <div class="panel-heading">
                         <h4 class="panel-title">Add Member</h4>
                         <p>Please provide all below details to add Member.</p>
                     </div><!-- panel-heading -->
@@ -37,7 +37,7 @@
                                 <label class="col-sm-3 control-label">Member Name <span class="asterisk">*</span></label>
                                 <div class="col-sm-9">
                                     <?php echo $this->Form->control('firstName', [
-                                        'error' => ['minLength' => __('You can submit up to ')],
+                                        'error' => ['minLength' => __('You can submit up to')],
                                         'class' => 'form-control',
                                         'type' => 'text',
                                         'required' => false,
@@ -48,7 +48,7 @@
                                     ]); ?>
                                 </div>
                             </div><!-- form-group -->
-                            
+
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Member Email <span class="asterisk">*</span></label>
                                 <div class="col-sm-9">
@@ -69,7 +69,7 @@
                                 <label class="col-sm-3 control-label">Member Password <span class="asterisk">*</span></label>
                                 <div class="col-sm-9">
                                     <?php echo $this->Form->control('password', [
-                                        'error' => ['minLength' => __('You can submit up to ')],
+                                        'error' => ['minLength' => __('You can submit up to 8 characters')],
                                         'class' => 'form-control',
                                         'type' => 'password',
                                         'required' => false,
@@ -80,7 +80,7 @@
                                     ]); ?>
                                 </div>
                             </div><!-- form-group -->
-                            
+
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Member Password <span class="asterisk">*</span></label>
                                 <div class="col-sm-9">
@@ -112,7 +112,7 @@
                                     ]); ?>
                                 </div>
                             </div><!-- form-group -->
-                            
+
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Member Date Of Birth</label>
                                 <div class="col-sm-9">
@@ -145,7 +145,7 @@
                                     ]); ?>
                                 </div>
                             </div><!-- form-group -->
-                            
+
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Gender</label>
                                 <div class="col-sm-9">
@@ -158,11 +158,11 @@
                                         'div' => false,
                                         'required' => false
                                     ]); ?>
-                                    <label class="error" for="status"></label> 
-                                </div>                                                 
-                            </div><!-- form-group --> 
-                            
-                            
+                                    <label class="error" for="status"></label>
+                                </div>
+                            </div><!-- form-group -->
+
+
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Status <span class="asterisk">*</span></label>
                                 <div class="col-sm-9">
@@ -174,22 +174,22 @@
                                         'div' => false,
                                         'required' => true
                                     ]); ?>
-                                    <label class="error" for="status"></label> 
-                                </div>                                                 
-                            </div><!-- form-group -->               
+                                    <label class="error" for="status"></label>
+                                </div>
+                            </div><!-- form-group -->
                         </div><!-- row -->
                     </div><!-- panel-body -->
-                    
+
                     <div class="panel-footer">
                         <div class="row">
                             <div class="col-sm-9 col-sm-offset-3">
                                 <?php echo $this->Form->submit('Submit', ['class' => 'btn btn-primary mr5', 'div' => false, 'label' => false]); ?>
                             </div>
                         </div>
-                    </div><!-- panel-footer -->  
+                    </div><!-- panel-footer -->
                 </div><!-- panel -->
-                <?php echo $this->Form->end(); ?>                                
-            </div><!-- row-->    
+                <?php echo $this->Form->end(); ?>
+            </div><!-- row-->
         </div><!-- contentpanel -->
     </div><!-- mainpanel -->
 </div><!-- mainwrapper -->

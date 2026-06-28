@@ -84,7 +84,7 @@ class UsersController extends AppController
 	    if ($this->request->is('post')) {
 	        $users = $this->Users->patchEntity($users, $this->request->getData(), ['validate' => 'user']);
 			$users->username = $this->request->getData('email');
-			$users->role = 'Employee';
+			$users->role = 'Member';
 	        $users->created = date('Y-m-d H:i:s');
 
 	        if ($this->Users->save($users)) {

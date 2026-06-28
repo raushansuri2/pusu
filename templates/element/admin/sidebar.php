@@ -77,7 +77,7 @@ $action_name = $this->request->getParam('action');
     <!-- Loose Plans -->
     <li class="<?= ($module_name == 'LoosePlans') ? 'active' : '' ?>">
         <a href="<?= $this->Url->build(['controller' => 'LoosePlans', 'action' => 'index', 'prefix' => 'Admin']) ?>">
-            <i class="fa fa-cog"></i> <span>Loose Plans</span>
+            <i class="fa fa-cog"></i> <span>Loss Plans</span>
         </a>
     </li>
 
