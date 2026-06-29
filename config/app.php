@@ -348,7 +348,7 @@ return [
             'timezone' => 'UTC',
             'username' => 'root',
             'password' => '',
-            'database' => 'datingappgggggg',
+            'database' => 'pusu',
 
             /*
              * For MariaDB/MySQL the internal default changed from utf8 to utf8mb4, aka full utf-8 support

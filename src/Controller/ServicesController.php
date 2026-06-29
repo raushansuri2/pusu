@@ -123,7 +123,7 @@ class ServicesController extends AppController
 		if ($existingUser) {
 			return [
 				'status' => 'Fails',
-				'msg' => 'Email or contactNumber already registered with LGBT-TOGO App',
+				'msg' => 'Email or contactNumber already registered with PUSU App',
 			];
 		}
 
@@ -155,9 +155,9 @@ class ServicesController extends AppController
 			//$request->getSession()->write('session_token', $sessionToken);
 
 			//$verificationLink = Configure::read('App.siteurl') . 'users/verifyEmail/' . $verificationToken ;
-			$subject = "Welcome to LGBT-TOGO App! Please verify your email.";
+			$subject = "Welcome to PUSU App! Please verify your email.";
 			$message = "Dear " . ucfirst($data['firstName']);
-			$message .= "<br>Welcome to LGBT-TOGO App! We're delighted to have you as a new member of our platform.";
+			$message .= "<br>Welcome to PUSU App! We're delighted to have you as a new member of our platform.";
 			// $message .= "<br>Please verify your email by clicking the link below:";
 			// $message .= "<br><br><a href='" . $verificationLink . "' style='display: inline-block; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;'>Verify Email</a>";
 			// $message .= "<br><br><strong>Note:</strong> Please open this link in the same browser to ensure proper verification.";
@@ -363,9 +363,6 @@ class ServicesController extends AppController
 
 	function profile($userId = NULL){
 		$userTable = $this->fetchTable('Users');
-		$postTable = $this->fetchTable('Posts');
-		$friendTable = $this->fetchTable('Friends');
-		$profilelikesTable = $this->fetchTable('Profilelikes');
 		//$NotificationsTable = $this->fetchTable('Notifications');
 
 			$userID = ($userId) ? $userId : $this->request->getData('userId');
@@ -414,30 +411,6 @@ class ServicesController extends AppController
 				// $UserDetail['subscribeDate'] 		= ($userD->subscribeDate) ? date('Y-m-d H:i:s', strtotime($userD->subscribeDate)) :'';
 				// $UserDetail['stripeSubscriptionId'] = ($userD->stripeSubscriptionId) ? $userD->stripeSubscriptionId :'';
 				
-				$UserDetail['total_Post'] = $postTable->find()->where(['Posts.userId'=>$userD->id])->count();
-				$UserDetail['total_fnd'] = $friendTable->find()->where(['Friends.status'=>2,'OR'=>[
-									['Friends.senderId'=>$userD->id],
-									['Friends.receiverId'=>$userD->id]
-								]])->count();
-				$UserDetail['total_profile_liked'] = $profilelikesTable->find()->where(['Profilelikes.profileId'=>$userD->id, 'Profilelikes.status'=>1])->count();
-				
-				$UserDetail['you_liked_profile'] = 0;
-				$UserDetail['he_liked_profile'] = 0;
-				$UserDetail['fnd_status'] = "";
-				if($OPID !=""){
-					$UserDetail['you_liked_profile'] = $profilelikesTable->find()->where(['Profilelikes.profileId'=>$OPID, 'Profilelikes.status'=>1,'Profilelikes.userId'=>$userID])->count();
-					$UserDetail['he_liked_profile'] = $profilelikesTable->find()->where(['Profilelikes.profileId'=>$userID, 'Profilelikes.status'=>1,'Profilelikes.userId'=>$OPID])->count();
-					$UserDetail['fnd_status'] = $friendTable->find()->select(['requestId'=>'Friends.id','status'=>'Friends.status','senderId'=>'Friends.senderId','receiverId'=>'Friends.receiverId'])->where(['OR'=>[
-									['Friends.senderId'=>$userID,'Friends.receiverId'=>$userD->id],
-									['Friends.senderId'=>$userD->id,'Friends.receiverId'=>$userID]
-								]])->first() ?? "";
-				}
-				
-				$UserDetail['P_S_Profile'] = 1;
-				$UserDetail['P_S_Post'] = 2;
-				$UserDetail['P_S_Friends'] = 3;
-				$UserDetail['P_S_Profile_picture'] = 2;
-
 				$response['status'] = 'success';
 				$response['data'] = $UserDetail;
 				
@@ -668,7 +641,7 @@ class ServicesController extends AppController
 	
 	function help(){
 		$data['phone'] 	= '180-234-5678';
-		$data['eamil'] = 'support@LGBT-TOGO App.com';
+		$data['eamil'] = 'support@pusuapp.com';
 		$response['status'] = 'success';
 		$response['data'] = $data;
 		return  $response;

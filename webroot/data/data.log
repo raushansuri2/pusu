@@ -193953,3 +193953,342 @@ Array
 Array
 (
 )
+--------------------2026-06-28 10:36:04-----------------------------Array
+(
+    [action] => registration
+    [firstName] => raushan
+    [email] => rksuri@mailinator.com
+    [password] => 123456
+)
+Array
+(
+)
+--------------------2026-06-28 10:37:00-----------------------------Array
+(
+    [action] => registration
+    [firstName] => raushan
+    [email] => rksuri@mailinator.com
+    [password] => 123456
+    [contactNumber] => 8123456789
+)
+Array
+(
+)
+--------------------2026-06-28 10:39:16-----------------------------Array
+(
+    [action] => login
+    [email] => rksuri@mailinator.com
+    [password] => 123456
+)
+Array
+(
+)
+--------------------2026-06-29 03:07:52-----------------------------Array
+(
+    [action] => registration
+    [firstName] => raushan
+    [email] => rksuri@mailinator.com
+    [password] => 123456
+    [contactNumber] => 8123456789
+    [socialId] => abc
+    [socialType] => xyz
+)
+Array
+(
+)
+--------------------2026-06-29 03:09:05-----------------------------Array
+(
+    [action] => socialLoginAction
+    [firstName] => raushan
+    [email] => rksuri@mailinator.com
+    [password] => 123456
+    [contactNumber] => 8123456789
+    [socialId] => abc
+    [socialType] => xyz
+)
+Array
+(
+)
+--------------------2026-06-29 03:11:01-----------------------------Array
+(
+    [action] => socialLoginAction
+    [firstName] => raushan
+    [email] => rksuri@mailinator.com
+    [password] => 123456
+    [contactNumber] => 8123456789
+    [socialId] => abc
+    [socialType] => google
+)
+Array
+(
+)
+--------------------2026-06-29 03:11:53-----------------------------Array
+(
+    [action] => socialLoginAction
+    [firstName] => raushan
+    [email] => rksuri@mailinator.com
+    [password] => 123456
+    [contactNumber] => 8123456789
+    [socialId] => abc
+    [socialType] => google
+)
+Array
+(
+)
+--------------------2026-06-29 03:12:09-----------------------------Array
+(
+    [action] => socialLoginAction
+    [firstName] => raushan
+    [email] => rksuri@mailinator.com
+    [password] => 123456
+    [contactNumber] => 8123456789
+    [socialId] => abc
+    [socialType] => google
+)
+Array
+(
+)
+--------------------2026-06-29 03:13:17-----------------------------Array
+(
+    [action] => socialLoginAction
+    [firstName] => raushan
+    [email] => rksuri@mailinator.com
+    [password] => 123456
+    [contactNumber] => 8123456789
+    [socialId] => abc
+    [socialType] => google
+)
+Array
+(
+)
+--------------------2026-06-29 03:14:49-----------------------------Array
+(
+    [action] => socialLoginAction
+    [firstName] => raushan
+    [email] => rksuri@mailinator.com
+    [password] => 123456
+    [contactNumber] => 8123456789
+    [socialId] => abc
+    [socialType] => google
+)
+Array
+(
+)
+--------------------2026-06-29 03:15:25-----------------------------Array
+(
+    [action] => socialLoginAction
+    [firstName] => raushan
+    [email] => rksuri@mailinator.com
+    [password] => 123456
+    [contactNumber] => 8123456789
+    [socialId] => abc
+    [socialType] => google
+)
+Array
+(
+)
+--------------------2026-06-29 03:16:09-----------------------------Array
+(
+    [action] => help
+)
+Array
+(
+)
+--------------------2026-06-29 03:17:56-----------------------------Array
+(
+    [action] => login
+    [email] => rksuri@mailinator.com
+    [password] => 123456
+)
+Array
+(
+)
+--------------------2026-06-29 03:18:06-----------------------------Array
+(
+    [action] => login
+    [email] => rksuri@mailinator.com
+    [password] => 123456
+)
+Array
+(
+)
+--------------------2026-06-29 03:19:59-----------------------------Array
+(
+    [action] => changepassword
+    [userId] => 4
+    [password] => 123456
+    [newPassword] => 123456
+)
+Array
+(
+)
+--------------------2026-06-29 03:21:44-----------------------------Array
+(
+    [action] => changepassword
+    [userId] => 4
+    [oldPassword] => 123456
+    [newPassword] => 123456
+)
+Array
+(
+)
+--------------------2026-06-29 03:22:29-----------------------------Array
+(
+    [action] => changepassword
+    [userId] => 4
+    [oldPassword] => 123456
+    [newPassword] => 123456
+)
+Array
+(
+)
+--------------------2026-06-29 03:23:01-----------------------------Array
+(
+    [action] => changepassword
+    [userId] => 4
+    [oldPassword] => 123456
+    [newPassword] => 123456
+)
+Array
+(
+)
+--------------------2026-06-29 03:23:21-----------------------------Array
+(
+    [action] => changepassword
+    [userId] => 4
+    [oldPassword] => 123456
+    [newPassword] => 123456
+)
+Array
+(
+)
+--------------------2026-06-29 03:23:36-----------------------------Array
+(
+    [action] => login
+    [email] => rksuri@mailinator.com
+    [password] => 123456
+)
+Array
+(
+)
+--------------------2026-06-29 03:23:50-----------------------------Array
+(
+    [action] => changepassword
+    [userId] => 4
+    [oldPassword] => 123456
+    [newPassword] => 111111
+)
+Array
+(
+)
+--------------------2026-06-29 03:23:55-----------------------------Array
+(
+    [action] => login
+    [email] => rksuri@mailinator.com
+    [password] => 123456
+)
+Array
+(
+)
+--------------------2026-06-29 03:24:03-----------------------------Array
+(
+    [action] => login
+    [email] => rksuri@mailinator.com
+    [password] => 111111
+)
+Array
+(
+)
+--------------------2026-06-29 03:24:14-----------------------------Array
+(
+    [action] => changepassword
+    [userId] => 4
+    [oldPassword] => 123456
+    [newPassword] => 123456
+)
+Array
+(
+)
+--------------------2026-06-29 03:24:17-----------------------------Array
+(
+    [action] => login
+    [email] => rksuri@mailinator.com
+    [password] => 111111
+)
+Array
+(
+)
+--------------------2026-06-29 03:24:21-----------------------------Array
+(
+    [action] => login
+    [email] => rksuri@mailinator.com
+    [password] => 111111
+)
+Array
+(
+)
+--------------------2026-06-29 03:24:32-----------------------------Array
+(
+    [action] => changepassword
+    [userId] => 4
+    [oldPassword] => 111111
+    [newPassword] => 123456
+)
+Array
+(
+)
+--------------------2026-06-29 03:24:38-----------------------------Array
+(
+    [action] => login
+    [email] => rksuri@mailinator.com
+    [password] => 111111
+)
+Array
+(
+)
+--------------------2026-06-29 03:24:45-----------------------------Array
+(
+    [action] => login
+    [email] => rksuri@mailinator.com
+    [password] => 123456
+)
+Array
+(
+)
+--------------------2026-06-29 03:33:38-----------------------------Array
+(
+    [action] => changepassword
+    [userId] => 4
+    [oldPassword] => 111111
+    [newPassword] => 123456
+)
+Array
+(
+)
+--------------------2026-06-29 03:33:44-----------------------------Array
+(
+    [action] => login
+    [email] => rksuri@mailinator.com
+    [password] => 123456
+)
+Array
+(
+)
+--------------------2026-06-29 03:33:51-----------------------------Array
+(
+    [action] => registration
+    [firstName] => raushan
+    [email] => rksuri@mailinator.com
+    [password] => 123456
+    [contactNumber] => 8123456789
+)
+Array
+(
+)
+--------------------2026-06-29 03:33:59-----------------------------Array
+(
+    [action] => help
+)
+Array
+(
+)
